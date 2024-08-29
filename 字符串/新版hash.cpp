@@ -1,24 +1,21 @@
 using ull = unsigned long long;
 constexpr int maxn = 1e6 + 7;
 ull bas1[maxn], bas2[maxn];
-constexpr ll mod1 = 1000000007;
-constexpr ll mod2 = 980009747;
-constexpr ll Seed1 = 146527;
-constexpr ll Seed2 = 19260817;
+constexpr ull _mod[2] = {1000000007, 980009747};
+constexpr ll _Seed[2] = {146527, 19260817};
 void HInit() {
     bas1[0] = bas2[0] = 1;
     for (int i = 1; i < maxn; i++) {
-        bas1[i] = bas1[i - 1] * Seed1 % mod1;
-        bas2[i] = bas2[i - 1] * Seed2 % mod2;
+        bas1[i] = bas1[i - 1] * _Seed[0] % _mod[0];
+        bas2[i] = bas2[i - 1] * _Seed[1] % _mod[1];
     }
 }
-template<ull base, ull Mod>
+template<ull base, ull Mod, ull *bas>
 struct Hash
 {
     int n;
     std::vector<ull> sum;
-    ull *bas;
-    Hash(const string &s, ull *Bas): n(s.size()), sum(n + 1), bas(Bas) {
+    Hash(const string &s): n(s.size()), sum(n + 1) {
         for (int i = 1; i <= n; i++) {
             sum[i] = (sum[i - 1] * base % Mod + s[i - 1]) % Mod;
         }
@@ -28,11 +25,11 @@ struct Hash
     }
 };
 struct HHash {
-    Hash<Seed1, mod1>h1;
-    Hash<Seed2, mod2>h2;
-    HHash(const string&s): h1(s, bas1), h2(s, bas2) {
+    Hash<_Seed[0], _mod[0], bas1>h1;
+    Hash<_Seed[1], _mod[1], bas2>h2;
+    HHash(const string&s): h1(s), h2(s) {
     }
     array<ull, 2>getHash(int l, int r) {
-        return array<ull, 2>{h1.getHash(l,r),h2.getHash(l,r)};
+        return array<ull, 2> {h1.getHash(l, r), h2.getHash(l, r)};
     }
 };

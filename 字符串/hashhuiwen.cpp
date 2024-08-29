@@ -1,60 +1,46 @@
-typedef unsigned long long ULL;
-const int maxn = 2e5 + 7;
-const int sigma = maxn;
-const int HASH_CNT = 2;
-char s[maxn];
-ULL Prime_Pool[] = {1998585857ul, 23333333333ul};
-ULL Seed_Pool[] = {911, 146527, 19260817, 91815541};
-ULL Mod_Pool[] = {29123, 998244353, 1000000009, 4294967291ull};
-
-struct Hash {
-    ULL Seed, Mod;
-    ULL bas[maxn];
-    ULL sum[maxn];
-    int perm[sigma];
-
-    Hash(ULL Seed, ULL Mod) : Seed(Seed), Mod(Mod) {
-        bas[0] = 1;
-        for (int i = 1; i < maxn - 2; i++) {
-            bas[i] = bas[i - 1] * Seed % Mod;
-        }
+using ull = unsigned long long;
+constexpr int maxn = 1e5 + 7;
+ull bas1[maxn], bas2[maxn];
+constexpr ull _mod[2] = {1000000007, 980009747};
+constexpr ll _Seed[2] = {146527, 19260817};
+void HInit() {
+    bas1[0] = bas2[0] = 1;
+    for (int i = 1; i < maxn; i++) {
+        bas1[i] = bas1[i - 1] * _Seed[0] % _mod[0];
+        bas2[i] = bas2[i - 1] * _Seed[1] % _mod[1];
     }
-
-    void init(int n) {
+}
+template<ull base, ull Mod, ull *bas>
+struct Hash
+{
+    int n;
+    std::vector<ull> sum;
+    Hash(const string &s): n(s.size()), sum(n + 1) {
         for (int i = 1; i <= n; i++) {
-            sum[i] = (sum[i - 1] * Seed % Mod + (s[i] - 'a')) % Mod;
+            sum[i] = (sum[i - 1] * base % Mod + s[i - 1]) % Mod;
         }
     }
-
-    void indexInit(int n) {
-        iota(perm + 1, perm + 1 + sigma, 1);
-        random_shuffle(perm + 1, perm + 1 + sigma);
-        for (int i = 1; i <= n; i++) {
-            sum[i] = (sum[i - 1] * Seed % Mod + perm[s[i]]) % Mod;
-        }
-    }
-
-    ULL getHash(int l, int r) {
+    ull getHash(int l, int r) {
         return (sum[r] - sum[l - 1] * bas[r - l + 1] % Mod + Mod) % Mod;
     }
 };
-struct hashhw {
-    Hash ha1[2] = {Hash(Seed_Pool[0], Mod_Pool[0]), Hash(Seed_Pool[1], Mod_Pool[1])};
-    Hash ha2[2] = {Hash(Seed_Pool[0], Mod_Pool[0]), Hash(Seed_Pool[1], Mod_Pool[1])};
-    int n;
-    void init(int _n) {
-        n=_n;
-        ha1[0].init(n);
-        ha1[1].init(n);
-        reverse(s + 1, s + 1 + n);
-        ha2[0].init(n);
-        ha2[1].init(n);
-        reverse(s + 1, s + 1 + n);
+struct HHash {
+    Hash<_Seed[0], _mod[0], bas1>h1;
+    Hash<_Seed[1], _mod[1], bas2>h2;
+    HHash(const string&s): h1(s), h2(s) {
     }
+    array<ull, 2>getHash(int l, int r) {
+        return array<ull, 2> {h1.getHash(l, r), h2.getHash(l, r)};
+    }
+};
+struct hashhw {
+    HHash h1, h2;
+    int n;
+    hashhw(string s): h1(s), n(s.length()), h2(string(s.rbegin(), s.rend())) {}
     bool check(int i, int j) {
-        if (ha1[0].getHash(i, j) == ha2[0].getHash(n - j + 1, n - i + 1) and
-                ha1[1].getHash(i, j) == ha2[1].getHash(n - j + 1, n - i + 1))
+        if (h1.getHash(i, j) == h2.getHash(n - j + 1, n - i + 1)) {
             return true;
+        }
         return false;
     }
-}h1;
+};

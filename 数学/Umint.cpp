@@ -1,7 +1,7 @@
 using u32 = unsigned;
-using u64 = unsigned long long;
+using ull = unsigned long long;
 template<typename T>
-constexpr T power(T a, u64 b) {
+constexpr T power(T a, ull b) {
     T res {1};
     for (; b != 0; b /= 2, a *= a) {
         if (b % 2 == 1) {
@@ -16,9 +16,9 @@ constexpr u32 mulMod(u32 a, u32 b) {
     return 1ULL * a * b % P;
 }
 
-template<u64 P>
-constexpr u64 mulMod(u64 a, u64 b) {
-    u64 res = a * b - u64(1.L * a * b / P - 0.5L) * P;
+template<ull P>
+constexpr ull mulMod(ull a, ull b) {
+    ull res = a * b - ull(1.L * a * b / P - 0.5L) * P;
     res %= P;
     return res;
 }
@@ -29,7 +29,7 @@ public:
     constexpr ModIntBase() : x {0} {}
 
     template<typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
-    constexpr ModIntBase(T x_) : x {norm(x_ % static_cast<T>(P))} {}
+    constexpr ModIntBase(T x_) : x {norm(x_ %P)} {}
 
     constexpr static U norm(U x) {
         if ((x >> (8 * sizeof(U) - 1) & 1) == 1) {
@@ -117,7 +117,7 @@ private:
 template<u32 P>
 using ModInt = ModIntBase<u32, P>;
 
-template<u64 P>
-using ModInt64 = ModIntBase<u64, P>;
-constexpr u64 P = u64(1E18) + 9;
+template<ull P>
+using ModInt64 = ModIntBase<ull, P>;
+constexpr ull P = ull(1E18) + 9;
 using Z = ModInt64<P>;
