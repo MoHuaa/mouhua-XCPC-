@@ -1,0 +1,14 @@
+{
+    "template_path": "",
+    "exclude_files": [],
+    "exclude_folders": [],
+    "ignore_empty_dir": true,
+    "enable_pagination": false,
+    "module_paging": "^(?!.*).$",
+    "comment_ignore_end": "</ignore>",
+    "comment_ignore_begin": "<ignore>",
+    "comment_marking_end": "</genHead>",
+    "comment_marking_begin": "<genHead>",
+    "support_text_format": [],
+    "support_language": {}
+}

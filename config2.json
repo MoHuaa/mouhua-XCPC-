@@ -1,0 +1,28 @@
+{
+    "template_path": "./数学/",  
+    "exclude_files": [         
+        "markdown.md"
+    ],
+    "exclude_folders": [          
+        ".git",
+        "Todo",
+        "8.others"
+    ],
+    "comment_ignore_end": "</ignore>",         
+    "comment_ignore_begin": "<ignore>",
+    "comment_marking_end": "</genHead>",      
+    "comment_marking_begin": "<genHead>",
+    "support_text_format": [                  
+        ".txt",
+        ".md"
+    ],
+    "support_language": {                
+        ".cpp": "c++",
+        ".h": "c++",
+        ".py": "python",
+        ".conf": ""
+    },
+    "ignore_empty_dir": true,               
+    "enable_pagination": true,                  
+    "module_paging": "^item_type:\\s*(?P<item_type>[^|]+)\\|\\s*level:\\s*(?P<level>1)\\|\\s*outline:\\s*(?P<outline>[^|]+)\\|\\s*file_path:\\s*(?P<file_path>.+)$"
+}

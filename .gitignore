@@ -1,0 +1,8 @@
+/.vscode/
+/output.md
+/others
+*.zip
+/config.json
+*test*
+/*.md
+/*.pdf
