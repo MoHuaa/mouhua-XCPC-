@@ -1,8 +1,8 @@
 template<class T>
-struct Cartesiantree {
+struct CaT{
     vector<T>l,r;
-    Cartesiantree() {}
-    Cartesiantree(std::vector<T>&v,int n) {
+    CaT() {}
+    CaT(std::vector<T>&v,int n) {
         l.assign(n+1,-1);
         r.assign(n+1,-1);
         build(v,n);

@@ -1,27 +1,31 @@
 struct DynamicMedian {
-    std::priority_queue<ll> down;
-    std::priority_queue<ll, vector<ll>, greater<ll>> up;
+    multiset<ll>down,up;
     DynamicMedian() {}
+    void change() {
+        while (down.size() > 1 + up.size()) {
+            up.insert(*down.rbegin());
+            down.extract(*down.rbegin());
+        }
+        while (up.size() > down.size()) {
+            down.insert(*up.begin());
+            up.extract(*up.begin());
+        }
+    }
     void insert(ll x) {
-        if (down.empty() || x <= down.top()) {
-            down.push(x);
+        if (down.empty() || x <= *down.rbegin()) {
+            down.insert(x);
         } else {
-            up.push(x);
+            up.insert(x);
         }
-        if (down.size() > 1 + up.size()) {
-            up.push(down.top());
-            down.pop();
-        }
-        if (up.size() > down.size()) {
-            down.push(up.top());
-            up.pop();
-        }
+        change();
     };
-    double Ans() {
-        if (up.size() + down.size() & 1) {
-            return down.top();
-        } else {
-            return (down.top() + up.top()) / 2.0;
-        }
+    void erase(ll x){
+        if(down.find(x)!=down.end()){
+            down.extract(x);
+        }else up.extract(x);
+        change();
+    }
+    ll Ans() {
+        return *down.rbegin();
     };
 };

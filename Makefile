@@ -2,7 +2,7 @@ RM = del
 
 PANDOC = pandoc
 PYTHON = python
-PFLAGS = --pdf-engine=xelatex --toc -V mainfont="SimSun" -V CJKmainfont="SimSun"
+PFLAGS = --pdf-engine=xelatex --pdf-engine-opt=-shell-escape --toc -V mainfont="Times New Roman" -V CJKmainfont="SimSun" --listings
 
 TARGET = output.pdf
 MARKDOWN_TARGET = .\output.md

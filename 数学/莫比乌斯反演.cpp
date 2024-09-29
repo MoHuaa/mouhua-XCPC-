@@ -1,10 +1,10 @@
-const int maxn = 1e5 + 7;
+constexpr int maxn = 1e5 + 7;
 int p[maxn];
 int pr[maxn];
 int tot = 0;
 int phi[maxn];
 int mu[maxn];
-void get(ll n) {
+void sieve(ll n) {
     p[1] = phi[1] = mu[1] = 1;
     for (int i = 2; i < n; ++i) {
         if (!p[i]) mu[i] = -1, pr[++tot] = i, phi[i] = i - 1;

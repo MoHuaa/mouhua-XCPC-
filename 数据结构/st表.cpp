@@ -1,37 +1,30 @@
 template <class Info>
 struct ST {
     int n, m;
-    std::vector<int> lg;
     std::vector<std::vector<Info>> f;
-    ST(std::vector<int> a) : n(a.size() - 1), lg(a.size()) {
+    ST(std::vector<ll> &a) : n(a.size() - 1) {
         m = __lg(n) + 1;
-        f.resize(n + 1);
-        for (int i = 0; i <= n; i++) {
-            f[i].resize(m + 1);
-            f[i][0] = {a[i]};
-            if (i) lg[i] = __lg(i);
+        f.resize(m + 1, vector<Info>(n + 1));
+        for (int i = 1; i <= n; i++) {
+            f[0][i] = {a[i]};
         }
         for (int j = 1; j <= m; j++) {
             for (int i = 1; i + (1 << j) - 1 <= n; i++) {
-                f[i][j] = f[i][j - 1] + f[i + (1 << j - 1)][j - 1];
+                f[j][i] = f[j - 1][i] + f[j - 1][i + (1 << (j - 1))];
             }
         }
     }
-    Info Query(int l, int r) {
-        Info ans = f[l][0];
-        int p = l + 1;
-        for (int i = m; i >= 0; i--) {
-            if (p + (1 << i) - 1 <= r) {
-                ans = ans + f[p][i];
-                p += 1 << i;
-            }
-        }
-        return ans;
+    Info query(int l, int r) {
+        int len = (r - l + 1);
+        ll k = __lg(len);
+        return f[k][l] + f[k][r - (1 << k) + 1];
     }
 };
 struct Info {
-    int x;
+    ll x;
     friend Info operator+(const Info &a, const Info &b) {
-
+        Info res;
+        res.x = max(a.x, b.x);
+        return res;
     }
 };

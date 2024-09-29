@@ -24,12 +24,6 @@ struct MInt {
         }
         return x;
     }
-    constexpr int val() const {
-        return x;
-    }
-    explicit constexpr operator int() const {
-        return x;
-    }
     constexpr MInt operator-() const {
         MInt res;
         res.x = norm(P - x);

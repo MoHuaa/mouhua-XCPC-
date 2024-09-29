@@ -10,7 +10,7 @@ auto djikstra = [&](int s = 1) -> void {
         q.pop();
         if (vis[x]) continue;
         vis[x] = 1;
-        for (auto [y, w] : ver[x]) {
+        for (auto [y, w] : E[x]) {
             if (dis[y] > dis[x] + w) {
                 dis[y] = dis[x] + w;
                 q.emplace(dis[y], y);

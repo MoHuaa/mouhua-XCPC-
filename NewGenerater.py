@@ -10,6 +10,14 @@ Log_level = logging.DEBUG
 error_handle = 'ignore'
 file_encoding = 'utf-8'
 new_page_spliter = '\\newpage\n'
+pdf_header = '''
+---
+header-includes:
+  - \\usepackage{listings}
+  - \\lstset{breaklines=true}
+---
+'''
+
 enmptyConf = '''
 {
     "template_path": "",
@@ -251,10 +259,14 @@ def Generate(srcPath :str, outputFile :str, tmpputFile :str, profile :json):
             f.write(new_page_spliter)
         QuarySrcFile(level=0,path=srcPath,profile=profile,outputFd=f)
 
-        f.seek(0); file_content = f.read().replace(new_page_spliter, '')
+        f.seek(0); file_content = f.read()
     
     with open(outputFile, 'w+', encoding=file_encoding, errors=error_handle) as f:
         f.write(Contents+'\n')
+        f.write(file_content.replace(new_page_spliter, ''))
+
+    with open(tmpputFile, 'w+', encoding=file_encoding, errors=error_handle) as f:
+        f.write(pdf_header+'\n')
         f.write(file_content)
 
     pass

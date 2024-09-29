@@ -4,15 +4,9 @@ struct LazySegmentTree {
     std::vector<Info> info;
     std::vector<Tag> tag;
     LazySegmentTree() : n(0) {}
-    LazySegmentTree(int n_, Info v_ = Info()) {
-        init(n_, v_);
-    }
     template<class T>
     LazySegmentTree(std::vector<T> init_) {
         init(init_);
-    }
-    void init(int n_, Info v_ = Info()) {
-        init(std::vector(n_, v_));
     }
     template<class T>
     void init(std::vector<T> init_) {
@@ -41,7 +35,10 @@ struct LazySegmentTree {
         tag[p << 1 | 1] += tag[p];
         tag[p].init();
     }
-    void change(int p, int l, int r, int nl, int nr, Tag num) {
+    void change(int l, int r, Tag&num) {
+        change(1, 1, n, l, r, num);
+    }
+    void change(int p, int l, int r, int nl, int nr, Tag&num) {
         if (nl <= l and r <= nr) {
             info[p] += num;
             tag[p] += num;
@@ -52,6 +49,9 @@ struct LazySegmentTree {
         if (nl <= mid)change(p << 1, l, mid, nl, nr, num);
         if (nr > mid)change(p << 1 | 1, mid + 1, r, nl, nr, num);
         push_up(p);
+    }
+    Info query(int l, int r) {
+        return query(1, 1, n, l, r);
     }
     Info query(int p, int l, int r, int nl, int nr) {
         if (nl <= l and r <= nr) {
