@@ -1,21 +1,7 @@
-#include<bits/extc++.h>
-using namespace __gnu_cxx;
-using namespace __gnu_pbds;
-using namespace std;
-using ll=long long;
-#define LNF 0x3f3f3f3f3f3f3f3f
-#define INF 0x3f3f3f3f
-#define IOS ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-#define pll pair<int,int>
-#define fi first
-#define se second
 const int N=210;
 const int B=60;
 struct linear_basis{
-    ll num[B+1];
-    void init(){
-        for(int i=B-1;i>=0;i--)num[i]=0;
-    }
+    array<ll,B+1>num{};
     bool insert(ll x){
         for(int i=B-1;i>=0;i--){
             if(x&(1ll<<i)){
@@ -40,15 +26,3 @@ struct linear_basis{
         return x;
     }
 };
-void solve(void){
-    
-}
-int main() {
-    
-    IOS;
-    int t=1;
-    // cin>>t;
-    while(t--)
-    solve();
-    return 0;
-}
