@@ -23,6 +23,9 @@ struct Segment {
         };
         build(build, 1, 1, n);
     }
+    void change(int pos,info x){
+        change(1,1,n,pos,x);
+    }
     void change(int p, int l, int r, int pos, info x) {
         if (l == r) {
             tre[p]=x;
@@ -32,6 +35,9 @@ struct Segment {
         if (pos <= mid)change(p << 1, l, mid, pos, x);
         else change(p << 1 | 1, mid + 1, r, pos, x);
         pushup(p);
+    }
+    info query(int l,int r){
+        return query(1,1,n,l,r);
     }
     info query(int p, int l, int r, int nl, int nr) {
         if (nl <= l and r <= nr)return tre[p];
