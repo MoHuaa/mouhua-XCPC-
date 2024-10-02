@@ -2,9 +2,9 @@ using ull = unsigned long long;
 using u128 = unsigned __int128;
 constexpr ull Mod = (1ULL << 61) - 1;
 constexpr int maxn = 1e6 + 7;
-mt19937 mt{random_device{}()};
-uniform_int_distribution<> dis(2000, 5000);
-const int Seed = dis(mt);
+mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
+uniform_int_distribution<ull> dist(mod / 2, mod - 1);
+const ull Seed = dist(rnd);
 ull bas[maxn];
 ull mul(ull a, ull b) {
     u128 t = (u128)(a) * b;

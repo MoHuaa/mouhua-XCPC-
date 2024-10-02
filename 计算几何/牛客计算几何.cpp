@@ -294,10 +294,11 @@ template<typename T> struct convex: polygon<T>
 using Convex=convex<point_t>;
 
 // 圆
+template<class T>
 struct Circle
 {
     Point c;
-    long double r;
+    T r;
 
     bool operator==(const Circle &a) const {return c==a.c && abs(r-a.r)<=eps;}
     long double circ() const {return 2*PI*r;}  // 周长
@@ -305,16 +306,19 @@ struct Circle
 
     // 点与圆的关系
     // -1 圆上 | 0 圆外 | 1 圆内
-    int is_in(const Point &p) const {const long double d=p.dis(c); return abs(d-r)<=eps?-1:d<r-eps;}
-
+    int is_in(const Point &p) const {
+        const __int128 d=p.dis2(c); 
+        if(d<r*r)return -1;
+        return (d==r*r);
+    }
     // 直线与圆关系
     // 0 相离 | 1 相切 | 2 相交
     int relation(const Line &l) const
     {
-        const long double d=l.dis(c);
-        if (d>r+eps) return 0;
-        if (abs(d-r)<=eps) return 1;
-        return 2;
+        __int128 d=(l.v^(c-l.p));
+        __int128 len=l.v.len2();
+        if(d*d<(len*r*r))return 2;
+        return (d*d>(len*r*r));
     }
 
     // 圆与圆关系

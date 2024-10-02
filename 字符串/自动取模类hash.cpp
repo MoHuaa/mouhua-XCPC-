@@ -113,9 +113,9 @@ template<ull P>
 using ModInt64 = ModIntBase<ull, P>;
 using Z = ModInt64<Mod>;
 constexpr int maxn = 1e6 + 7;
-mt19937 mt{random_device{}()};
-uniform_int_distribution<> dis(2000, 5000);
-const int Seed = dis(mt);
+mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
+uniform_int_distribution<ull> dist(Mod / 2, Mod - 1);
+const ull Seed = dist(rnd);
 Z bas[maxn];
 void HInit() {
     bas[0] = Z(1);

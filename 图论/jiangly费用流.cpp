@@ -2,9 +2,9 @@ template<class T>
 struct MinCostFlow {
     struct _Edge {
         int to;
-        T cap;
+        ll cap;
         T cost;
-        _Edge(int to_, T cap_, T cost_) : to(to_), cap(cap_), cost(cost_) {}
+        _Edge(int to_, ll cap_, T cost_) : to(to_), cap(cap_), cost(cost_) {}
     };
     int n;
     std::vector<_Edge> e;
@@ -26,7 +26,7 @@ struct MinCostFlow {
             }
             for (int i : g[u]) {
                 int v = e[i].to;
-                T cap = e[i].cap;
+                ll cap = e[i].cap;
                 T cost = e[i].cost;
                 if (cap > 0 && dis[v] > d + h[u] - h[v] + cost) {
                     dis[v] = d + h[u] - h[v] + cost;
@@ -46,21 +46,21 @@ struct MinCostFlow {
         e.clear();
         g.assign(n, {});
     }
-    void addEdge(int u, int v, T cap, T cost) {
+    void addEdge(int u, int v, ll cap, T cost) {
         g[u].push_back(e.size());
         e.emplace_back(v, cap, cost);
         g[v].push_back(e.size());
         e.emplace_back(u, 0, -cost);
     }
-    std::pair<T, T> flow(int s, int t) {
-        T flow = 0;
+    std::pair<ll, T> flow(int s, int t) {
+        ll flow = 0;
         T cost = 0;
         h.assign(n, 0);
         while (dijkstra(s, t)) {
             for (int i = 0; i < n; ++i) {
                 h[i] += dis[i];
             }
-            T aug = std::numeric_limits<int>::max();
+            ll aug = std::numeric_limits<ll>::max();
             for (int i = t; i != s; i = e[pre[i] ^ 1].to) {
                 aug = std::min(aug, e[pre[i]].cap);
             }
