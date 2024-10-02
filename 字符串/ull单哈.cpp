@@ -3,9 +3,16 @@ using u128 = unsigned __int128;
 constexpr ull Mod = (1ULL << 61) - 1;
 constexpr int maxn = 1e6 + 7;
 mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<ull> dist(mod / 2, mod - 1);
+uniform_int_distribution<ull> dist(Mod / 2, Mod - 1);
 const ull Seed = dist(rnd);
 ull bas[maxn];
+ull norm(ull x) {
+    x = (x >> 61) + (x & Mod);
+    if (x >= Mod) {
+        x -= Mod;
+    }
+    return x;
+}
 ull mul(ull a, ull b) {
     u128 t = (u128)(a) * b;
     t = (t >> 61) + (t & Mod);
@@ -22,10 +29,11 @@ struct Hash {
     std::vector<ull> sum;
     Hash(const string& s): n(s.length()), sum(n + 1) {
         for (int i = 1; i <= n; i++) {
-            sum[i] = (mul(sum[i - 1] , Seed) + s[i - 1]) % Mod;
+            sum[i] = norm(mul(sum[i - 1] , Seed) + s[i - 1]);
         }
     }
     ull getHash(int l, int r) {
-        return (sum[r] - mul(sum[l - 1], bas[r - l + 1]) + Mod) % Mod;
+        ull res = norm(sum[r] - mul(sum[l - 1], bas[r - l + 1])+Mod);
+        return res;
     }
 };
