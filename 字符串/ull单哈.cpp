@@ -6,12 +6,9 @@ mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
 uniform_int_distribution<ull> dist(Mod / 2, Mod - 1);
 const ull Seed = dist(rnd);
 ull bas[maxn];
-ull norm(ull x) {
-    x = (x >> 61) + (x & Mod);
-    if (x >= Mod) {
-        x -= Mod;
-    }
-    return x;
+ull norm(ull x)
+{
+    return (x>=Mod)?x-Mod:x;
 }
 ull mul(ull a, ull b) {
     u128 t = (u128)(a) * b;
