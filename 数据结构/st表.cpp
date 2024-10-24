@@ -14,7 +14,7 @@ struct ST {
             }
         }
     }
-    Info query(int l, int r) {
+    Info operator()(int l, int r) {
         int len = (r - l + 1);
         ll k = __lg(len);
         return f[k][l] + f[k][r - (1 << k) + 1];

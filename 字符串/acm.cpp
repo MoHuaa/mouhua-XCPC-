@@ -1,61 +1,74 @@
-#include <bits/stdc++.h>
-using namespace std;
-const int N = 1e6 + 6;
-int n;
-
-struct AC {
-int tr[N][26], tot;
-int e[N], fail[N];
-
-void insert(char *s) {
-  int u = 0;
-  for (int i = 1; s[i]; i++) {
-    if (!tr[u][s[i] - 'a']) tr[u][s[i] - 'a'] = ++tot;  
-    u = tr[u][s[i] - 'a'];                             
-  }
-  e[u]++;  
-}
-
-queue<int> q;
-
-void build() {
-  for (int i = 0; i < 26; i++)
-    if (tr[0][i]) q.push(tr[0][i]);
-  while (q.size()) {
-    int u = q.front();
-    q.pop();
-    for (int i = 0; i < 26; i++) {
-      if (tr[u][i]) {
-        fail[tr[u][i]] =tr[fail[u]][i]; 
-        q.push(tr[u][i]);
-      } else
-        tr[u][i] = tr[fail[u]][i];
+struct AhoCorasick {
+    static constexpr int ALPHABET = 26;
+    struct Node {
+        int len;
+        int link;
+        std::array<int, ALPHABET> next;
+        Node() : len{0}, link{0}, next{} {}
+    };
+    
+    std::vector<Node> t;
+    
+    AhoCorasick() {
+        init();
     }
-  }
-}
-
-int query(char *t) {
-  int u = 0, res = 0;
-  for (int i = 1; t[i]; i++) {
-    u = tr[u][t[i] - 'a']; 
-    for (int j = u; j && e[j] != -1; j = fail[j]) {
-      res += e[j], e[j] = -1;
+    
+    void init() {
+        t.assign(2, Node());
+        t[0].next.fill(1);
+        t[0].len = -1;
     }
-  }
-  return res;
-}
+    
+    int newNode() {
+        t.emplace_back();
+        return t.size() - 1;
+    }
+    
+    int add(const std::string &a) {
+        int p = 1;
+        for (auto c : a) {
+            int x = c - 'a';
+            if (t[p].next[x] == 0) {
+                t[p].next[x] = newNode();
+                t[t[p].next[x]].len = t[p].len + 1;
+            }
+            p = t[p].next[x];
+        }
+        return p;
+    }
+    
+    void work() {
+        std::queue<int> q;
+        q.push(1);
+        
+        while (!q.empty()) {
+            int x = q.front();
+            q.pop();
+            
+            for (int i = 0; i < ALPHABET; i++) {
+                if (t[x].next[i] == 0) {
+                    t[x].next[i] = t[t[x].link].next[i];
+                } else {
+                    t[t[x].next[i]].link = t[t[x].link].next[i];
+                    q.push(t[x].next[i]);
+                }
+            }
+        }
+    }
+    
+    int next(int p, int x) {
+        return t[p].next[x];
+    }
+    
+    int link(int p) {
+        return t[p].link;
+    }
+    
+    int len(int p) {
+        return t[p].len;
+    }
+    
+    int size() {
+        return t.size();
+    }
 };
-
-char s[N];
-AC ac;
-int main() {
-    cin>>n;
-    for(int i=1;i<=n;i++){
-        cin>>(s+1);
-        ac.insert(s);
-    }
-    ac.build();
-    cin>>(s+1);
-    cout<<ac.query(s);
-  return 0;
-}
