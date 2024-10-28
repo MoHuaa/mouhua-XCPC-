@@ -1,4 +1,4 @@
-auto djikstra = [&](int s = 1) -> void {
+auto djikstra = [&](int s = 1){
     vector<ll> dis(n + 1, 1E18);
     using PII = pair<ll, ll>;
     std::priority_queue<PII, vector<PII>, greater<PII>> q;

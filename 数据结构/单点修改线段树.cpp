@@ -1,19 +1,19 @@
-template<class info>
+template<class Info>
 struct Segment {
-    std::vector<info> tre;
+    std::vector<Info> info;
     int n;
     Segment() : n(0) {}
-    Segment(int n) : n(n), tre(4 << std::__lg(n)+2) {}
-    Segment(int n, vector<info>&v) : n(n), tre(4 << std::__lg(n)+2) {
+    Segment(int n) : n(n), info(4*n+1) {}
+    Segment(int n, vector<Info>&v) : n(n), info(4*n+1) {
         init(v);
     }
     void pushup(int p) {
-        tre[p] = tre[p << 1] + tre[p << 1 | 1];
+        info[p] = info[p << 1] + info[p << 1 | 1];
     }
-    void init(vector<info>&v) {
+    void init(vector<Info>&v) {
         auto build = [&](auto && build, int p, int l, int r) {
             if (l == r) {
-                tre[p] = v[l];
+                info[p] = v[l];
                 return;
             }
             int mid = (l + r) >> 1;
@@ -23,12 +23,12 @@ struct Segment {
         };
         build(build, 1, 1, n);
     }
-    void change(int pos,info x){
-        change(1,1,n,pos,x);
+    void change(int pos, Info x) {
+        change(1, 1, n, pos, x);
     }
-    void change(int p, int l, int r, int pos, info x) {
+    void change(int p, int l, int r, int pos, Info x) {
         if (l == r) {
-            tre[p]=x;
+            info[p] = x;
             return;
         }
         int mid = (l + r) >> 1;
@@ -36,22 +36,27 @@ struct Segment {
         else change(p << 1 | 1, mid + 1, r, pos, x);
         pushup(p);
     }
-    info query(int l,int r){
-        return query(1,1,n,l,r);
+    Info query(int l, int r) {
+        return query(1, 1, n, l, r);
     }
-    info query(int p, int l, int r, int nl, int nr) {
-        if (nl <= l and r <= nr)return tre[p];
+    Info query(int p, int l, int r, int nl, int nr) {
+        if (nl <= l and r <= nr)return info[p];
         int mid = (l + r) >> 1;
         if (nr <= mid)return query(p << 1, l, mid, nl, nr);
         if (nl > mid)return query(p << 1 | 1, mid + 1, r, nl, nr);
         return query(p << 1, l, mid, nl, nr) + query(p << 1 | 1, mid + 1, r, nl, nr);
     }
+    int find_first(int p, int l, int r, const std::function<bool(const Info &)> &f)
+    {
+        if (l == r) {
+            return l;
+        }
+        int mid = (l + r) >> 1;
+        if (f(info[p << 1]))return find_first(p << 1, l, mid, f);
+        else return find_first(p << 1 | 1, mid + 1, r, f);
+    }
 };
 struct node {
-    ll val;
-    int id;
-    node () {
-    }
     friend  node operator+(node lhs, node rhs) {
         node now;
         if (lhs.val < rhs.val)now = lhs;

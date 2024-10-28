@@ -11,8 +11,8 @@ struct LazySegmentTree {
     template<class T>
     void init(std::vector<T> init_) {
         n = init_.size() - 1;
-        info.assign(4 << std::__lg(n) + 2, Info());
-        tag.assign(4 << std::__lg(n) + 2, Tag());
+        info.assign((4*n+1, Info());
+        tag.assign(4*n+1, Tag());
         auto build = [&](auto && build, int p, int l, int r)->void{
             if (l == r) {
                 info[p] = init_[l];
@@ -72,10 +72,28 @@ struct LazySegmentTree {
         push_down(p);
         push_up(p);
         int mid = (l + r) >> 1;
-        if(f(info[p<<1]))return find_first(p<<1,l,mid,f);
-        else return find_first(p<<1|1,mid+1,r,f);
+        if (f(info[p << 1]))return find_first(p << 1, l, mid, f);
+        else return find_first(p << 1 | 1, mid + 1, r, f);
     }
-    int find_first(const std::function<bool(const Info &)> &f){
-        return find_first(1,1,n,f);
+    int find_first(const std::function<bool(const Info &)> &f) {
+        return find_first(1, 1, n, f);
+    }
+};
+struct tag {
+    void init() {
+
+    }
+    tag&operator+=(const tag &t) & {
+
+        return *this;
+    }
+};
+struct node {
+    friend node operator+(node lhs, node rhs) {
+        node res;
+        return res;
+    }
+    node&operator+=(tag&t) {
+        return *this;
     }
 };

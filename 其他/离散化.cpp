@@ -2,9 +2,6 @@ template <typename T> struct Compress {
     int n;
     vector<T> alls;
     Compress() {}
-    Compress(std::vector<T>&in) : alls(in) {
-        init();
-    }
     void add(auto ...x) {
         ((alls.emplace_back(x)), ...);
     }
