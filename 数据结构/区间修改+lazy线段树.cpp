@@ -4,6 +4,7 @@ struct LazySegmentTree {
     std::vector<Info> info;
     std::vector<Tag> tag;
     LazySegmentTree() : n(0) {}
+    LazySegmentTree(int n_) : n(n_), info(4 * n_ + 1, Info()), tag(4 * n_ + 1, Tag()) {}
     template<class T>
     LazySegmentTree(std::vector<T> init_) {
         init(init_);
@@ -11,8 +12,8 @@ struct LazySegmentTree {
     template<class T>
     void init(std::vector<T> init_) {
         n = init_.size() - 1;
-        info.assign((4*n+1, Info());
-        tag.assign(4*n+1, Tag());
+        info.assign(4 * n + 1, Info());
+        tag.assign(4 * n + 1, Tag());
         auto build = [&](auto && build, int p, int l, int r)->void{
             if (l == r) {
                 info[p] = init_[l];
@@ -81,19 +82,21 @@ struct LazySegmentTree {
 };
 struct tag {
     void init() {
-
+    
     }
     tag&operator+=(const tag &t) & {
-
+    
         return *this;
     }
 };
 struct node {
     friend node operator+(node lhs, node rhs) {
         node res;
+        
         return res;
     }
-    node&operator+=(tag&t) {
+    node&operator+=(tag t) {
+        
         return *this;
     }
 };

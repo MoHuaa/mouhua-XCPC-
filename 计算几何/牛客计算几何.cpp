@@ -1,5 +1,5 @@
-// using point_t=long long;
-using point_t = long double; //全局数据类型
+using point_t = long long;
+// using point_t = long double; //全局数据类型
 
 constexpr point_t eps = 1e-8;
 constexpr point_t INF = numeric_limits<point_t>::max();
@@ -33,8 +33,11 @@ template<typename T> struct point
     friend constexpr std::ostream &operator<<(std::ostream &os, const point &a) {
         return os << a.x << " " << a.y;
     }
+    friend constexpr std::istream &operator>>(std::istream &is, point &a) {
+        is >> a.x >> a.y;
+        return is;
+    }
 };
-
 using Point = point<point_t>;
 
 // 极角排序
@@ -292,7 +295,33 @@ template<typename T> struct convex: polygon<T>
 };
 
 using Convex = convex<point_t>;
-
+// 点集的凸包
+// Andrew 算法，复杂度 O(nlogn)
+Convex convexhull(vector<Point> p)
+{
+    vector<Point> st;
+    if (p.empty()) return Convex{st};
+    sort(p.begin(), p.end());
+    const auto check = [](const vector<Point> &st, const Point & u)
+    {
+        const auto back1 = st.back(), back2 = *prev(st.end(), 2);
+        return (back1 - back2).toleft(u - back1) <= 0;
+    };
+    for (const Point &u : p)
+    {
+        while (st.size() > 1 && check(st, u)) st.pop_back();
+        st.push_back(u);
+    }
+    size_t k = st.size();
+    p.pop_back(); reverse(p.begin(), p.end());
+    for (const Point &u : p)
+    {
+        while (st.size() > k && check(st, u)) st.pop_back();
+        st.push_back(u);
+    }
+    st.pop_back();
+    return Convex{st};
+}
 // 圆
 template<class T>
 struct Circle
@@ -503,33 +532,6 @@ long double area_inter(const Circle &circ, const Polygon &poly)
     return ans;
 }
 
-// 点集的凸包
-// Andrew 算法，复杂度 O(nlogn)
-Convex convexhull(vector<Point> p)
-{
-    vector<Point> st;
-    if (p.empty()) return Convex{st};
-    sort(p.begin(), p.end());
-    const auto check = [](const vector<Point> &st, const Point & u)
-    {
-        const auto back1 = st.back(), back2 = *prev(st.end(), 2);
-        return (back1 - back2).toleft(u - back1) <= 0;
-    };
-    for (const Point &u : p)
-    {
-        while (st.size() > 1 && check(st, u)) st.pop_back();
-        st.push_back(u);
-    }
-    size_t k = st.size();
-    p.pop_back(); reverse(p.begin(), p.end());
-    for (const Point &u : p)
-    {
-        while (st.size() > k && check(st, u)) st.pop_back();
-        st.push_back(u);
-    }
-    st.pop_back();
-    return Convex{st};
-}
 
 // 半平面交
 // 排序增量法，复杂度 O(nlogn)
