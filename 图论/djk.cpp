@@ -1,20 +1,17 @@
-auto djikstra = [&](int s = 1){
-    vector<ll> dis(n + 1, 1E18);
-    using PII = pair<ll, ll>;
-    std::priority_queue<PII, vector<PII>, greater<PII>> q;
-    q.emplace(0, s);
-    dis[s] = 0;
-    vector<int> vis(n + 1);
-    while (!q.empty()) {
-        int x = q.top().second;
-        q.pop();
-        if (vis[x]) continue;
-        vis[x] = 1;
-        for (auto [y, w] : E[x]) {
-            if (dis[y] > dis[x] + w) {
-                dis[y] = dis[x] + w;
-                q.emplace(dis[y], y);
+auto djikstra = [&](int s = 1) {
+        vector<ll> dis(n + 1, 1E18);
+        std::priority_queue<array<ll, 2>, vector<array<ll, 2>>, greater<array<ll, 2>>> Q;
+        Q.push({0, s});
+        dis[s] = 0;
+        while (!Q.empty()) {
+            auto [d, u] = Q.top();
+            Q.pop();
+            if (dis[u] != d)continue;
+            for (auto [y, w] : E[u]) {
+                if (dis[y] > dis[u] + w) {
+                    dis[y] = dis[u] + w;
+                    Q.push({dis[y], y});
+                }
             }
         }
-    }
-};
+    };
