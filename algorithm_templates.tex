@@ -1,0 +1,4634 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{ctex}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[margin=0.7cm,top=1.2cm,bottom=1.2cm,nomarginpar]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+
+\title{ACM算法竞赛模板}
+\author{mouhua}
+\date{\today}
+
+% 代码格式设置
+\lstset{
+    backgroundcolor=\color[RGB]{245,245,245},
+    keywordstyle=\color[RGB]{40,40,255},
+    commentstyle=\color[RGB]{0,96,96},
+    stringstyle=\color[RGB]{128,0,0},
+    breaklines=true,
+    numberstyle=\tiny\color{gray},
+    numbers=left,
+    basicstyle=\ttfamily\small,
+    frame=single,
+    tabsize=4,
+    showstringspaces=false,
+    language=C++,
+    xleftmargin=0pt,
+    xrightmargin=0pt,
+    keepspaces=true,
+    columns=flexible,
+    belowskip=-0.1em,
+    aboveskip=0.1em,
+    linewidth=\textwidth,
+    resetmargins=true,
+    breakindent=0pt
+}
+
+% 设置页眉页脚
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{ACM算法竞赛模板}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{13.6pt}
+\setlength{\headsep}{10pt}
+\setlength{\footskip}{13pt}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+\newpage
+\tableofcontents
+\thispagestyle{fancy}
+\newpage
+
+\section{其他}
+\thispagestyle{fancy}
+
+\subsection{O3}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx2,avx512f,avx512vl,avx512bw,avx512dq,avx512cd,avx512vbmi,avx512vbmi2,avx512vpopcntdq,avx512bitalg,bmi,bmi2,lzcnt,popcnt")
+#pragma GCC optimize("Ofast")\end{lstlisting}
+
+\subsection{fanzhuan}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+auto f = [](unsigned int x) {
+    x = ((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1);
+    x = ((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2);
+    x = ((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4);
+    x = ((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8);
+    x = ((x & 0xffff0000) >> 16) | ((x & 0x0000ffff) << 16);
+    return x;
+};
+auto f2 = [f](unsigned int x, unsigned int k) {
+    return f(x << (32 - k)) | (x >> k << k);
+};
+auto f=[](unsigned  long long x){
+    x = ((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1);
+    x = ((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2);
+    x = ((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4);
+    x = ((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8);
+    x = ((x & 0xffff0000) >> 16) | ((x & 0x0000ffff) << 16);
+    x=((x&0xffffffff000000))
+};\end{lstlisting}
+
+\subsection{fastIO}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+namespace IO {
+#define gc()(p1==p2&&(p2=(p1=buf)+fread(buf,1,1<<21,stdin),p1==p2)?EOF:*p1++)
+char buf[1 << 21], *p1 = buf, *p2 = buf;
+struct ifast {
+    template<class T>
+    ifast& operator>>(T &re) {
+        re = 0;
+        char ch = gc();
+        while (!isdigit(ch)) ch = gc();
+        while (isdigit(ch)) re = re * 10 + ch - '0', ch = gc();
+        return *this;
+    }
+};
+ifast cin;
+#define pc(x)(*(p2=buf)+fwrite(buf,1,p2-buf,stdout))
+struct ofast {
+    template<class T>
+    ofast& operator<<(T x) {
+        if (x == 0) {
+            pc('0');
+            return *this;
+        }
+        static int st[60], top;
+        top = 0;
+        while (x) st[++top] = x % 10, x /= 10;
+        for (int i = top; i >= 1; i--) pc('0' + st[i]);
+        return *this;
+    }
+
+    ofast& operator<<(char div) {
+        pc(div);
+        return *this;
+    }
+};
+ofast cout;
+}
+
+using namespace IO;
+#define cin IO::cin
+#define cout IO::cout\end{lstlisting}
+
+\subsection{head}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+#include<bits/extc++.h>
+using namespace __gnu_pbds;
+using namespace std;
+using ll = long long;
+#define LNF 0x3f3f3f3f3f3f3f3f
+void chmax(auto & a, const auto &... b) {((a = (b > a ? b : a)), ...);}
+void chmin(auto & a, const auto &... b) {((a = (b < a ? b : a)), ...);}
+#define pb push_back
+#define dbg(x) cerr<<#x<<'='<<x
+void solve(void) {
+
+}
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int t = 1;
+    // cin>>t;
+    while (t--)
+        solve();
+    return 0;
+}\end{lstlisting}
+
+\subsection{取整}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+auto ceils(auto n, auto m) {
+    if (m < 0) {
+        n *= -1;
+        m *= -1;
+    }
+    if (n <= 0)return n / m;
+    else return (n + m - 1) / m;
+}
+auto floors(auto n, auto m) {
+    if (m < 0) {
+        n *= -1;
+        m *= -1;
+    }
+    if (n <= 0)return (n - m + 1) / m;
+    else return n / m;
+}\end{lstlisting}
+
+\subsection{离散化}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template <typename T> struct Compress {
+    int n;
+    vector<T> alls;
+    Compress() {}
+    void add(auto ...x) {
+        ((alls.emplace_back(x)), ...);
+    }
+    void init() {
+        add(numeric_limits<T>::min());
+        add(numeric_limits<T>::max());
+        sort(alls.begin(), alls.end());
+        alls.erase(unique(alls.begin(), alls.end()), alls.end());
+        this->n = alls.size() - 2;
+    }
+    int operator[](T x) {
+        return upper_bound(alls.begin(), alls.end(), x) - alls.begin() - 1;
+    }
+    T operator()(int x) {
+        return alls[x];
+    }
+};\end{lstlisting}
+
+\section{图论}
+\thispagestyle{fancy}
+
+\subsection{Boruvka}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template <typename T>
+struct Boruvka {
+    int n;
+    DSU c;
+    const T INF;
+    explicit Boruvka(size_t n, T INF = numeric_limits<T>::max())
+        : n(n), c(n + 1), INF(INF) {}
+
+    inline int find(int k) { return c.find(k); }
+
+    template <typename F>
+    T build(const F &update) {
+        T cost = T{};
+        while (c.size(1) < n) {
+            vector<pair<T, int> > v(n + 1, make_pair(INF, -1));
+            update(n);
+            bool con = false;
+            for (int i = 1; i <= n; i++) {
+                if (v[i].second >= 1 && c.merge(i, v[i].second)) {
+                    cost += v[i].first;
+                    con = true;
+                }
+            }
+            if (!con) return INF;
+        }
+        return cost;
+    }
+};\end{lstlisting}
+
+\subsection{O1 LCA}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct Trh {
+    std::vector<int> dep, parent, in;
+    int cur, n;
+    int logn;
+    std::vector<std::vector<int>> e;
+    vector<vector<int>>a;
+    Trh(int _n) : n(_n),dep(_n), parent(_n, -1), e(_n), in(_n), cur(1) {
+        logn = std::__lg(n);
+        a.assign(logn + 1, std::vector<int>(n + 1));
+    }
+    void addEdge(int u, int v) {
+        e[u].push_back(v);
+        e[v].push_back(u);
+    }
+    void dfs (int x) {
+        in[x] =cur++;
+        if (cur > 1) {
+            a[0][cur - 2] = parent[x];
+        }
+        for (auto y : e[x]) {
+            if (y == parent[x]) {
+                continue;
+            }
+            parent[y] = x;
+            dep[y] = dep[x] + 1;
+            dfs(y);
+        }
+    }
+    void init(int s) {
+        dfs(s);
+        for (int j = 0; j < logn; j++) {
+            for (int i = 1; i + (2 << j) <= n; i++) {
+                a[j + 1][i] = dep[a[j][i]] < dep[a[j][i + (1 << j)]] ? a[j][i] : a[j][i + (1 << j)];
+            }
+        }
+    }
+    int  lca(int x, int y) {
+        if (x == y) {
+            return x;
+        }
+        if (in[x] > in[y]) {
+            std::swap(x, y);
+        }
+        int k = std::__lg(in[y] - in[x]);
+        int u = a[k][in[x]];
+        int v = a[k][in[y] - (1 << k)];
+        return dep[u] < dep[v] ? u : v;
+    }
+};\end{lstlisting}
+
+\subsection{On-O1 lca}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+constexpr int maxn=1e5+7;
+int dval[maxn], dfn[maxn], tot,Dfn[maxn];
+namespace Rmq {
+    int st[20][maxn / 32];
+    int pre[maxn], p[maxn], w[maxn];
+    inline int getmin(int x, int y) { return dfn[x] < dfn[y] ? x : y; }
+    inline void down(int & x, int y) { if (dfn[x] > dfn[y]) x = y; }
+    inline int qry(int l, int r) {
+        const int lg = std::__lg(r - l);
+        return l >= r ? 0 : getmin(st[lg][l], st[lg][r - (1 << lg)]);
+    }
+    inline int rmq(int l, int r) {
+        if (l >> 5 == r >> 5) return p[l + __builtin_ctz(w[r] >> l)];
+        else return getmin(qry((l >> 5) + 1, r >> 5), getmin(dval[l], pre[r]));
+    }
+    inline void build(int n) {
+        ++ (n |= 31);
+        memcpy(p, dval, n << 2);
+        for (int i = 0; i < n; i += 32) {
+            static int st[33];
+            pre[i] = dval[i];
+            int * top = st + 1, s = 1; w[*top = i] = s;
+            for (int j = i + 1; j < i + 32; ++j) {
+                for (; top != st && dfn[dval[j]] < dfn[dval[*top]]; --top) s ^= 1 << *top;
+                w[j] = s |= 1 << j; *++top = j; pre[j] = dval[st[1]];
+            }
+            for (int j = i + 30; j >= i; --j) down(dval[j], dval[j + 1]);
+            Rmq::st[0][i >> 5] = dval[i];
+        }
+        for (int i = 1; i < 15; ++i)
+            for (int j = 0; j + (1 << i) - 1 <= n / 32; ++j)
+                st[i][j] = getmin(st[i - 1][j], st[i - 1][j + (1 << i - 1)]);
+    }
+}
+struct T { int to, nxt; } way[maxn << 1];
+int h[maxn], num;
+inline void addEdge(int x, int y) {
+    way[++num] = {y, h[x]}, h[x] = num;
+    way[++num] = {x, h[y]}, h[y] = num;
+}
+inline void dfs(int x, int f) {
+    dval[tot] = f; dfn[x] = ++tot;
+    for (int i = h[x]; i; i = way[i].nxt) if (way[i].to != f)
+            dfs(way[i].to, x);
+    Dfn[x]=tot;
+}
+inline int lca(int x, int y) {
+    if (dfn[x] > dfn[y]) std::swap(x, y);
+    return x == y ? x : Rmq::rmq(dfn[x], dfn[y] - 1);
+}
+void init() {
+    for (int i = 0; i <= num; i++) {
+        way[i].to = 0;
+        way[i].nxt = 0;
+    }
+    for (int i = 0; i <= tot; i++) {
+        dval[i] = 0;
+        h[i] = 0;
+    }
+    tot = 0;
+    num = 0;
+}
+void Getfa(int s,int n) {
+    dfs(s, 0); *dfn = 1e9; Rmq::build(n - 1);
+}\end{lstlisting}
+
+\subsection{jiangly费用流}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class T>
+struct MinCostFlow {
+    struct _Edge {
+        int to;
+        ll cap;
+        T cost;
+        _Edge(int to_, ll cap_, T cost_) : to(to_), cap(cap_), cost(cost_) {}
+    };
+    int n;
+    std::vector<_Edge> e;
+    std::vector<std::vector<int>> g;
+    std::vector<T> h, dis;
+    std::vector<int> pre;
+    bool dijkstra(int s, int t) {
+        dis.assign(n, std::numeric_limits<T>::max());
+        pre.assign(n, -1);
+        std::priority_queue<std::pair<T, int>, std::vector<std::pair<T, int>>, std::greater<std::pair<T, int>>> que;
+        dis[s] = 0;
+        que.emplace(0, s);
+        while (!que.empty()) {
+            T d = que.top().first;
+            int u = que.top().second;
+            que.pop();
+            if (dis[u] != d) {
+                continue;
+            }
+            for (int i : g[u]) {
+                int v = e[i].to;
+                ll cap = e[i].cap;
+                T cost = e[i].cost;
+                if (cap > 0 && dis[v] > d + h[u] - h[v] + cost) {
+                    dis[v] = d + h[u] - h[v] + cost;
+                    pre[v] = i;
+                    que.emplace(dis[v], v);
+                }
+            }
+        }
+        return dis[t] != std::numeric_limits<T>::max();
+    }
+    MinCostFlow() {}
+    MinCostFlow(int n_) {
+        init(n_);
+    }
+    void init(int n_) {
+        n = n_;
+        e.clear();
+        g.assign(n, {});
+    }
+    void addEdge(int u, int v, ll cap, T cost) {
+        g[u].push_back(e.size());
+        e.emplace_back(v, cap, cost);
+        g[v].push_back(e.size());
+        e.emplace_back(u, 0, -cost);
+    }
+    std::pair<ll, T> flow(int s, int t) {
+        ll flow = 0;
+        T cost = 0;
+        h.assign(n, 0);
+        while (dijkstra(s, t)) {
+            for (int i = 0; i < n; ++i) {
+                h[i] += dis[i];
+            }
+            ll aug = std::numeric_limits<ll>::max();
+            for (int i = t; i != s; i = e[pre[i] ^ 1].to) {
+                aug = std::min(aug, e[pre[i]].cap);
+            }
+            for (int i = t; i != s; i = e[pre[i] ^ 1].to) {
+                e[pre[i]].cap -= aug;
+                e[pre[i] ^ 1].cap += aug;
+            }
+            flow += aug;
+            cost += aug * h[t];
+        }
+        return std::make_pair(flow, cost);
+    }
+    struct Edge {
+        int from;
+        int to;
+        T cap;
+        T cost;
+        T flow;
+    };
+    std::vector<Edge> edges() {
+        std::vector<Edge> a;
+        for (int i = 0; i < e.size(); i += 2) {
+            Edge x;
+            x.from = e[i + 1].to;
+            x.to = e[i].to;
+            x.cap = e[i].cap + e[i + 1].cap;
+            x.cost = e[i].cost;
+            x.flow = e[i + 1].cap;
+            a.push_back(x);
+        }
+        return a;
+    }
+};\end{lstlisting}
+
+\subsection{tarjan求scc}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct SCC {
+    int n;
+    std::vector<std::vector<int>> adj;
+    std::vector<int> stk;
+    std::vector<int> dfn, low, bel;
+    int cur, cnt;
+
+    SCC() {}
+    SCC(int n) {
+        init(n);
+    }
+
+    void init(int n) {
+        this->n = n;
+        adj.assign(n, {});
+        dfn.assign(n, -1);
+        low.resize(n);
+        bel.assign(n, -1);
+        stk.clear();
+        cur = cnt = 0;
+    }
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+    }
+
+    void dfs(int x) {
+        dfn[x] = low[x] = cur++;
+        stk.push_back(x);
+
+        for (auto y : adj[x]) {
+            if (dfn[y] == -1) {
+                dfs(y);
+                low[x] = std::min(low[x], low[y]);
+            } else if (bel[y] == -1) {
+                low[x] = std::min(low[x], dfn[y]);
+            }
+        }
+
+        if (dfn[x] == low[x]) {
+            int y;
+            do {
+                y = stk.back();
+                bel[y] = cnt;
+                stk.pop_back();
+            } while (y != x);
+            cnt++;
+        }
+    }
+
+    std::vector<int> work() {
+        for (int i = 0; i < n; i++) {
+            if (dfn[i] == -1) {
+                dfs(i);
+            }
+        }
+        return bel;
+    }
+};\end{lstlisting}
+
+\subsection{tarjan求点双}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+constexpr int N = 1e5 + 6;
+std::vector<int> e[N];
+int dfn[N], low[N], idx,cut[N],sz;
+void dfs(int u, int f) {
+	dfn[u] = low[u] = ++idx;
+	int ch = 0;
+	for (auto  v : e[u]) {
+		if (!dfn[v]){
+			dfs(v,u);
+			ch++;
+			low[u]=min(low[u],low[v]);
+			if(low[v]>=dfn[u])cut[u]=1;
+		}else if(v!=f){
+			low[u]=min(low[u],dfn[v]);
+		}
+	}
+	if(u==1 and ch<=1)cut[u]=0;
+	sz+=cut[u];
+}
+\end{lstlisting}
+
+\subsection{tarjan求边双}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct EBCC {
+    int n;
+    std::vector<std::vector<int>> adj;
+    std::vector<int> stk;
+    std::vector<int> dfn, low, bel;
+    int cur, cnt;
+
+    EBCC() {}
+    EBCC(int n) {
+        init(n);
+    }
+
+    void init(int n) {
+        this->n = n;
+        adj.assign(n, {});
+        dfn.assign(n, -1);
+        low.resize(n);
+        bel.assign(n, -1);
+        stk.clear();
+        cur = cnt = 0;
+    }
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    void dfs(int x, int p) {
+        dfn[x] = low[x] = cur++;
+        stk.push_back(x);
+        for (auto y : adj[x]) {
+            if (y == p) {
+                continue;
+            }
+            if (dfn[y] == -1) {
+                dfs(y, x);
+                low[x] = std::min(low[x], low[y]);
+            } else if (bel[y] == -1 && dfn[y] < dfn[x]) {
+                low[x] = std::min(low[x], dfn[y]);
+            }
+        }
+
+        if (dfn[x] == low[x]) {
+            int y;
+            do {
+                y = stk.back();
+                bel[y] = cnt;
+                stk.pop_back();
+            } while (y != x);
+            cnt++;
+        }
+    }
+
+    std::vector<int> work() {
+        for (int i = 1; i < n; i++) {
+            if (dfn[i] == -1) {
+                dfs(i, 0);
+            }
+        }
+        return bel;
+    }
+
+    struct Graph {
+        int n;
+        std::vector<std::pair<int, int>> edges;
+        std::vector<int> siz;
+        std::vector<int> cnte;
+    };
+    Graph compress() {
+        Graph g;
+        g.n = cnt;
+        g.siz.resize(cnt);
+        g.cnte.resize(cnt);
+        for (int i = 1; i < n; i++) {
+            g.siz[bel[i]]++;
+            for (auto j : adj[i]) {
+                if (bel[i] < bel[j]) {
+                    g.edges.emplace_back(bel[i], bel[j]);
+                } else if (i < j) {
+                    g.cnte[bel[i]]++;
+                }
+            }
+        }
+        return g;
+    }
+};\end{lstlisting}
+
+\subsection{twosat}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct TwoSat {
+    int n;
+    std::vector<std::vector<int>> e;
+    std::vector<bool> ans;
+    TwoSat(int n) : n(n), e(2 * n), ans(n) {}
+    void addClause(int u, bool f, int v, bool g) {
+        e[2 * u + !f].push_back(2 * v + g);
+        e[2 * v + !g].push_back(2 * u + f);
+    }
+    bool satisfiable() {
+        std::vector<int> id(2 * n, -1), dfn(2 * n, -1), low(2 * n, -1);
+        std::vector<int> stk;
+        int now = 0, cnt = 0;
+        std::function<void(int)> tarjan = [&](int u) {
+            stk.push_back(u);
+            dfn[u] = low[u] = now++;
+            for (auto v : e[u]) {
+                if (dfn[v] == -1) {
+                    tarjan(v);
+                    low[u] = std::min(low[u], low[v]);
+                } else if (id[v] == -1) {
+                    low[u] = std::min(low[u], dfn[v]);
+                }
+            }
+            if (dfn[u] == low[u]) {
+                int v;
+                do {
+                    v = stk.back();
+                    stk.pop_back();
+                    id[v] = cnt;
+                } while (v != u);
+                ++cnt;
+            }
+        };
+        for (int i = 0; i < 2 * n; ++i) if (dfn[i] == -1) tarjan(i);
+        for (int i = 0; i < n; ++i) {
+            if (id[2 * i] == id[2 * i + 1]) return false;
+            ans[i] = id[2 * i] > id[2 * i + 1];
+        }
+        return true;
+    }
+    std::vector<bool> answer() { return ans; }
+};
+ \end{lstlisting}
+
+\subsection{倍增lca}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<typename T> struct Tre
+{
+    int n, m = 0;
+    vector<vector<int>> e;
+    vector<int> to;
+    vector<T> wt;
+    int maxk;
+    vector<vector<int>> fa;
+    vector<int> dep;
+    void add_arc(const int u, const int v, const T w = 0) {e[u].push_back(m++); to.push_back(v); wt.push_back(w);}
+    void add_edge(const int u, const int v, const T w = 0) {add_arc(u, v, w); add_arc(v, u, w);}
+    Tre(const int n, const int maxk = 25): n(n), e(n), maxk(maxk), fa(n, vector<int>(maxk + 1, -1)), dep(n) {}
+    void dfs(const int u, const int f)
+    {
+        fa[u][0] = f;
+        dep[u] = f == -1 ? 0 : dep[f] + 1;
+        for (int i = 1; i <= maxk; i++) fa[u][i] = fa[u][i - 1] == -1 ? -1 : fa[fa[u][i - 1]][i - 1];
+        for (const int i : e[u])
+        {
+            const int v = to[i];
+            if (v == f) continue;
+            dfs(v, u);
+        }
+    }
+
+    int lca(int u, int v) const
+    {
+        if (dep[u] < dep[v]) swap(u, v);
+        for (int i = maxk; i >= 0; i--)
+        {
+            if (fa[u][i] != -1 && dep[fa[u][i]] >= dep[v]) u = fa[u][i];
+        }
+        if (u == v) return u;
+        for (int i = maxk; i >= 0; i--)
+        {
+            if (fa[u][i] != fa[v][i]) u = fa[u][i], v = fa[v][i];
+        }
+        return fa[u][0];
+    }
+};\end{lstlisting}
+
+\subsection{并查集}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct DSU {
+    std::vector<int> fa, siz;
+    DSU() {}
+    DSU(int n) {
+        n++;
+        init(n);
+    }
+     
+    void init(int n) {
+        fa.resize(n);
+        std::iota(fa.begin(), fa.end(), 0);     
+        siz.assign(n, 1);
+    }
+     
+    int find(int x) {
+        while (x != fa[x]) {
+            x = fa[x] = fa[fa[x]];
+        }
+        return x;
+    }
+     
+    bool same(int x, int y) {
+        return find(x) == find(y);
+    }
+     
+    bool merge(int x, int y) {
+        x = find(x);
+        y = find(y);
+        if (x == y) {
+            return false;
+        }
+        siz[x] += siz[y];
+        fa[y] = x;
+        return true;
+    }
+     
+    int size(int x) {
+        return siz[find(x)];
+    }
+};\end{lstlisting}
+
+\subsection{最大流}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class T>
+struct Flow {
+    const int n;
+    struct Edge {
+        int to;
+        T cap;
+        Edge(int to, T cap) : to(to), cap(cap) {}
+    };
+    std::vector<Edge> e;
+    std::vector<std::vector<int>> g;
+    std::vector<int> cur, h;
+    Flow(int n) : n(n), g(n) {}
+    bool bfs(int s, int t) {
+        h.assign(n, -1);
+        std::queue<int> que;
+        h[s] = 0;
+        que.push(s);
+        while (!que.empty()) {
+            const int u = que.front();
+            que.pop();
+            for (int i : g[u]) {
+                auto [v, c] = e[i];
+                if (c > 0 && h[v] == -1) {
+                    h[v] = h[u] + 1;
+                    if (v == t) {
+                        return true;
+                    }
+                    que.push(v);
+                }
+            }
+        }
+        return false;
+    }
+
+    T dfs(int u, int t, T f) {
+        if (u == t) {
+            return f;
+        }
+        auto r = f;
+        for (int &i = cur[u]; i < int(g[u].size()); ++i) {
+            const int j = g[u][i];
+            auto [v, c] = e[j];
+            if (c > 0 && h[v] == h[u] + 1) {
+                auto a = dfs(v, t, std::min(r, c));
+                e[j].cap -= a;
+                e[j ^ 1].cap += a;
+                r -= a;
+                if (r == 0) {
+                    return f;
+                }
+            }
+        }
+        return f - r;
+    }
+    void addEdge(int u, int v, T c) {
+        g[u].push_back(e.size());
+        e.emplace_back(v, c);
+        g[v].push_back(e.size());
+        e.emplace_back(u, 0);
+    }
+    T maxFlow(int s, int t) {
+        T ans = 0;
+        while (bfs(s, t)) {
+            cur.assign(n, 0);
+            ans += dfs(s, t, std::numeric_limits<T>::max());
+        }
+        return ans;
+    }
+};\end{lstlisting}
+
+\section{字符串}
+\thispagestyle{fancy}
+
+\subsection{PAM}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct PAM {
+    static constexpr int ALPHABET_SIZE = 26;
+    struct Node {
+        int len;
+        int link;
+        int cnt;
+        std::array<int, ALPHABET_SIZE> next;
+        Node() : len{}, link{}, cnt{}, next{} {}
+    };
+    std::vector<Node> t;
+    int suff;
+    std::string s;
+    PAM() {
+        init();
+    }
+    void init() {
+        t.assign(2, Node());
+        t[0].len = -1;
+        suff = 1;
+        s.clear();
+    }
+    int newNode() {
+        t.emplace_back();
+        return t.size() - 1;
+    }
+    bool add(char c) {
+        int pos = s.size();
+        s += c;
+        int let = c - 'a';
+        int cur = suff, curlen = 0;
+        while (true) {
+            curlen = t[cur].len;
+            if (pos - 1 - curlen >= 0 && s[pos - 1 - curlen] == s[pos]) {
+                break;
+            }
+            cur = t[cur].link;
+        }
+        if (t[cur].next[let]) {
+            suff = t[cur].next[let];
+            return false;
+        }
+        int num = newNode();
+        suff = num;
+        t[num].len = t[cur].len + 2;
+        t[cur].next[let] = num;
+        if (t[num].len == 1) {
+            t[num].link = 1;
+            t[num].cnt = 1;
+            return true;
+        }
+        while (true) {
+            cur = t[cur].link;
+            curlen = t[cur].len;
+            if (pos - 1 - curlen >= 0 && s[pos - 1 - curlen] == s[pos]) {
+                t[num].link = t[cur].next[let];
+                break;
+            }
+        }
+        t[num].cnt = 1 + t[t[num].link].cnt;
+        return true;
+    }
+    int next(int p, int x) {
+        return t[p].next[x];
+    }
+    int link(int p) {
+        return t[p].link;
+    }
+    int len(int p) {
+        return t[p].len;
+    }
+    int size() {
+        return t.size();
+    }
+};\end{lstlisting}
+
+\subsection{acm}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct AhoCorasick {
+    static constexpr int ALPHABET = 26;
+    struct Node {
+        int len;
+        int link;
+        std::array<int, ALPHABET> next;
+        Node() : len{0}, link{0}, next{} {}
+    };
+    
+    std::vector<Node> t;
+    
+    AhoCorasick() {
+        init();
+    }
+    
+    void init() {
+        t.assign(2, Node());
+        t[0].next.fill(1);
+        t[0].len = -1;
+    }
+    
+    int newNode() {
+        t.emplace_back();
+        return t.size() - 1;
+    }
+    
+    int add(const std::string &a) {
+        int p = 1;
+        for (auto c : a) {
+            int x = c - 'a';
+            if (t[p].next[x] == 0) {
+                t[p].next[x] = newNode();
+                t[t[p].next[x]].len = t[p].len + 1;
+            }
+            p = t[p].next[x];
+        }
+        return p;
+    }
+    
+    void work() {
+        std::queue<int> q;
+        q.push(1);
+        
+        while (!q.empty()) {
+            int x = q.front();
+            q.pop();
+            
+            for (int i = 0; i < ALPHABET; i++) {
+                if (t[x].next[i] == 0) {
+                    t[x].next[i] = t[t[x].link].next[i];
+                } else {
+                    t[t[x].next[i]].link = t[t[x].link].next[i];
+                    q.push(t[x].next[i]);
+                }
+            }
+        }
+    }
+    
+    int next(int p, int x) {
+        return t[p].next[x];
+    }
+    
+    int link(int p) {
+        return t[p].link;
+    }
+    
+    int len(int p) {
+        return t[p].len;
+    }
+    
+    int size() {
+        return t.size();
+    }
+};\end{lstlisting}
+
+\subsection{hashhuiwen}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct HHash{
+    Hash h1,h2;
+    int n;
+    HHash(string s): h1(s), h2(string(s.rbegin(), s.rend())), n(s.length()){}
+    bool check(int i, int j) {
+        if (h1.getHash(i, j) == h2.getHash(n - j + 1, n - i + 1)) {
+            return true;
+        }
+        return false;
+    }
+};\end{lstlisting}
+
+\subsection{kmp}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+std::vector<int> kmp(std::string s) {
+    int n = s.size();
+    std::vector<int> f(n + 1);
+    for (int i = 1, j = 0; i < n; i++) {
+        while (j && s[i] != s[j]) {
+            j = f[j];
+        }
+        j += (s[i] == s[j]);
+        f[i + 1] = j;
+    }
+    return f;
+}\end{lstlisting}
+
+\subsection{kmp自动机}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+auto autokmp(string s) {
+    ll m=s.size();
+    std::vector<array<int, 26>> nxt(m + 1);
+    vector<int>fail(m + 1);
+    for (int i = 1; i <= m; i++) {
+        int x = s[i] - 'a';
+        for (int j = 0; j < 26; j++) {
+            if (x == j) {
+                fail[i] = nxt[fail[i - 1]][x];
+                nxt[i - 1][x] = i;
+            } else {
+                nxt[i - 1][j] = nxt[fail[i - 1]][j];
+            }
+        }
+    }
+    return nxt;
+}\end{lstlisting}
+
+\subsection{mancher}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+std::vector<int> manacher(std::string s) {
+    std::string t = "#";
+    for (auto c : s) {
+        t += c;
+        t += '#';
+    }
+    int n = t.size();
+    std::vector<int> r(n);
+    for (int i = 0, j = 0; i < n; i++) {
+        if (2 * j - i >= 0 && j + r[j] > i) {
+            r[i] = std::min(r[2 * j - i], j + r[j] - i);
+        }
+        while (i - r[i] >= 0 && i + r[i] < n && t[i - r[i]] == t[i + r[i]]) {
+            r[i] += 1;
+        }
+        if (i + r[i] > j + r[j]) {
+            j = i;
+        }
+    }
+    return r;
+}
+\end{lstlisting}
+
+\subsection{sa+rmq求lcp}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct SuffixArray {
+    int n;
+    std::vector<int> sa, rk, lc;
+    SuffixArray(const std::string &s) {
+        n = s.length();
+        sa.resize(n);
+        lc.resize(n - 1);
+        rk.resize(n);
+        std::iota(sa.begin(), sa.end(), 0);
+        std::sort(sa.begin(), sa.end(),
+                  [&](int a, int b) {
+                      return s[a] < s[b];
+                  });
+        rk[sa[0]] = 0;
+        for (int i = 1; i < n; i++) {
+            rk[sa[i]] = rk[sa[i - 1]] + (s[sa[i]] != s[sa[i - 1]]);
+        }
+        int k = 1;
+        std::vector<int> tmp, cnt(n);
+        tmp.reserve(n);
+        while (rk[sa[n - 1]] < n - 1) {
+            tmp.clear();
+            for (int i = 0; i < k; i++) {
+                tmp.push_back(n - k + i);
+            }
+            for (auto i : sa) {
+                if (i >= k) {
+                    tmp.push_back(i - k);
+                }
+            }
+            std::fill(cnt.begin(), cnt.end(), 0);
+            for (int i = 0; i < n; i++) {
+                cnt[rk[i]]++;
+            }
+            for (int i = 1; i < n; i++) {
+                cnt[i] += cnt[i - 1];
+            }
+            for (int i = n - 1; i >= 0; i--) {
+                sa[--cnt[rk[tmp[i]]]] = tmp[i];
+            }
+            std::swap(rk, tmp);
+            rk[sa[0]] = 0;
+            for (int i = 1; i < n; i++) {
+                rk[sa[i]] = rk[sa[i - 1]] + (tmp[sa[i - 1]] < tmp[sa[i]] || sa[i - 1] + k == n || tmp[sa[i - 1] + k] < tmp[sa[i] + k]);
+            }
+            k *= 2;
+        }
+        for (int i = 0, j = 0; i < n; i++) {
+            if (rk[i] == 0) {
+                j = 0;
+            } else {
+                for (j -= (j > 0); i + j < n && sa[rk[i] - 1] + j < n && s[i + j] == s[sa[rk[i] - 1] + j]; j++)
+                    ;
+                lc[rk[i] - 1] = j;
+            }
+        }
+    }
+};
+
+template<class T,
+        class Cmp = std::less<T>>
+struct RMQ {
+    const Cmp cmp = Cmp();
+    static constexpr unsigned B = 64;
+    using u64 = unsigned long long;
+    int n;
+    std::vector<std::vector<T>> a;
+    std::vector<T> pre, suf, ini;
+    std::vector<u64> stk;
+    RMQ() {}
+    RMQ(const std::vector<T> &v) {
+        init(v);
+    }
+    void init(const std::vector<T> &v) {
+        n = v.size();
+        pre = suf = ini = v;
+        stk.resize(n);
+        if (!n) {
+            return;
+        }
+        const int M = (n - 1) / B + 1;
+        const int lg = std::__lg(M);
+        a.assign(lg + 1, std::vector<T>(M));
+        for (int i = 0; i < M; i++) {
+            a[0][i] = v[i * B];
+            for (int j = 1; j < B && i * B + j < n; j++) {
+                a[0][i] = std::min(a[0][i], v[i * B + j], cmp);
+            }
+        }
+        for (int i = 1; i < n; i++) {
+            if (i % B) {
+                pre[i] = std::min(pre[i], pre[i - 1], cmp);
+            }
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            if (i % B != B - 1) {
+                suf[i] = std::min(suf[i], suf[i + 1], cmp);
+            }
+        }
+        for (int j = 0; j < lg; j++) {
+            for (int i = 0; i + (2 << j) <= M; i++) {
+                a[j + 1][i] = std::min(a[j][i], a[j][i + (1 << j)], cmp);
+            }
+        }
+        for (int i = 0; i < M; i++) {
+            const int l = i * B;
+            const int r = std::min(1U * n, l + B);
+            u64 s = 0;
+            for (int j = l; j < r; j++) {
+                while (s && cmp(v[j], v[std::__lg(s) + l])) {
+                    s ^= 1ULL << std::__lg(s);
+                }
+                s |= 1ULL << (j - l);
+                stk[j] = s;
+            }
+        }
+    }
+    T operator()(int l, int r) {
+        if (l / B != (r - 1) / B) {
+            T ans = std::min(suf[l], pre[r - 1], cmp);
+            l = l / B + 1;
+            r = r / B;
+            if (l < r) {
+                int k = std::__lg(r - l);
+                ans = std::min({ans, a[k][l], a[k][r - (1 << k)]}, cmp);
+            }
+            return ans;
+        } else {
+            int x = B * (l / B);
+            return ini[__builtin_ctzll(stk[r - 1] >> (l - x)) + l];
+        }
+    }
+};
+SuffixArray sa(s);
+
+RMQ rmq(sa.lc);
+
+auto lcp = [&](int i, int j) {
+    if (i == j) {
+        return n - i;
+    }
+    i = sa.rk[i];
+    j = sa.rk[j];
+    if (i > j) {
+        std::swap(i, j);
+    }
+    return rmq(i, j);
+};\end{lstlisting}
+
+\subsection{sam}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct SAM {
+    static constexpr int ALPHABET_SIZE = 26;
+    struct Node {
+        int len;
+        int link;
+        std::array<int, ALPHABET_SIZE> next;
+        Node() : len{}, link{}, next{} {}
+    };
+    std::vector<Node> t;
+    SAM() {
+        init();
+    }
+    void init() {
+        t.assign(2, Node());
+        t[0].next.fill(1);
+        t[0].len = -1;
+    }
+    int newNode() {
+        t.emplace_back();
+        return t.size() - 1;
+    }
+    int extend(int p, int c) {
+        if (t[p].next[c]) {
+            int q = t[p].next[c];
+            if (t[q].len == t[p].len + 1) {
+                return q;
+            }
+            int r = newNode();
+            t[r].len = t[p].len + 1;
+            t[r].link = t[q].link;
+            t[r].next = t[q].next;
+            t[q].link = r;
+            while (t[p].next[c] == q) {
+                t[p].next[c] = r;
+                p = t[p].link;
+            }
+            return r;
+        }
+        int cur = newNode();
+        t[cur].len = t[p].len + 1;
+        while (!t[p].next[c]) {
+            t[p].next[c] = cur;
+            p = t[p].link;
+        }
+        t[cur].link = extend(p, c);
+        return cur;
+    }
+    int extend(int p, char c, char offset = 'a') {
+        return extend(p, c - offset);
+    }
+
+    int next(int p, int x) {
+        return t[p].next[x];
+    }
+
+    int next(int p, char c, char offset = 'a') {
+        return next(p, c - 'a');
+    }
+
+    int link(int p) {
+        return t[p].link;
+    }
+
+    int len(int p) {
+        return t[p].len;
+    }
+
+    int size() {
+        return t.size();
+    }
+};\end{lstlisting}
+
+\subsection{trie}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+constexpr int N = 1e6 + 7;
+int tre[N][26];
+int tot = 0;
+int newNode() {
+    tot++;
+    fill(tre[tot], tre[tot] + 26, 0);
+    return tot;
+}
+void insert(string & a) {
+	int now = 1;
+	for (auto q : a) {
+		int &c = tre[now][q - 'a'];
+		if (!c)c = newNode();
+		now = c;
+	}
+}
+\end{lstlisting}
+
+\subsection{ull单哈}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+using ull = unsigned long long;
+using u128 = unsigned __int128;
+constexpr ull Mod = (1ULL << 61) - 1;
+constexpr int maxn = 1e6 + 7;
+mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
+uniform_int_distribution<ull> dist(Mod / 2, Mod - 1);
+const ull Seed = dist(rnd);
+ull bas[maxn];
+ull norm(ull x)
+{
+    return (x>=Mod)?x-Mod:x;
+}
+ull mul(ull a, ull b) {
+    u128 t = (u128)(a) * b;
+    t = (t >> 61) + (t & Mod);
+    return (t >= Mod) ? t - Mod : t;
+}
+ull del(ull a,ull b){
+    return norm(a-b+Mod);
+}
+ull add(ull a,ull b){
+    return norm(a+b);
+}
+void HInit() {
+    bas[0] = 1;
+    for (int i = 1; i < maxn; i++) {
+        bas[i] = mul(bas[i - 1] , Seed);
+    }
+}
+struct Hash {
+    int n;
+    std::vector<ull> sum;
+    Hash(const string& s): n(s.length()), sum(n + 1) {
+        for (int i = 1; i <= n; i++) {
+            sum[i] = add(mul(sum[i - 1] , Seed),s[i - 1]);
+        }
+    }
+    ull getHash(int l, int r) {
+        ull res = del(sum[r] - mul(sum[l - 1], bas[r - l + 1]));
+        return res;
+    }
+};\end{lstlisting}
+
+\subsection{后缀数组}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct SuffixArray {
+    int n;
+    std::vector<int> sa, rk, lc;
+    SuffixArray(const std::string &s) {
+        n = s.length();
+        sa.resize(n);
+        lc.resize(n - 1);
+        rk.resize(n);
+        std::iota(sa.begin(), sa.end(), 0);
+        std::sort(sa.begin(), sa.end(),
+                  [&](int a, int b) {
+                      return s[a] < s[b];
+                  });
+        rk[sa[0]] = 0;
+        for (int i = 1; i < n; i++) {
+            rk[sa[i]] = rk[sa[i - 1]] + (s[sa[i]] != s[sa[i - 1]]);
+        }
+        int k = 1;
+        std::vector<int> tmp, cnt(n);
+        tmp.reserve(n);
+        while (rk[sa[n - 1]] < n - 1) {
+            tmp.clear();
+            for (int i = 0; i < k; i++) {
+                tmp.push_back(n - k + i);
+            }
+            for (auto i : sa) {
+                if (i >= k) {
+                    tmp.push_back(i - k);
+                }
+            }
+            std::fill(cnt.begin(), cnt.end(), 0);
+            for (int i = 0; i < n; i++) {
+                cnt[rk[i]]++;
+            }
+            for (int i = 1; i < n; i++) {
+                cnt[i] += cnt[i - 1];
+            }
+            for (int i = n - 1; i >= 0; i--) {
+                sa[--cnt[rk[tmp[i]]]] = tmp[i];
+            }
+            std::swap(rk, tmp);
+            rk[sa[0]] = 0;
+            for (int i = 1; i < n; i++) {
+                rk[sa[i]] = rk[sa[i - 1]] + (tmp[sa[i - 1]] < tmp[sa[i]] || sa[i - 1] + k == n || tmp[sa[i - 1] + k] < tmp[sa[i] + k]);
+            }
+            k *= 2;
+        }
+        for (int i = 0, j = 0; i < n; i++) {
+            if (rk[i] == 0) {
+                j = 0;
+            } else {
+                for (j -= (j > 0); i + j < n && sa[rk[i] - 1] + j < n && s[i + j] == s[sa[rk[i] - 1] + j]; j++);
+                lc[rk[i] - 1] = j;
+            }
+        }
+    }
+};\end{lstlisting}
+
+\subsection{自动取模类hash}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+using ull = unsigned long long;
+using u128 = unsigned __int128;
+constexpr ull Mod = (1ULL << 61) - 1;
+template<typename T>
+constexpr T power(T a, ull b) {
+    T res {1};
+    for (; b != 0; b /= 2, a *= a) {
+        if (b % 2 == 1) {
+            res *= a;
+        }
+    }
+    return res;
+}
+
+ull mulMod(ull a, ull b) {
+    u128 t = static_cast<u128>(a) * b;
+    t = (t >> 61) + (t & Mod);
+    return (t >= Mod) ? t - Mod : t;
+}
+
+template<typename U, U P>
+struct ModIntBase {
+public:
+    constexpr ModIntBase() : x {0} {}
+
+    template<typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
+    constexpr ModIntBase(T x_) : x {norm(x_ % P)} {}
+
+    constexpr static U norm(U x) {
+        if ((x >> (8 * sizeof(U) - 1) & 1) == 1) {
+            x += P;
+        }
+        if (x >= P) {
+            x -= P;
+        }
+        return x;
+    }
+
+    constexpr U val() const {
+        return x;
+    }
+
+    constexpr ModIntBase operator-() const {
+        ModIntBase res;
+        res.x = norm(P - x);
+        return res;
+    }
+
+    constexpr ModIntBase inv() const {
+        return power(*this, P - 2);
+    }
+
+    constexpr ModIntBase &operator*=(const ModIntBase &rhs) & {
+        x = mulMod(x, rhs.val());
+        return *this;
+    }
+
+    constexpr ModIntBase &operator+=(const ModIntBase &rhs) & {
+        x = norm(x + rhs.x);
+        return *this;
+    }
+
+    constexpr ModIntBase &operator-=(const ModIntBase &rhs) & {
+        x = norm(x- rhs.x+P);
+        return *this;
+    }
+
+    constexpr ModIntBase &operator/=(const ModIntBase &rhs) & {
+        return *this *= rhs.inv();
+    }
+
+    friend constexpr ModIntBase operator*(ModIntBase lhs, const ModIntBase &rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+
+    friend constexpr ModIntBase operator+(ModIntBase lhs, const ModIntBase &rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+
+    friend constexpr ModIntBase operator-(ModIntBase lhs, const ModIntBase &rhs) {
+        lhs -= rhs;
+        return lhs;
+    }
+
+    friend constexpr ModIntBase operator/(ModIntBase lhs, const ModIntBase &rhs) {
+        lhs /= rhs;
+        return lhs;
+    }
+
+    friend constexpr std::ostream &operator<<(std::ostream &os, const ModIntBase &a) {
+        return os << a.val();
+    }
+
+    friend constexpr bool operator==(ModIntBase lhs, ModIntBase rhs) {
+        return lhs.val() == rhs.val();
+    }
+
+    friend constexpr bool operator!=(ModIntBase lhs, ModIntBase rhs) {
+        return lhs.val() != rhs.val();
+    }
+
+    friend constexpr bool operator<(ModIntBase lhs, ModIntBase rhs) {
+        return lhs.val() < rhs.val();
+    }
+
+private:
+    U x;
+};
+
+template<ull P>
+using ModInt64 = ModIntBase<ull, P>;
+using Z = ModInt64<Mod>;
+constexpr int maxn = 1e6 + 7;
+mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
+uniform_int_distribution<ull> dist(Mod / 2, Mod - 1);
+const ull Seed = dist(rnd);
+Z bas[maxn];
+void HInit() {
+    bas[0] = Z(1);
+    for (int i = 1; i < maxn; i++) {
+        bas[i] = bas[i - 1] * Seed;
+    }
+}
+struct Hash {
+    int n;
+    std::vector<Z> sum;
+    Hash(const string& s): n(s.length()), sum(n + 1) {
+        for (int i = 1; i <= n; i++) {
+            sum[i] = (sum[i - 1] * Seed) + s[i - 1];
+        }
+    }
+    Z getHash(int l, int r) {
+        return (sum[r] - sum[l - 1] * bas[r - l + 1]);
+    }
+};\end{lstlisting}
+
+\section{数学}
+\thispagestyle{fancy}
+
+\subsection{Mlong}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class T>
+constexpr T power(T a, ll b) {
+    T res = 1;
+    for (; b; b /= 2, a *= a) {
+        if (b % 2) {
+            res *= a;
+        }
+    }
+    return res;
+}
+
+constexpr ll mul(ll a, ll b, ll p) {
+    ll res = a * b - ll(1.L * a * b / p) * p;
+    res %= p;
+    if (res < 0) {
+        res += p;
+    }
+    return res;
+}
+template<ll P>
+struct MLong {
+    ll x;
+    constexpr MLong() : x{} {}
+    constexpr MLong(ll x) : x{norm(x % getMod())} {}
+
+    static ll Mod;
+    constexpr static ll getMod() {
+        if (P > 0) {
+            return P;
+        } else {
+            return Mod;
+        }
+    }
+    constexpr static void setMod(ll Mod_) {
+        Mod = Mod_;
+    }
+    constexpr ll norm(ll x) const {
+        if (x < 0) {
+            x += getMod();
+        }
+        if (x >= getMod()) {
+            x -= getMod();
+        }
+        return x;
+    }
+    constexpr ll val() const {
+        return x;
+    }
+    explicit constexpr operator ll() const {
+        return x;
+    }
+    constexpr MLong operator-() const {
+        MLong res;
+        res.x = norm(getMod() - x);
+        return res;
+    }
+    constexpr MLong inv() const {
+        assert(x != 0);
+        return power(*this, getMod() - 2);
+    }
+    constexpr MLong &operator*=(MLong rhs) & {
+        x = mul(x, rhs.x, getMod());
+        return *this;
+    }
+    constexpr MLong &operator+=(MLong rhs) & {
+        x = norm(x + rhs.x);
+        return *this;
+    }
+    constexpr MLong &operator-=(MLong rhs) & {
+        x = norm(x - rhs.x);
+        return *this;
+    }
+    constexpr MLong &operator/=(MLong rhs) & {
+        return *this *= rhs.inv();
+    }
+    friend constexpr MLong operator*(MLong lhs, MLong rhs) {
+        MLong res = lhs;
+        res *= rhs;
+        return res;
+    }
+    friend constexpr MLong operator+(MLong lhs, MLong rhs) {
+        MLong res = lhs;
+        res += rhs;
+        return res;
+    }
+    friend constexpr MLong operator-(MLong lhs, MLong rhs) {
+        MLong res = lhs;
+        res -= rhs;
+        return res;
+    }
+    friend constexpr MLong operator/(MLong lhs, MLong rhs) {
+        MLong res = lhs;
+        res /= rhs;
+        return res;
+    }
+    friend constexpr std::istream &operator>>(std::istream &is, MLong &a) {
+        ll v;
+        is >> v;
+        a = MLong(v);
+        return is;
+    }
+    friend constexpr std::ostream &operator<<(std::ostream &os, const MLong &a) {
+        return os << a.val();
+    }
+    friend constexpr bool operator==(MLong lhs, MLong rhs) {
+        return lhs.val() == rhs.val();
+    }
+    friend constexpr bool operator!=(MLong lhs, MLong rhs) {
+        return lhs.val() != rhs.val();
+    }
+};
+
+template<>
+ll MLong<0LL>::Mod = ll(1E18) + 9;
+
+template<int V, int P>
+constexpr MLong<P> CInv = MLong<P>(V).inv();
+
+constexpr ll P = ll(1E18) + 9;
+using Z = MLong<P>;
+ \end{lstlisting}
+
+\subsection{Pollard-pho}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+ll mul(ll a, ll b, ll m) {
+    return static_cast<__int128>(a) * b % m;
+}
+ll power(ll a, ll b, ll m) {
+    ll res = 1 % m;
+    for (; b; b >>= 1, a = mul(a, a, m))
+        if (b & 1)
+            res = mul(res, a, m);
+    return res;
+}
+bool isprime(ll n) {
+    if (n < 2)
+        return false;
+    static constexpr int A[] = {2, 3, 5, 7, 11, 13, 17, 19, 23};
+    int s = __builtin_ctzll(n - 1);
+    ll d = (n - 1) >> s;
+    for (auto a : A) {
+        if (a == n)
+            return true;
+        ll x = power(a, d, n);
+        if (x == 1 || x == n - 1)
+            continue;
+        bool ok = false;
+        for (int i = 0; i < s - 1; ++i) {
+            x = mul(x, x, n);
+            if (x == n - 1) {
+                ok = true;
+                break;
+            }
+        }
+        if (!ok)
+            return false;
+    }
+    return true;
+}
+std::vector<ll> factorize(ll n) {
+    std::vector<ll> p;
+    std::function<void(ll)> f = [&](ll n) {
+        if (n <= 10000) {
+            for (int i = 2; i * i <= n; ++i)
+                for (; n % i == 0; n /= i)
+                    p.push_back(i);
+            if (n > 1)
+                p.push_back(n);
+            return;
+        }
+        if (isprime(n)) {
+            p.push_back(n);
+            return;
+        }
+        auto g = [&](ll x) {
+            return (mul(x, x, n) + 1) % n;
+        };
+        ll x0 = 2;
+        while (true) {
+            ll x = x0;
+            ll y = x0;
+            ll d = 1;
+            ll power = 1, lam = 0;
+            ll v = 1;
+            while (d == 1) {
+                y = g(y);
+                ++lam;
+                v = mul(v, std::abs(x - y), n);
+                if (lam % 127 == 0) {
+                    d = std::gcd(v, n);
+                    v = 1;
+                }
+                if (power == lam) {
+                    x = y;
+                    power *= 2;
+                    lam = 0;
+                    d = std::gcd(v, n);
+                    v = 1;
+                }
+            }
+            if (d != n) {
+                f(d);
+                f(n / d);
+                return;
+            }
+            ++x0;
+        }
+    };
+    f(n);
+    std::sort(p.begin(), p.end());
+    vector<ll>pp=p;
+    vector<ll>ppp;
+    pp.erase(unique(pp.begin(),pp.end()),pp.end());
+    for(auto q:pp){
+        ll w=count(p.begin(),p.end(),q);
+        ll res=1;
+        while(w){
+            res*=q;
+            w--;
+        }
+        ppp.push_back(res);
+    }
+    return p;
+}\end{lstlisting}
+
+\subsection{ax+by=c求解}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+pair<ll,ll> exgcd(ll a, ll b, ll c)
+{
+    function<ll(ll, ll, ll &, ll &)> ex_gcd = [&](ll a, ll b, ll & x, ll & y)
+    {
+        if (b == 0)
+        {
+            x = 1;
+            y = 0;
+            return a;
+        }
+        ll x1, y1;
+        ll g = ex_gcd(b, a % b, x1, y1);
+        x = y1;
+        y = x1 - a / b * y1;
+        return g;
+    };
+    ll x, y;
+    ll g = ex_gcd(a, b, x, y);
+    if (c % g != 0)
+        return {0, 0};
+    ll z = abs(b / g);
+    x = (__int128_t)x * (c / g) % z;
+    x = (x + z) % z;
+    ll w = abs(a / g);
+    y = (__int128_t)y * (c / g) % w;
+    y = (y + w) % w;
+    ll xmin = x, ymin = y;
+    ll xmax = (c - (__int128_t)b * ymin) / a;
+    ll ymax = (c - (__int128_t)a * xmin) / b;
+    return {x, z};
+}\end{lstlisting}
+
+\subsection{jly多项式}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+#include <bits/stdc++.h>
+
+constexpr int P = 998244353;
+using i64 = long long;
+// assume -P <= x < 2P
+int norm(int x) {
+    if (x < 0) {
+        x += P;
+    }
+    if (x >= P) {
+        x -= P;
+    }
+    return x;
+}
+template<class T>
+T power(T a, int b) {
+    T res = 1;
+    for (; b; b /= 2, a *= a) {
+        if (b % 2) {
+            res *= a;
+        }
+    }
+    return res;
+}
+struct Z {
+    int x;
+    Z(int x = 0) : x(norm(x)) {}
+    int val() const {
+        return x;
+    }
+    Z operator-() const {
+        return Z(norm(P - x));
+    }
+    Z inv() const {
+        assert(x != 0);
+        return power(*this, P - 2);
+    }
+    Z &operator*=(const Z &rhs) {
+        x = i64(x) * rhs.x % P;
+        return *this;
+    }
+    Z &operator+=(const Z &rhs) {
+        x = norm(x + rhs.x);
+        return *this;
+    }
+    Z &operator-=(const Z &rhs) {
+        x = norm(x - rhs.x);
+        return *this;
+    }
+    Z &operator/=(const Z &rhs) {
+        return *this *= rhs.inv();
+    }
+    friend Z operator*(const Z &lhs, const Z &rhs) {
+        Z res = lhs;
+        res *= rhs;
+        return res;
+    }
+    friend Z operator+(const Z &lhs, const Z &rhs) {
+        Z res = lhs;
+        res += rhs;
+        return res;
+    }
+    friend Z operator-(const Z &lhs, const Z &rhs) {
+        Z res = lhs;
+        res -= rhs;
+        return res;
+    }
+    friend Z operator/(const Z &lhs, const Z &rhs) {
+        Z res = lhs;
+        res /= rhs;
+        return res;
+    }
+    friend std::istream &operator>>(std::istream &is, Z &a) {
+        i64 v;
+        is >> v;
+        a = Z(v);
+        return is;
+    }
+    friend std::ostream &operator<<(std::ostream &os, const Z &a) {
+        return os << a.val();
+    }
+};
+
+std::vector<int> rev;
+std::vector<Z> roots{0, 1};
+void dft(std::vector<Z> &a) {
+    int n = a.size();
+    
+    if (int(rev.size()) != n) {
+        int k = __builtin_ctz(n) - 1;
+        rev.resize(n);
+        for (int i = 0; i < n; i++) {
+            rev[i] = rev[i >> 1] >> 1 | (i & 1) << k;
+        }
+    }
+    
+    for (int i = 0; i < n; i++) {
+        if (rev[i] < i) {
+            std::swap(a[i], a[rev[i]]);
+        }
+    }
+    if (int(roots.size()) < n) {
+        int k = __builtin_ctz(roots.size());
+        roots.resize(n);
+        while ((1 << k) < n) {
+            Z e = power(Z(3), (P - 1) >> (k + 1));
+            for (int i = 1 << (k - 1); i < (1 << k); i++) {
+                roots[2 * i] = roots[i];
+                roots[2 * i + 1] = roots[i] * e;
+            }
+            k++;
+        }
+    }
+    for (int k = 1; k < n; k *= 2) {
+        for (int i = 0; i < n; i += 2 * k) {
+            for (int j = 0; j < k; j++) {
+                Z u = a[i + j];
+                Z v = a[i + j + k] * roots[k + j];
+                a[i + j] = u + v;
+                a[i + j + k] = u - v;
+            }
+        }
+    }
+}
+void idft(std::vector<Z> &a) {
+    int n = a.size();
+    std::reverse(a.begin() + 1, a.end());
+    dft(a);
+    Z inv = (1 - P) / n;
+    for (int i = 0; i < n; i++) {
+        a[i] *= inv;
+    }
+}
+struct Poly {
+    std::vector<Z> a;
+    Poly() {}
+    Poly(const std::vector<Z> &a) : a(a) {}
+    Poly(const std::initializer_list<Z> &a) : a(a) {}
+    int size() const {
+        return a.size();
+    }
+    void resize(int n) {
+        a.resize(n);
+    }
+    Z operator[](int idx) const {
+        if (idx < size()) {
+            return a[idx];
+        } else {
+            return 0;
+        }
+    }
+    Z &operator[](int idx) {
+        return a[idx];
+    }
+    Poly mulxk(int k) const {
+        auto b = a;
+        b.insert(b.begin(), k, 0);
+        return Poly(b);
+    }
+    Poly modxk(int k) const {
+        k = std::min(k, size());
+        return Poly(std::vector<Z>(a.begin(), a.begin() + k));
+    }
+    Poly divxk(int k) const {
+        if (size() <= k) {
+            return Poly();
+        }
+        return Poly(std::vector<Z>(a.begin() + k, a.end()));
+    }
+    friend Poly operator+(const Poly &a, const Poly &b) {
+        std::vector<Z> res(std::max(a.size(), b.size()));
+        for (int i = 0; i < int(res.size()); i++) {
+            res[i] = a[i] + b[i];
+        }
+        return Poly(res);
+    }
+    friend Poly operator-(const Poly &a, const Poly &b) {
+        std::vector<Z> res(std::max(a.size(), b.size()));
+        for (int i = 0; i < int(res.size()); i++) {
+            res[i] = a[i] - b[i];
+        }
+        return Poly(res);
+    }
+    friend Poly operator*(Poly a, Poly b) {
+        if (a.size() == 0 || b.size() == 0) {
+            return Poly();
+        }
+        int sz = 1, tot = a.size() + b.size() - 1;
+        while (sz < tot) {
+            sz *= 2;
+        }
+        a.a.resize(sz);
+        b.a.resize(sz);
+        dft(a.a);
+        dft(b.a);
+        for (int i = 0; i < sz; ++i) {
+            a.a[i] = a[i] * b[i];
+        }
+        idft(a.a);
+        a.resize(tot);
+        return a;
+    }
+    friend Poly operator*(Z a, Poly b) {
+        for (int i = 0; i < int(b.size()); i++) {
+            b[i] *= a;
+        }
+        return b;
+    }
+    friend Poly operator*(Poly a, Z b) {
+        for (int i = 0; i < int(a.size()); i++) {
+            a[i] *= b;
+        }
+        return a;
+    }
+    Poly &operator+=(Poly b) {
+        return (*this) = (*this) + b;
+    }
+    Poly &operator-=(Poly b) {
+        return (*this) = (*this) - b;
+    }
+    Poly &operator*=(Poly b) {
+        return (*this) = (*this) * b;
+    }
+    Poly deriv() const {
+        if (a.empty()) {
+            return Poly();
+        }
+        std::vector<Z> res(size() - 1);
+        for (int i = 0; i < size() - 1; ++i) {
+            res[i] = (i + 1) * a[i + 1];
+        }
+        return Poly(res);
+    }
+    Poly integr() const {
+        std::vector<Z> res(size() + 1);
+        for (int i = 0; i < size(); ++i) {
+            res[i + 1] = a[i] / (i + 1);
+        }
+        return Poly(res);
+    }
+    Poly inv(int m) const {
+        Poly x{a[0].inv()};
+        int k = 1;
+        while (k < m) {
+            k *= 2;
+            x = (x * (Poly{2} - modxk(k) * x)).modxk(k);
+        }
+        return x.modxk(m);
+    }
+    Poly log(int m) const {
+        return (deriv() * inv(m)).integr().modxk(m);
+    }
+    Poly exp(int m) const {
+        Poly x{1};
+        int k = 1;
+        while (k < m) {
+            k *= 2;
+            x = (x * (Poly{1} - x.log(k) + modxk(k))).modxk(k);
+        }
+        return x.modxk(m);
+    }
+    Poly pow(int k, int m) const {
+        int i = 0;
+        while (i < size() && a[i].val() == 0) {
+            i++;
+        }
+        if (i == size() || 1LL * i * k >= m) {
+            return Poly(std::vector<Z>(m));
+        }
+        Z v = a[i];
+        auto f = divxk(i) * v.inv();
+        return (f.log(m - i * k) * k).exp(m - i * k).mulxk(i * k) * power(v, k);
+    }
+    Poly sqrt(int m) const {
+        Poly x{1};
+        int k = 1;
+        while (k < m) {
+            k *= 2;
+            x = (x + (modxk(k) * x.inv(k)).modxk(k)) * ((P + 1) / 2);
+        }
+        return x.modxk(m);
+    }
+    Poly mulT(Poly b) const {
+        if (b.size() == 0) {
+            return Poly();
+        }
+        int n = b.size();
+        std::reverse(b.a.begin(), b.a.end());
+        return ((*this) * b).divxk(n - 1);
+    }
+    std::vector<Z> eval(std::vector<Z> x) const {
+        if (size() == 0) {
+            return std::vector<Z>(x.size(), 0);
+        }
+        const int n = std::max(int(x.size()), size());
+        std::vector<Poly> q(4 * n);
+        std::vector<Z> ans(x.size());
+        x.resize(n);
+        std::function<void(int, int, int)> build = [&](int p, int l, int r) {
+            if (r - l == 1) {
+                q[p] = Poly{1, -x[l]};
+            } else {
+                int m = (l + r) / 2;
+                build(2 * p, l, m);
+                build(2 * p + 1, m, r);
+                q[p] = q[2 * p] * q[2 * p + 1];
+            }
+        };
+        build(1, 0, n);
+        std::function<void(int, int, int, const Poly &)> work = [&](int p, int l, int r, const Poly &num) {
+            if (r - l == 1) {
+                if (l < int(ans.size())) {
+                    ans[l] = num[0];
+                }
+            } else {
+                int m = (l + r) / 2;
+                work(2 * p, l, m, num.mulT(q[2 * p + 1]).modxk(m - l));
+                work(2 * p + 1, m, r, num.mulT(q[2 * p]).modxk(r - m));
+            }
+        };
+        work(1, 0, n, mulT(q[1].inv(n)));
+        return ans;
+    }
+};
+\end{lstlisting}
+
+\subsection{mint}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class T>
+constexpr T power(T a, ll b) {
+    T res = 1;
+    for (; b; b /= 2, a *= a) {
+        if (b % 2) {
+            res *= a;
+        }
+    }
+    return res;
+}
+
+template<int P>
+struct MInt {
+    int x;
+    constexpr MInt() : x{} {}
+    constexpr MInt(ll x) : x{norm(x % P)} {}
+
+    constexpr int norm(int x) const {
+        if (x < 0) {
+            x += P;
+        }
+        if (x >= P) {
+            x -= P;
+        }
+        return x;
+    }
+    constexpr int val() const {
+        return x;
+    }
+    explicit constexpr operator int() const {
+        return x;
+    }
+    constexpr MInt operator-() const {
+        MInt res;
+        res.x = norm(P - x);
+        return res;
+    }
+    constexpr MInt inv() const {
+        assert(x != 0);
+        return power(*this, P - 2);
+    }
+    constexpr MInt &operator*=(MInt rhs) {
+        x = 1LL * x * rhs.x % P;
+        return *this;
+    }
+    constexpr MInt &operator+=(MInt rhs) {
+        x = norm(x + rhs.x);
+        return *this;
+    }
+    constexpr MInt &operator-=(MInt rhs) {
+        x = norm(x - rhs.x);
+        return *this;
+    }
+    constexpr MInt &operator/=(MInt rhs) {
+        return *this *= rhs.inv();
+    }
+    friend constexpr MInt operator*(MInt lhs, MInt rhs) {
+        MInt res = lhs;
+        res *= rhs;
+        return res;
+    }
+    friend constexpr MInt operator+(MInt lhs, MInt rhs) {
+        MInt res = lhs;
+        res += rhs;
+        return res;
+    }
+    friend constexpr MInt operator-(MInt lhs, MInt rhs) {
+        MInt res = lhs;
+        res -= rhs;
+        return res;
+    }
+    friend constexpr MInt operator/(MInt lhs, MInt rhs) {
+        MInt res = lhs;
+        res /= rhs;
+        return res;
+    }
+    friend constexpr std::istream &operator>>(std::istream &is, MInt &a) {
+        ll v;
+        is >> v;
+        a = MInt(v);
+        return is;
+    }
+    friend constexpr std::ostream &operator<<(std::ostream &os, const MInt &a) {
+        return os << a.val();
+    }
+    friend constexpr bool operator==(MInt lhs, MInt rhs) {
+        return lhs.val() == rhs.val();
+    }
+    friend constexpr bool operator!=(MInt lhs, MInt rhs) {
+        return lhs.val() != rhs.val();
+    }
+};
+
+template<int V, int P>
+constexpr MInt<P> CInv = MInt<P>(V).inv();
+
+constexpr int P = 998244353;
+// constexpr int P = 1e9+7;
+using Z = MInt<P>;
+
+struct Comb {
+    int n;
+    std::vector<Z> _fac;
+    std::vector<Z> _invfac;
+    std::vector<Z> _inv;
+
+    Comb() : n{0}, _fac{1}, _invfac{1}, _inv{0} {}
+    Comb(int n) : Comb() {
+        init(n);
+    }
+
+    void init(int m) {
+        if (m <= n) return;
+        _fac.resize(m + 1);
+        _invfac.resize(m + 1);
+        _inv.resize(m + 1);
+
+        for (int i = n + 1; i <= m; i++) {
+            _fac[i] = _fac[i - 1] * i;
+        }
+        _invfac[m] = _fac[m].inv();
+        for (int i = m; i > n; i--) {
+            _invfac[i - 1] = _invfac[i] * i;
+            _inv[i] = _invfac[i] * _fac[i - 1];
+        }
+        n = m;
+    }
+
+    Z fac(int m) {
+        if (m > n) init(2 * m);
+        return _fac[m];
+    }
+    Z invfac(int m) {
+        if (m > n) init(2 * m);
+        return _invfac[m];
+    }
+    Z inv(int m) {
+        if (m > n) init(2 * m);
+        return _inv[m];
+    }
+    Z binom(int n, int m) {
+        if (n < m || m < 0) return 0;
+        return fac(n) * invfac(m) * invfac(n - m);
+    }
+} comb;
+struct Inversion {
+    static constexpr int B = (1 << 10), T = (1 << 20);
+    std::array < int, T + 1 > f, p;
+    std::array < int, T * 3 + 3 > buf;
+    int *I = buf.begin() + T;
+    Inversion() {
+        for (int i = 1; i <= B; i++) {
+            int s = 0, d = (i << 10);
+            for (int j = 1; j <= T; j++) {
+                if ((s += d) >= P) s -= P;
+                if (s <= T) {
+                    if (!f[j]) f[j] = i, p[j] = s;
+                }
+                else if (s >= P - T) {
+                    if (!f[j]) f[j] = i, p[j] = s - P;
+                }
+                else {
+                    int t = (P - T - s - 1) / d;
+                    s += t * d, j += t;
+                }
+            }
+        }
+        I[1] = f[0] = 1;
+        for (int i = 2; i <= (T << 1); i++)
+            I[i] = 1ll * (P - P / i) * I[P % i] % P;
+
+        for (int i = -1; i >= -T; i--)
+            I[i] = P - I[-i];
+
+    }
+    Z inv(int x) {
+        return Z(1)* I[p[x >> 10] + (x & 1023) * f[x >> 10]] * f[x >> 10];
+    }
+};\end{lstlisting}
+
+\subsection{skip,Pollard-pho}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+namespace factor {
+    using f64 = long double;
+    ll p;
+    f64 invp;
+    void setmod(ll x) {
+        p = x, invp = (f64) 1 / x;
+    }
+    ll mul(ll a, ll b) {
+        ll z = a * invp * b + 0.5;
+        ll res = a * b - z * p;
+        return res + (res >> 63 & p);
+    }
+    ll power(ll a, ll x, ll res = 1) {
+        for(;x;x >>= 1, a = mul(a, a))
+            if(x & 1) res = mul(res, a);
+        return res;
+    }
+    inline ll rho(ll n) {
+        if(!(n & 1)) return 2;
+        static std::mt19937_64 gen((size_t)"hehezhou");
+        ll x = 0, y = 0, prod = 1;
+        auto f = [&](ll o) { return mul(o, o) + 1; };
+        setmod(n);
+        for(int t = 30, z = 0;t % 64 || std::gcd(prod, n) == 1;++t) {
+            if (x == y) x = ++ z, y = f(x);
+            if(ll q = mul(prod, x + n - y)) prod = q;
+            x = f(x), y = f(f(y));
+        }
+        return std::gcd(prod, n);
+    }
+    bool checkprime(ll p) {
+        if(p == 1) return 0;
+        setmod(p);
+        ll d = __builtin_ctzll(p - 1), s = (p - 1) >> d;
+        for(ll a : {2, 3, 5, 7, 11, 13, 82, 373}) {
+            if(a % p == 0)
+                continue;
+            ll x = power(a, s), y;
+            for(int i = 0;i < d;++i, x = y) {
+                y = mul(x, x);
+                if(y == 1 && x != 1 && x != p - 1)
+                    return 0;
+            }
+            if(x != 1) return 0;
+        }
+        return 1;
+    }
+    std::vector<ll> get_factor(ll x) {
+        std::queue<ll> q; q.push(x);
+        std::vector<ll> res;
+        for(;q.size();) {
+            ll x = q.front(); q.pop();
+            if(x == 1) continue;
+            if(checkprime(x)) {
+                res.push_back(x);
+                continue;
+            }
+            ll y = rho(x);
+            q.push(y), q.push(x / y);
+        }
+        sort(res.begin(), res.end());
+        return res;
+    }
+}\end{lstlisting}
+
+\subsection{分数类}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+//
+// Created by 墨华 on 2024/6/2.
+//
+template<class T>
+struct Frac {
+    T num;
+    T den;
+    Frac(T num_, T den_) : num(num_), den(den_) {
+        if (den < 0) {
+            den = -den;
+            num = -num;
+        }
+    }
+    Frac() : Frac(0, 1) {}
+    Frac(T num_) : Frac(num_, 1) {}
+    explicit operator double() const {
+        return 1. * num / den;
+    }
+    Frac &operator+=(const Frac &rhs) {
+        num = num * rhs.den + rhs.num * den;
+        den *= rhs.den;
+        T g = std::gcd(num, den);
+        num/=g;
+        den/=g;
+        return *this;
+    }
+    Frac &operator-=(const Frac &rhs) {
+        num = num * rhs.den - rhs.num * den;
+        den *= rhs.den;
+        T g = std::gcd(num, den);
+        num/=g;
+        den/=g;
+        return *this;
+    }
+    Frac &operator*=(const Frac &rhs) {
+        num *= rhs.num;
+        den *= rhs.den;
+        T g = std::gcd(num, den);
+        num/=g;
+        den/=g;
+        return *this;
+    }
+    Frac &operator/=(const Frac &rhs) {
+        num *= rhs.den;
+        den *= rhs.num;
+        if (den < 0) {
+            num = -num;
+            den = -den;
+        }
+        T g = std::gcd(num, den);
+        num/=g;
+        den/=g;
+        return *this;
+    }
+    friend Frac operator+(Frac lhs, const Frac &rhs) {
+        return lhs += rhs;
+    }
+    friend Frac operator-(Frac lhs, const Frac &rhs) {
+        return lhs -= rhs;
+    }
+    friend Frac operator*(Frac lhs, const Frac &rhs) {
+        return lhs *= rhs;
+    }
+    friend Frac operator/(Frac lhs, const Frac &rhs) {
+        return lhs /= rhs;
+    }
+    friend Frac operator-(const Frac &a) {
+        return Frac(-a.num, a.den);
+    }
+    friend bool operator==(const Frac &lhs, const Frac &rhs) {
+        return lhs.num * rhs.den == rhs.num * lhs.den;
+    }
+    friend bool operator!=(const Frac &lhs, const Frac &rhs) {
+        return lhs.num * rhs.den != rhs.num * lhs.den;
+    }
+    friend bool operator<(const Frac &lhs, const Frac &rhs) {
+        return lhs.num * rhs.den < rhs.num * lhs.den;
+    }
+    friend bool operator>(const Frac &lhs, const Frac &rhs) {
+        return lhs.num * rhs.den > rhs.num * lhs.den;
+    }
+    friend bool operator<=(const Frac &lhs, const Frac &rhs) {
+        return lhs.num * rhs.den <= rhs.num * lhs.den;
+    }
+    friend bool operator>=(const Frac &lhs, const Frac &rhs) {
+        return lhs.num * rhs.den >= rhs.num * lhs.den;
+    }
+    friend std::ostream &operator<<(std::ostream &os, Frac x) {
+        T g = std::gcd(x.num, x.den);
+        if (x.den == g) {
+            return os << x.num / g;
+        } else {
+            return os << x.num / g << "/" << x.den / g;
+        }
+    }
+};
+
+using F = Frac<ll>;\end{lstlisting}
+
+\subsection{大数}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+const int base = 1000000000;
+const int base_digits = 9; // 分解为九个数位一个数字
+struct bigint {
+    vector<int> a;
+    int sign;
+
+    bigint() : sign(1) {}
+    bigint operator-() const {
+        bigint res = *this;
+        res.sign = -sign;
+        return res;
+    }
+    bigint(long long v) {
+        *this = v;
+    }
+    bigint(const string &s) {
+        read(s);
+    }
+    void operator=(const bigint &v) {
+        sign = v.sign;
+        a = v.a;
+    }
+    void operator=(long long v) {
+        a.clear();
+        sign = 1;
+        if (v < 0) sign = -1, v = -v;
+        for (; v > 0; v = v / base) {
+            a.push_back(v % base);
+        }
+    }
+
+    // 基础加减乘除
+    bigint operator+(const bigint &v) const {
+        if (sign == v.sign) {
+            bigint res = v;
+            for (int i = 0, carry = 0; i < (int)max(a.size(), v.a.size()) || carry; ++i) {
+                if (i == (int)res.a.size()) {
+                    res.a.push_back(0);
+                }
+                res.a[i] += carry + (i < (int)a.size() ? a[i] : 0);
+                carry = res.a[i] >= base;
+                if (carry) {
+                    res.a[i] -= base;
+                }
+            }
+            return res;
+        }
+        return *this - (-v);
+    }
+    bigint operator-(const bigint &v) const {
+        if (sign == v.sign) {
+            if (abs() >= v.abs()) {
+                bigint res = *this;
+                for (int i = 0, carry = 0; i < (int)v.a.size() || carry; ++i) {
+                    res.a[i] -= carry + (i < (int)v.a.size() ? v.a[i] : 0);
+                    carry = res.a[i] < 0;
+                    if (carry) {
+                        res.a[i] += base;
+                    }
+                }
+                res.trim();
+                return res;
+            }
+            return -(v - *this);
+        }
+        return *this + (-v);
+    }
+    void operator*=(int v) {
+        check(v);
+        for (int i = 0, carry = 0; i < (int)a.size() || carry; ++i) {
+            if (i == (int)a.size()) {
+                a.push_back(0);
+            }
+            long long cur = a[i] * (long long)v + carry;
+            carry = (int)(cur / base);
+            a[i] = (int)(cur % base);
+        }
+        trim();
+    }
+    void operator/=(int v) {
+        check(v);
+        for (int i = (int)a.size() - 1, rem = 0; i >= 0; --i) {
+            long long cur = a[i] + rem * (long long)base;
+            a[i] = (int)(cur / v);
+            rem = (int)(cur % v);
+        }
+        trim();
+    }
+    int operator%(int v) const {
+        if (v < 0) {
+            v = -v;
+        }
+        int m = 0;
+        for (int i = a.size() - 1; i >= 0; --i) {
+            m = (a[i] + m * (long long)base) % v;
+        }
+        return m * sign;
+    }
+
+    void operator+=(const bigint &v) {
+        *this = *this + v;
+    }
+    void operator-=(const bigint &v) {
+        *this = *this - v;
+    }
+    bigint operator*(int v) const {
+        bigint res = *this;
+        res *= v;
+        return res;
+    }
+    bigint operator/(int v) const {
+        bigint res = *this;
+        res /= v;
+        return res;
+    }
+    void operator%=(const int &v) {
+        *this = *this % v;
+    }
+
+    bool operator<(const bigint &v) const {
+        if (sign != v.sign) return sign < v.sign;
+        if (a.size() != v.a.size()) return a.size() * sign < v.a.size() * v.sign;
+        for (int i = a.size() - 1; i >= 0; i--)
+            if (a[i] != v.a[i]) return a[i] * sign < v.a[i] * sign;
+        return false;
+    }
+    bool operator>(const bigint &v) const {
+        return v < *this;
+    }
+    bool operator<=(const bigint &v) const {
+        return !(v < *this);
+    }
+    bool operator>=(const bigint &v) const {
+        return !(*this < v);
+    }
+    bool operator==(const bigint &v) const {
+        return !(*this < v) && !(v < *this);
+    }
+    bool operator!=(const bigint &v) const {
+        return *this < v || v < *this;
+    }
+
+    bigint abs() const {
+        bigint res = *this;
+        res.sign *= res.sign;
+        return res;
+    }
+    void check(int v) { // 检查输入的是否为负数
+        if (v < 0) {
+            sign = -sign;
+            v = -v;
+        }
+    }
+    void trim() { // 去除前导零
+        while (!a.empty() && !a.back()) a.pop_back();
+        if (a.empty()) sign = 1;
+    }
+    bool isZero() const { // 判断是否等于零
+        return a.empty() || (a.size() == 1 && !a[0]);
+    }
+    friend bigint gcd(const bigint &a, const bigint &b) {
+        return b.isZero() ? a : gcd(b, a % b);
+    }
+    friend bigint lcm(const bigint &a, const bigint &b) {
+        return a / gcd(a, b) * b;
+    }
+    void read(const string &s) {
+        sign = 1;
+        a.clear();
+        int pos = 0;
+        while (pos < (int)s.size() && (s[pos] == '-' || s[pos] == '+')) {
+            if (s[pos] == '-') sign = -sign;
+            ++pos;
+        }
+        for (int i = s.size() - 1; i >= pos; i -= base_digits) {
+            int x = 0;
+            for (int j = max(pos, i - base_digits + 1); j <= i; j++) x = x * 10 + s[j] - '0';
+            a.push_back(x);
+        }
+        trim();
+    }
+    friend istream &operator>>(istream &stream, bigint &v) {
+        string s;
+        stream >> s;
+        v.read(s);
+        return stream;
+    }
+    friend ostream &operator<<(ostream &stream, const bigint &v) {
+        if (v.sign == -1) stream << '-';
+        stream << (v.a.empty() ? 0 : v.a.back());
+        for (int i = (int)v.a.size() - 2; i >= 0; --i)
+            stream << setw(base_digits) << setfill('0') << v.a[i];
+        return stream;
+    }
+
+    /* 大整数乘除大整数部分 */
+    typedef vector<long long> vll;
+    bigint operator*(const bigint &v) const { // 大整数乘大整数
+        vector<int> a6 = convert_base(this->a, base_digits, 6);
+        vector<int> b6 = convert_base(v.a, base_digits, 6);
+        vll a(a6.begin(), a6.end());
+        vll b(b6.begin(), b6.end());
+        while (a.size() < b.size()) a.push_back(0);
+        while (b.size() < a.size()) b.push_back(0);
+        while (a.size() & (a.size() - 1)) a.push_back(0), b.push_back(0);
+        vll c = karatsubaMultiply(a, b);
+        bigint res;
+        res.sign = sign * v.sign;
+        for (int i = 0, carry = 0; i < (int)c.size(); i++) {
+            long long cur = c[i] + carry;
+            res.a.push_back((int)(cur % 1000000));
+            carry = (int)(cur / 1000000);
+        }
+        res.a = convert_base(res.a, 6, base_digits);
+        res.trim();
+        return res;
+    }
+    friend pair<bigint, bigint> divmod(const bigint &a1,
+                                       const bigint &b1) { // 大整数除大整数，同时返回答案与余数
+        int norm = base / (b1.a.back() + 1);
+        bigint a = a1.abs() * norm;
+        bigint b = b1.abs() * norm;
+        bigint q, r;
+        q.a.resize(a.a.size());
+        for (int i = a.a.size() - 1; i >= 0; i--) {
+            r *= base;
+            r += a.a[i];
+            int s1 = r.a.size() <= b.a.size() ? 0 : r.a[b.a.size()];
+            int s2 = r.a.size() <= b.a.size() - 1 ? 0 : r.a[b.a.size() - 1];
+            int d = ((long long)base * s1 + s2) / b.a.back();
+            r -= b * d;
+            while (r < 0) r += b, --d;
+            q.a[i] = d;
+        }
+        q.sign = a1.sign * b1.sign;
+        r.sign = a1.sign;
+        q.trim();
+        r.trim();
+        return make_pair(q, r / norm);
+    }
+    static vector<int> convert_base(const vector<int> &a, int old_digits, int new_digits) {
+        vector<long long> p(max(old_digits, new_digits) + 1);
+        p[0] = 1;
+        for (int i = 1; i < (int)p.size(); i++) p[i] = p[i - 1] * 10;
+        vector<int> res;
+        long long cur = 0;
+        int cur_digits = 0;
+        for (int i = 0; i < (int)a.size(); i++) {
+            cur += a[i] * p[cur_digits];
+            cur_digits += old_digits;
+            while (cur_digits >= new_digits) {
+                res.push_back((int)(cur % p[new_digits]));
+                cur /= p[new_digits];
+                cur_digits -= new_digits;
+            }
+        }
+        res.push_back((int)cur);
+        while (!res.empty() && !res.back()) res.pop_back();
+        return res;
+    }
+    static vll karatsubaMultiply(const vll &a, const vll &b) {
+        int n = a.size();
+        vll res(n + n);
+        if (n <= 32) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    res[i + j] += a[i] * b[j];
+                }
+            }
+            return res;
+        }
+
+        int k = n >> 1;
+        vll a1(a.begin(), a.begin() + k);
+        vll a2(a.begin() + k, a.end());
+        vll b1(b.begin(), b.begin() + k);
+        vll b2(b.begin() + k, b.end());
+
+        vll a1b1 = karatsubaMultiply(a1, b1);
+        vll a2b2 = karatsubaMultiply(a2, b2);
+
+        for (int i = 0; i < k; i++) a2[i] += a1[i];
+        for (int i = 0; i < k; i++) b2[i] += b1[i];
+
+        vll r = karatsubaMultiply(a2, b2);
+        for (int i = 0; i < (int)a1b1.size(); i++) r[i] -= a1b1[i];
+        for (int i = 0; i < (int)a2b2.size(); i++) r[i] -= a2b2[i];
+
+        for (int i = 0; i < (int)r.size(); i++) res[i + k] += r[i];
+        for (int i = 0; i < (int)a1b1.size(); i++) res[i] += a1b1[i];
+        for (int i = 0; i < (int)a2b2.size(); i++) res[i + n] += a2b2[i];
+        return res;
+    }
+
+    void operator*=(const bigint &v) {
+        *this = *this * v;
+    }
+    bigint operator/(const bigint &v) const {
+        return divmod(*this, v).first;
+    }
+    void operator/=(const bigint &v) {
+        *this = *this / v;
+    }
+    bigint operator%(const bigint &v) const {
+        return divmod(*this, v).second;
+    }
+    void operator%=(const bigint &v) {
+        *this = *this % v;
+    }
+};\end{lstlisting}
+
+\subsection{拓展exgcd求逆元}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+ll exgcd(ll a, ll b, ll &x, ll &y) {
+    if (!b) {
+        x = 1, y = 0;
+        return a;
+    }
+    ll d = exgcd(b, a % b, y, x);
+    y -= a / b * x;
+    return d;
+}
+ll inv(ll n, ll M) {
+    ll x, y;
+    exgcd(n, M, x, y);
+    x = (x % M + M) % M;
+    return x;
+}\end{lstlisting}
+
+\subsection{线性基}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+const int N=210;
+const int B=60;
+struct linear_basis{
+    array<ll,B+1>num{};
+    bool insert(ll x){
+        for(int i=B-1;i>=0;i--){
+            if(x&(1ll<<i)){
+                if(num[i]==0){num[i]=x;
+                    return true;
+                };
+                x^=num[i];
+            }
+        }
+        return false;
+    }
+    ll querymin(ll x){
+        for(int i=B-1;i>=0;i--){
+            x=min(x,x^num[i]);
+        }
+        return x;
+    }
+    ll querymax(ll x){
+        for(int i=B-1;i>=0;i--){
+            x=max(x,x^num[i]);
+        }
+        return x;
+    }
+};\end{lstlisting}
+
+\subsection{莫比乌斯反演}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+constexpr int maxn = 1e5 + 7;
+int p[maxn];
+int pr[maxn];
+int tot = 0;
+int phi[maxn];
+int mu[maxn];
+void sieve(ll n) {
+    p[1] = phi[1] = mu[1] = 1;
+    for (ll i = 2; i < n; ++i) {
+        if (!p[i]) mu[i] = -1, pr[++tot] = i, phi[i] = i - 1;
+        for (int j = 1; j <= tot && i * pr[j] < n; ++j) {
+            p[i * pr[j]] = pr[j];
+            if (i % pr[j]) {
+                mu[i * pr[j]] = -mu[i];
+                phi[i * pr[j]] = phi[i] * phi[pr[j]];
+            } else {
+                phi[pr[j]*i] = phi[i] * pr[j];
+                break;
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+\section{数据结构}
+\thispagestyle{fancy}
+
+\subsection{RMQ}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class T,
+        class Cmp = std::less<T>>
+struct RMQ {
+    const Cmp cmp = Cmp();
+    static constexpr unsigned B = 64;
+    using u64 = unsigned long long;
+    int n;
+    std::vector<std::vector<T>> a;
+    std::vector<T> pre, suf, ini;
+    std::vector<u64> stk;
+    RMQ() {}
+    RMQ(std::vector<T> v) {
+        v.erase(v.begin(), v.begin() + 1);
+        init(v);
+    }
+    void init(const std::vector<T>& v) {
+        n = v.size();
+        pre = suf = ini = v;
+        stk.resize(n);
+        if (!n) {
+            return;
+        }
+        const int M = (n - 1) / B + 1;
+        const int lg = std::__lg(M);
+        a.assign(lg + 1, std::vector<T>(M));
+        for (int i = 0; i < M; i++) {
+            a[0][i] = v[i * B];
+            for (int j = 1; j < B && i * B + j < n; j++) {
+                a[0][i] = std::min(a[0][i], v[i * B + j], cmp);
+            }
+        }
+        for (int i = 1; i < n; i++) {
+            if (i % B) {
+                pre[i] = std::min(pre[i], pre[i - 1], cmp);
+            }
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            if (i % B != B - 1) {
+                suf[i] = std::min(suf[i], suf[i + 1], cmp);
+            }
+        }
+        for (int j = 0; j < lg; j++) {
+            for (int i = 0; i + (2 << j) <= M; i++) {
+                a[j + 1][i] = std::min(a[j][i], a[j][i + (1 << j)], cmp);
+            }
+        }
+        for (int i = 0; i < M; i++) {
+            const int l = i * B;
+            const int r = std::min(1U * n, l + B);
+            u64 s = 0;
+            for (int j = l; j < r; j++) {
+                while (s && cmp(v[j], v[std::__lg(s) + l])) {
+                    s ^= 1ULL << std::__lg(s);
+                }
+                s |= 1ULL << (j - l);
+                stk[j] = s;
+            }
+        }
+    }
+    T operator()(int l, int r) {
+        --l;
+        if (l / B != (r - 1) / B) {
+            T ans = std::min(suf[l], pre[r - 1], cmp);
+            l = l / B + 1;
+            r = r / B;
+            if (l < r) {
+                int k = std::__lg(r - l);
+                ans = std::min({ ans, a[k][l], a[k][r - (1 << k)] }, cmp);
+            }
+            return ans;
+        }
+        else {
+            int x = B * (l / B);
+            return ini[__builtin_ctzll(stk[r - 1] >> (l - x)) + l];
+        }
+    }
+};\end{lstlisting}
+
+\subsection{jls分块}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class T>
+struct Block {
+    int n;
+    int B;
+    std::vector<T> a;
+    std::vector<T> add;
+    Block(int n_) : n{n_} {
+        B = std::sqrt(n);
+        a.resize(n);
+        add.resize((n + B - 1) / B);
+    }
+    void rangeAdd(int l, int r, int v) {
+        r++;
+        if (l >= r) {
+            return;
+        }
+        int lb = l / B;
+        int rb = (r - 1) / B;
+        if (lb == rb) {
+            for (int i = l; i < r; i++) {
+                a[i] += v;
+            }
+        } else {
+            for (int i = l; i < (lb + 1) * B; i++) {
+                a[i] += v;
+            }
+            for (int i = lb + 1; i < rb; i++) {
+                add[i] += v;
+            }
+            for (int i = rb * B; i < r; i++) {
+                a[i] += v;
+            }
+        }
+    }
+    T query(int x) {
+        return a[x] + add[x / B];
+    }
+};\end{lstlisting}
+
+\subsection{st表}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template <class Info>
+struct ST {
+    int n, m;
+    std::vector<std::vector<Info>> f;
+    ST(std::vector<ll> &a) : n(a.size() - 1) {
+        m = __lg(n) + 1;
+        f.resize(m + 1, vector<Info>(n + 1));
+        for (int i = 1; i <= n; i++) {
+            f[0][i] = {a[i]};
+        }
+        for (int j = 1; j <= m; j++) {
+            for (int i = 1; i + (1 << j) - 1 <= n; i++) {
+                f[j][i] = f[j - 1][i] + f[j - 1][i + (1 << (j - 1))];
+            }
+        }
+    }
+    Info operator()(int l, int r) {
+        int len = (r - l + 1);
+        ll k = __lg(len);
+        return f[k][l] + f[k][r - (1 << k) + 1];
+    }
+};
+struct Info {
+    ll x;
+    friend Info operator+(const Info &a, const Info &b) {
+        Info res;
+        res.x = max(a.x, b.x);
+        return res;
+    }
+};\end{lstlisting}
+
+\subsection{zkw线段树}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class T>
+struct Segment {
+    T o[1 << 20]; int L;
+    void upt(int x) {
+        o[x] = o[x << 1] + o[x << 1 | 1];
+    }
+    void init(int n, const vector<T>&w) {
+        L = 2 << std::__lg(n + 1);
+        for (int i = 1; i <= n; ++i) o[i + L] = w[i];
+        for (int i = L; i >= 1; --i) upt(i);
+    }
+    void change(int p, T v) {
+        for (o[p += L] = v; p >>= 1; upt(p));
+    }
+    T query(int l, int r) {
+        l += L - 1, r += L + 1;
+        T ans{};
+        for (; l ^ r ^ 1; l >>= 1, r >>= 1) {
+            if ((l & 1) == 0) ans =ans+ o[l ^ 1];
+            if ((r & 1) == 1) ans =ans+ o[r ^ 1];
+        }
+        return ans;
+    }
+};
+struct node {
+    ll val = 0;
+    node () {
+    }
+    friend  node operator+(node lhs, node rhs) {
+        node now;
+        if (lhs.val > rhs.val)now = lhs;
+        else now = rhs;
+        return now;
+    }
+};
+Segment<node>seg;\end{lstlisting}
+
+\subsection{主席树}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct Chairman_Tree {
+    struct Node {int L, R, val;} tree[maxn * 500];
+    void init() {
+        memset(root, 0, sizeof root);
+        cnt = 0;
+    }
+    /* 建T0空树 */
+    int build(int l, int r) {
+        int k = cnt++;
+        tree[k].val = 0;
+        if (l == r) return k;
+        int mid = l + r >> 1;
+        tree[k].L = build(l, mid); tree[k].R = build(mid + 1, r);
+        return k;
+    }
+    /* 上一个版本节点P，【ppos】+=del 返回新版本节点*/
+    int update (int P, int l, int r, int ppos, int del) {
+        int k = cnt++;
+        tree[k].val = tree[P].val + del;
+        if (l == r) return k;
+        int mid = l + r >> 1;
+        if (ppos <= mid) {
+            tree[k].L = update(tree[P].L, l, mid, ppos, del);
+            tree[k].R = tree[P].R;
+        } else {
+            tree[k].L = tree[P].L;
+            tree[k].R = update(tree[P].R, mid + 1, r, ppos, del);
+        }
+        return k;
+    }
+    int query_kth(int lt, int rt, int l, int r, int k) {
+        if (l == r) return a[rk[l]];
+        int mid = l + r >> 1;
+        if (tree[tree[rt].L].val - tree[tree[lt].L].val >= k) return query_kth(tree[lt].L, tree[rt].L, l, mid, k);
+        else return query_kth(tree[lt].R, tree[rt].R, mid + 1, r, k + tree[tree[lt].L].val - tree[tree[rt].L].val);
+    }
+} tree;\end{lstlisting}
+
+\subsection{动态中位数}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct DynamicMedian {
+    multiset<ll>down,up;
+    DynamicMedian() {}
+    void change() {
+        while (down.size() > 1 + up.size()) {
+            up.insert(*down.rbegin());
+            down.extract(*down.rbegin());
+        }
+        while (up.size() > down.size()) {
+            down.insert(*up.begin());
+            up.extract(*up.begin());
+        }
+    }
+    void insert(ll x) {
+        if (down.empty() || x <= *down.rbegin()) {
+            down.insert(x);
+        } else {
+            up.insert(x);
+        }
+        change();
+    };
+    void erase(ll x){
+        if(down.find(x)!=down.end()){
+            down.extract(x);
+        }else up.extract(x);
+        change();
+    }
+    ll Ans() {
+        return *down.rbegin();
+    };
+};\end{lstlisting}
+
+\subsection{区间修改+lazy线段树}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class Info, class Tag>
+struct LazySegmentTree {
+    int n;
+    std::vector<Info> info;
+    std::vector<Tag> tag;
+    LazySegmentTree() : n(0) {}
+    LazySegmentTree(int n_) : n(n_), info(4 * n_ + 1, Info()), tag(4 * n_ + 1, Tag()) {}
+    template<class T>
+    LazySegmentTree(std::vector<T> init_) {
+        init(init_);
+    }
+    template<class T>
+    void init(std::vector<T> init_) {
+        n = init_.size() - 1;
+        info.assign(4 * n + 1, Info());
+        tag.assign(4 * n + 1, Tag());
+        auto build = [&](auto && build, int p, int l, int r)->void{
+            if (l == r) {
+                info[p] = init_[l];
+                return;
+            }
+            int mid = (l + r) >> 1;
+            build(build, p << 1, l, mid);
+            build(build, p << 1 | 1, mid + 1, r);
+            push_up(p);
+        };
+        build(build, 1, 1, n);
+    }
+    void push_up(int p) {
+        info[p] = (info[p << 1] + info[p << 1 | 1]);
+    }
+    void push_down(int p) {
+        info[p << 1] += tag[p];
+        info[p << 1 | 1] += tag[p];
+        tag[p << 1] += tag[p];
+        tag[p << 1 | 1] += tag[p];
+        tag[p].init();
+    }
+    void change(int l, int r, Tag num) {
+        change(1, 1, n, l, r, num);
+    }
+    void change(int p, int l, int r, int nl, int nr, Tag num) {
+        if (nl <= l and r <= nr) {
+            info[p] += num;
+            tag[p] += num;
+            return;
+        }
+        push_down(p);
+        int mid = (l + r) >> 1;
+        if (nl <= mid)change(p << 1, l, mid, nl, nr, num);
+        if (nr > mid)change(p << 1 | 1, mid + 1, r, nl, nr, num);
+        push_up(p);
+    }
+    Info query(int l, int r) {
+        return query(1, 1, n, l, r);
+    }
+    Info query(int p, int l, int r, int nl, int nr) {
+        if (nl <= l and r <= nr) {
+            return info[p];
+        }
+        push_down(p);
+        push_up(p);
+        int mid = (l + r) >> 1;
+        if (nr <= mid)return query(p << 1, l, mid, nl, nr);
+        if (nl > mid)return query(p << 1 | 1, mid + 1, r, nl, nr);
+        return query(p << 1, l, mid, nl, nr) + query(p << 1 | 1, mid + 1, r, nl, nr);
+    }
+    int find_first(int p, int l, int r, const std::function<bool(const Info &)> &f)
+    {
+        if (l == r) {
+            return l;
+        }
+        push_down(p);
+        push_up(p);
+        int mid = (l + r) >> 1;
+        if (f(info[p << 1]))return find_first(p << 1, l, mid, f);
+        else return find_first(p << 1 | 1, mid + 1, r, f);
+    }
+    int find_first(const std::function<bool(const Info &)> &f) {
+        return find_first(1, 1, n, f);
+    }
+};
+struct tag {
+    void init() {
+    
+    }
+    tag&operator+=(const tag &t) & {
+    
+        return *this;
+    }
+};
+struct node {
+    friend node operator+(node lhs, node rhs) {
+        node res;
+        
+        return res;
+    }
+    node&operator+=(tag t) {
+        
+        return *this;
+    }
+};\end{lstlisting}
+
+\subsection{单点修改线段树}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class Info>
+struct Segment {
+    std::vector<Info> info;
+    int n;
+    Segment() : n(0) {}
+    Segment(int n) : n(n), info(4*n+1) {}
+    Segment(int n, vector<Info>&v) : n(n), info(4*n+1) {
+        init(v);
+    }
+    void pushup(int p) {
+        info[p] = info[p << 1] + info[p << 1 | 1];
+    }
+    void init(vector<Info>&v) {
+        auto build = [&](auto && build, int p, int l, int r) {
+            if (l == r) {
+                info[p] = v[l];
+                return;
+            }
+            int mid = (l + r) >> 1;
+            build(build, p << 1, l, mid);
+            build(build, p << 1 | 1, mid + 1, r);
+            pushup(p);
+        };
+        build(build, 1, 1, n);
+    }
+    void change(int pos, Info x) {
+        change(1, 1, n, pos, x);
+    }
+    void change(int p, int l, int r, int pos, Info x) {
+        if (l == r) {
+            info[p] = x;
+            return;
+        }
+        int mid = (l + r) >> 1;
+        if (pos <= mid)change(p << 1, l, mid, pos, x);
+        else change(p << 1 | 1, mid + 1, r, pos, x);
+        pushup(p);
+    }
+    Info query(int l, int r) {
+        return query(1, 1, n, l, r);
+    }
+    Info query(int p, int l, int r, int nl, int nr) {
+        if (nl <= l and r <= nr)return info[p];
+        int mid = (l + r) >> 1;
+        if (nr <= mid)return query(p << 1, l, mid, nl, nr);
+        if (nl > mid)return query(p << 1 | 1, mid + 1, r, nl, nr);
+        return query(p << 1, l, mid, nl, nr) + query(p << 1 | 1, mid + 1, r, nl, nr);
+    }
+    int find_first(int p, int l, int r, const std::function<bool(const Info &)> &f)
+    {
+        if (l == r) {
+            return l;
+        }
+        int mid = (l + r) >> 1;
+        if (f(info[p << 1]))return find_first(p << 1, l, mid, f);
+        else return find_first(p << 1 | 1, mid + 1, r, f);
+    }
+};
+struct node {
+    friend  node operator+(node lhs, node rhs) {
+        node now;
+        if (lhs.val < rhs.val)now = lhs;
+        else now = rhs;
+        return now;
+    }
+};\end{lstlisting}
+
+\subsection{扫描线node版}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct tag {
+    ll val = 0;
+    void init() {
+        val = 0;
+    }
+    tag&operator+=(const tag &t) & {
+        val += t.val;
+        return *this;
+    }
+};
+struct node {
+    int minv, mincnt;
+    friend node operator+(const node &l, const node &r) {
+        node a;
+        a.minv = min(l.minv, r.minv);
+        if (l.minv == r.minv)a.mincnt = l.mincnt + r.mincnt;
+        else if (l.minv < r.minv)a.mincnt = l.mincnt;
+        else a.mincnt = r.mincnt;
+        return a;
+    }
+    node&operator+=(tag&t) {
+        minv += t.val;
+        return *this;
+    }
+};\end{lstlisting}
+
+\subsection{树状数组}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template <typename T>
+struct BIT {
+    int n;
+    std::vector<T> a;
+
+    BIT(int n_ = 0) {
+        init(n_);
+    }
+
+    void init(int n_) {
+        n = n_;
+        a.assign(n + 2, T{});
+    }
+
+    void add(int x, const T &v) {
+        for (int i = x + 1; i <= n; i += i & -i) {
+            a[i - 1] = a[i - 1] + v;
+        }
+    }
+
+    T sum(int x) {
+        T ans{};
+        x++;
+        for (int i = x; i > 0; i -= i & -i) {
+            ans = ans + a[i - 1];
+        }
+        return ans;
+    }
+
+    T getSum(int l, int r) {
+        if (l > r)swap(l, r);
+        return sum(r) - sum(l - 1);
+    }
+    void modify(int l, int r, T x) {
+        if (l > r)swap(l, r);
+        add(l, x);
+        add(r + 1, -x);
+    }
+    int select(const T &k) {
+        int x = 0;
+        T cur{};
+        for (int i = 1 << std::__lg(n); i; i /= 2) {
+            if (x + i <= n && cur + a[x + i - 1] <= k) {
+                x += i;
+                cur = cur + a[x - 1];
+            }
+        }
+        return x;
+    }
+};\end{lstlisting}
+
+\subsection{树链剖分}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class SegmentTree, class Info>
+struct Trh {
+    std::vector<int> sz, top, dep, parent, in, out;
+    int cur, n;
+    SegmentTree seg;
+    std::vector<std::vector<int>> e;
+    Trh(int _n) : n(_n), sz(_n + 1), top(_n + 1), dep(_n + 1), parent(_n + 1, -1), e(_n + 1), in(_n + 1), cur(0), out(_n + 1) {
+        seg.init(_n);
+    }
+    void addEdge(int u, int v) {
+        e[u].push_back(v);
+        e[v].push_back(u);
+    }
+    void init(int s) {
+        dfsSz(s);
+        dfsHLD(s);
+    }
+    void dfsSz(int u) {
+        if (parent[u] != -1)
+            e[u].erase(std::find(e[u].begin(), e[u].end(), parent[u]));
+        sz[u] = 1;
+        for (int &v : e[u]) {
+            parent[v] = u;
+            dep[v] = dep[u] + 1;
+            dfsSz(v);
+            sz[u] += sz[v];
+            if (sz[v] > sz[e[u][0]])
+                std::swap(v, e[u][0]);
+        }
+    }
+    void dfsHLD(int u) {
+        in[u] = ++cur;
+        for (int v : e[u]) {
+            if (v == e[u][0]) {
+                top[v] = top[u];
+            } else {
+                top[v] = v;
+            }
+            dfsHLD(v);
+        }
+        out[u] = cur;
+    }
+    int lca(int u, int v) {
+        while (top[u] != top[v]) {
+            if (dep[top[u]] > dep[top[v]]) {
+                u = parent[top[u]];
+            } else {
+                v = parent[top[v]];
+            }
+        }
+        if (dep[u] < dep[v]) {
+            return u;
+        } else {
+            return v;
+        }
+    }
+    void change(int u, int v, ll add) {
+        tag p{add};
+        while (top[u] != top[v]) {
+            if (dep[top[u]] > dep[top[v]]) {
+                seg.change(1, 1, n, in[top[u]], in[u], p);
+                u = parent[top[u]];
+            } else {
+                seg.change(1, 1, n, in[top[v]], in[v], p);
+                v = parent[top[v]];
+            }
+        }
+        if (dep[u] < dep[v]) {
+            seg.change(1, 1, n, in[u], in[v], p);
+        } else {
+            seg.change(1, 1, n, in[v], in[u], p);
+        }
+    }
+    node query(int u, int v) {
+        node ans;
+        while (top[u] != top[v]) {
+            if (dep[top[u]] > dep[top[v]]) {
+                ans = ans + seg.query(1, 1, n, in[top[u]], in[u]);
+                u = parent[top[u]];
+            } else {
+                ans = ans + seg.query(1, 1, n, in[top[v]], in[v]);
+                v = parent[top[v]];
+            }
+        }
+        if (dep[u] < dep[v]) {
+            ans = ans + seg.query(1, 1, n, in[u], in[v]);
+        } else {
+            ans = ans + seg.query(1, 1, n, in[v], in[u]);
+        }
+        return ans;
+    }
+};\end{lstlisting}
+
+\subsection{珂朵莉树}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct ODT {
+    struct odt {
+        int l, r;
+        mutable int x;
+        bool operator < (const odt &a) const {
+            return l < a.l;
+        }
+    };
+    set<odt> tr;
+    typedef set <odt> :: iterator IT;
+    ODT(int l, int r, int x) {
+        tr.insert({l, r, x});
+    }
+    IT split(int pos) { //将pos-1和pos之间切开，返回pos所在区间指针
+        auto it = tr.lower_bound({pos, 0, 0});
+        if (it != tr.end() && it->l == pos) return it;
+        it--;
+        int l = it->l, r = it->r, x = it->x;
+        tr.erase(it);
+        tr.insert({l, pos - 1, x});
+        return tr.insert({pos, r, x}).first;
+    }
+    void assign(int l, int r, int x) {
+        auto R = split(r + 1);
+        auto L = split(l);
+        tr.erase(L, R);
+        tr.insert({l, r, x});
+    }
+    void modify(int l, int r) {
+        auto R = split(r + 1);
+        auto L = split(l);
+        for (auto it = L; it != R; it++) {
+            // 对it->x暴力修改
+        }
+    }
+    int query() {
+        int ans = 0;
+        for (auto it = tr.begin(); it != tr.end(); it++) {
+
+        }
+        return ans;
+    }
+};\end{lstlisting}
+
+\subsection{笛卡尔树}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class T>
+struct CaT{
+    vector<T>l,r;
+    CaT() {}
+    CaT(std::vector<T>&v,int n) {
+        l.assign(n+1,-1);
+        r.assign(n+1,-1);
+        build(v,n);
+    }
+    void build(std::vector<T>&v,int n) {
+        vector<int> st;
+        int root = 0;
+        for (int i = 1; i <= n; i++) {
+            int last = -1;
+            while (!st.empty() && v[st.back()] > v[i]) {
+                last = st.back();
+                st.pop_back();
+            }
+            if (!st.empty())r[st.back()] = i;
+            else root = i;
+            l[i] = last;
+            st.push_back(i);
+        }
+    }
+};\end{lstlisting}
+
+\subsection{线段树代替set}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+struct node {
+    ll val;
+    int id;
+    node () {
+    }
+    friend  node operator+(node lhs, node rhs) {
+        node now;
+        if (lhs.val < rhs.val)now = lhs;
+        else now = rhs;
+        return now;
+    }
+};
+struct Segment {
+    std::vector<node> tre;
+    int n;
+    Segment() : n(0) {}
+    Segment(int n) : n(n), tre(4 << std::__lg(n)+2) {}
+    Segment(int n, vector<node>&v) : n(n), tre(4 << std::__lg(n)+2) {
+        init(v);
+    }
+    void pushup(int p) {
+        tre[p] = tre[p << 1] + tre[p << 1 | 1];
+    }
+    void init(vector<node>&v) {
+        auto build = [&](auto && build, int p, int l, int r) {
+            if (l == r) {
+                tre[p] = v[l];
+                return;
+            }
+            int mid = (l + r) >> 1;
+            build(build, p << 1, l, mid);
+            build(build, p << 1 | 1, mid + 1, r);
+            pushup(p);
+        };
+        build(build, 1, 1, n);
+    }
+    void change(int p, int l, int r, int pos, ll x) {
+        if (l == r) {
+            tre[p].val = x;
+            return;
+        }
+        int mid = (l + r) >> 1;
+        if (pos <= mid)change(p << 1, l, mid, pos, x);
+        else change(p << 1 | 1, mid + 1, r, pos, x);
+        pushup(p);
+    }
+    node query(int p, int l, int r, int nl, int nr) {
+        if (nl <= l and r <= nr)return tre[p];
+        int mid = (l + r) >> 1;
+        if (nr <= mid)return query(p << 1, l, mid, nl, nr);
+        if (nl > mid)return query(p << 1 | 1, mid + 1, r, nl, nr);
+        return query(p << 1, l, mid, nl, nr) + query(p << 1 | 1, mid + 1, r, nl, nr);
+    }
+    void erase(int u) {
+        change(1, 1, n, u, LNF);
+    }
+    void insert(int u,ll val){
+        change(1,1,n,u,node{val,u});
+    }
+};\end{lstlisting}
+
+\subsection{莫队}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int maxn=2e5+7;
+ll tmp=0;
+int main(){
+    int n,m;
+    cin>>n>>m;
+    vector<int>v(n+1);
+    for(int i=1;i<=n;i++)cin>>v[i];
+    vector<ll>ans(m);
+    std::vector<std::array<int, 3>> que(m);
+    for(int i=0;i<m;i++){
+        int l,r;
+        cin>>l>>r;
+        que[i]={l,r,i};
+    }
+    const int B=400;
+     vector<int>cnt(maxn,0);
+    std::sort(que.begin(),que.end(),[&](array<int,3>a, array<int,3>b) {
+        if (a[0] / B != b[0] / B) {
+            return a[0]/B < b[0]/B;
+        } else {
+            return a[1] < b[1];
+        }
+    });
+    
+    ll res=0;
+    auto add = [&](int x) {
+        x=v[x];
+        res += 1LL * cnt[x] * (cnt[x] - 1) / 2;
+        cnt[x] += 1;
+    };
+    auto del = [&](int x) {
+        x=v[x];
+        cnt[x] -= 1;
+        res -= 1LL * cnt[x] * (cnt[x] - 1) / 2;
+    };
+    int l = 1, r = 0;
+    for(int i=0;i<m;i++){
+        while(r<que[i][1])r++,add(r);
+        while(l>que[i][0])l--,add(l);
+        while(r>que[i][1])del(r),r--;
+        while(l<que[i][0])del(l),l++;
+        ans[que[i][2]]=res;
+    }
+    for(int i=0;i<m;i++)cout<<ans[i]<<"\n";
+}\end{lstlisting}
+
+\section{计算几何}
+\thispagestyle{fancy}
+
+\subsection{牛客计算几何}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+using point_t = long long;
+// using point_t = long double; //全局数据类型
+
+constexpr point_t eps = 1e-8;
+constexpr point_t INF = numeric_limits<point_t>::max();
+constexpr long double PI = 3.1415926535897932384l;
+
+// 点与向量
+template<typename T> struct point
+{
+    T x, y;
+
+    bool operator==(const point &a) const {return (abs(x - a.x) <= eps && abs(y - a.y) <= eps);}
+    bool operator<(const point &a) const {if (abs(x - a.x) <= eps) return y < a.y - eps; return x < a.x - eps;}
+    bool operator>(const point &a) const {return !(*this < a || *this == a);}
+    point operator+(const point &a) const {return {x + a.x, y + a.y};}
+    point operator-(const point &a) const {return {x - a.x, y - a.y};}
+    point operator-() const {return { -x, -y};}
+    point operator*(const T k) const {return {k * x, k * y};}
+    point operator/(const T k) const {return {x / k, y / k};}
+    T operator*(const point &a) const {return x * a.x + y * a.y;} // 点积
+    T operator^(const point &a) const {return x * a.y - y * a.x;} // 叉积，注意优先级
+    int toleft(const point &a) const {const auto t = (*this)^a; return (t > eps) - (t < -eps);} // to-left 测试
+    T len2() const {return (*this) * (*this);} // 向量长度的平方
+    T dis2(const point &a) const {return (a - (*this)).len2();} // 两点距离的平方
+
+    // 涉及浮点数
+    long double len() const {return sqrtl(len2());}  // 向量长度
+    long double dis(const point &a) const {return sqrtl(dis2(a));}  // 两点距离
+    long double ang(const point &a) const {return acosl(max(-1.0l, min(1.0l, ((*this) * a) / (len() * a.len()))));} // 向量夹角
+    point rot(const long double rad) const {return {x * cos(rad) - y * sin(rad), x * sin(rad) + y * cos(rad)};} // 逆时针旋转（给定角度）
+    point rot(const long double cosr, const long double sinr) const {return {x*cosr - y * sinr, x*sinr + y * cosr};} // 逆时针旋转（给定角度的正弦与余弦）
+    friend constexpr std::ostream &operator<<(std::ostream &os, const point &a) {
+        return os << a.x << " " << a.y;
+    }
+    friend constexpr std::istream &operator>>(std::istream &is, point &a) {
+        is >> a.x >> a.y;
+        return is;
+    }
+};
+using Point = point<point_t>;
+
+// 极角排序
+struct argcmp
+{
+    bool operator()(const Point &a, const Point &b) const
+    {
+        const auto quad = [](const Point & a)
+        {
+            if (a.y < -eps) return 1;
+            if (a.y > eps) return 4;
+            if (a.x < -eps) return 5;
+            if (a.x > eps) return 3;
+            return 2;
+        };
+        const int qa = quad(a), qb = quad(b);
+        if (qa != qb) return qa < qb;
+        const auto t = a ^ b;
+        // if (abs(t)<=eps) return a*a<b*b-eps;  // 不同长度的向量需要分开
+        return t > eps;
+    }
+};
+
+// 直线
+template<typename T> struct line
+{
+    point<T> p, v; // p 为直线上一点，v 为方向向量
+
+    bool operator==(const line &a) const {return v.toleft(a.v) == 0 && v.toleft(p - a.p) == 0;}
+    int toleft(const point<T> &a) const {return v.toleft(a - p);} // to-left 测试
+    bool operator<(const line &a) const  // 半平面交算法定义的排序
+    {
+        if (abs(v ^ a.v) <= eps && v * a.v >= -eps) return toleft(a.p) == -1;
+        return argcmp()(v, a.v);
+    }
+
+    // 涉及浮点数
+    point<T> inter(const line &a) const {return p + v * ((a.v ^ (p - a.p)) / (v ^ a.v));} // 直线交点
+    long double dis(const point<T> &a) const {return abs(v ^ (a - p)) / v.len();} // 点到直线距离
+    point<T> proj(const point<T> &a) const {return p + v * ((v * (a - p)) / (v * v));} // 点在直线上的投影
+};
+
+using Line = line<point_t>;
+
+//线段
+template<typename T> struct segment
+{
+    point<T> a, b;
+
+    bool operator<(const segment &s) const {return make_pair(a, b) < make_pair(s.a, s.b);}
+
+    // 判定性函数建议在整数域使用
+
+    // 判断点是否在线段上
+    // -1 点在线段端点 | 0 点不在线段上 | 1 点严格在线段上
+    int is_on(const point<T> &p) const
+    {
+        if (p == a || p == b) return -1;
+        return (p - a).toleft(p - b) == 0 && (p - a) * (p - b) < -eps;
+    }
+
+    // 判断线段直线是否相交
+    // -1 直线经过线段端点 | 0 线段和直线不相交 | 1 线段和直线严格相交
+    int is_inter(const line<T> &l) const
+    {
+        if (l.toleft(a) == 0 || l.toleft(b) == 0) return -1;
+        return l.toleft(a) != l.toleft(b);
+    }
+
+    // 判断两线段是否相交
+    // -1 在某一线段端点处相交 | 0 两线段不相交 | 1 两线段严格相交
+    int is_inter(const segment<T> &s) const
+    {
+        if (is_on(s.a) || is_on(s.b) || s.is_on(a) || s.is_on(b)) return -1;
+        const line<T> l{a, b - a}, ls{s.a, s.b - s.a};
+        return l.toleft(s.a) * l.toleft(s.b) == -1 && ls.toleft(a) * ls.toleft(b) == -1;
+    }
+
+    // 点到线段距离
+    long double dis(const point<T> &p) const
+    {
+        if ((p - a) * (b - a) < -eps || (p - b) * (a - b) < -eps) return min(p.dis(a), p.dis(b));
+        const line<T> l{a, b - a};
+        return l.dis(p);
+    }
+
+    // 两线段间距离
+    long double dis(const segment<T> &s) const
+    {
+        if (is_inter(s)) return 0;
+        return min({dis(s.a), dis(s.b), s.dis(a), s.dis(b)});
+    }
+};
+
+using Segment = segment<point_t>;
+
+// 多边形
+template<typename T> struct polygon
+{
+    vector<point<T>> p;  // 以逆时针顺序存储
+
+    size_t nxt(const size_t i) const {return i == p.size() - 1 ? 0 : i + 1;}
+    size_t pre(const size_t i) const {return i == 0 ? p.size() - 1 : i - 1;}
+
+    // 回转数
+    // 返回值第一项表示点是否在多边形边上
+    // 对于狭义多边形，回转数为 0 表示点在多边形外，否则点在多边形内
+    pair<bool, int> winding(const point<T> &a) const
+    {
+        int cnt = 0;
+        for (size_t i = 0; i < p.size(); i++)
+        {
+            const point<T> u = p[i], v = p[nxt(i)];
+            if (abs((a - u) ^ (a - v)) <= eps && (a - u) * (a - v) <= eps) return {true, 0};
+            if (abs(u.y - v.y) <= eps) continue;
+            const Line uv = {u, v - u};
+            if (u.y < v.y - eps && uv.toleft(a) <= 0) continue;
+            if (u.y > v.y + eps && uv.toleft(a) >= 0) continue;
+            if (u.y < a.y - eps && v.y >= a.y - eps) cnt++;
+            if (u.y >= a.y - eps && v.y < a.y - eps) cnt--;
+        }
+        return {false, cnt};
+    }
+
+    // 多边形面积的两倍
+    // 可用于判断点的存储顺序是顺时针或逆时针
+    T area() const
+    {
+        T sum = 0;
+        for (size_t i = 0; i < p.size(); i++) sum += p[i] ^ p[nxt(i)];
+        return sum;
+    }
+
+    // 多边形的周长
+    long double circ() const
+    {
+        long double sum = 0;
+        for (size_t i = 0; i < p.size(); i++) sum += p[i].dis(p[nxt(i)]);
+        return sum;
+    }
+};
+
+using Polygon = polygon<point_t>;
+
+//凸多边形
+template<typename T> struct convex: polygon<T>
+{
+    // 闵可夫斯基和
+    convex operator+(const convex &c) const
+    {
+        const auto &p = this->p;
+        vector<Segment> e1(p.size()), e2(c.p.size()), edge(p.size() + c.p.size());
+        vector<point<T>> res; res.reserve(p.size() + c.p.size());
+        const auto cmp = [](const Segment & u, const Segment & v) {return argcmp()(u.b - u.a, v.b - v.a);};
+        for (size_t i = 0; i < p.size(); i++) e1[i] = {p[i], p[this->nxt(i)]};
+        for (size_t i = 0; i < c.p.size(); i++) e2[i] = {c.p[i], c.p[c.nxt(i)]};
+        rotate(e1.begin(), min_element(e1.begin(), e1.end(), cmp), e1.end());
+        rotate(e2.begin(), min_element(e2.begin(), e2.end(), cmp), e2.end());
+        merge(e1.begin(), e1.end(), e2.begin(), e2.end(), edge.begin(), cmp);
+        const auto check = [](const vector<point<T>> &res, const point<T> &u)
+        {
+            const auto back1 = res.back(), back2 = *prev(res.end(), 2);
+            return (back1 - back2).toleft(u - back1) == 0 && (back1 - back2) * (u - back1) >= -eps;
+        };
+        auto u = e1[0].a + e2[0].a;
+        for (const auto &v : edge)
+        {
+            while (res.size() > 1 && check(res, u)) res.pop_back();
+            res.push_back(u);
+            u = u + v.b - v.a;
+        }
+        if (res.size() > 1 && check(res, res[0])) res.pop_back();
+        return {res};
+    }
+
+    // 旋转卡壳
+    // 例：凸多边形的直径的平方
+    T rotcaliper() const
+    {
+        const auto &p = this->p;
+        if (p.size() == 1) return 0;
+        if (p.size() == 2) return p[0].dis2(p[1]);
+        const auto area = [](const point<T> &u, const point<T> &v, const point<T> &w) {return (w - u) ^ (w - v);};
+        T ans = 0;
+        for (size_t i = 0, j = 1; i < p.size(); i++)
+        {
+            const auto nxti = this->nxt(i);
+            ans = max({ans, p[j].dis2(p[i]), p[j].dis2(p[nxti])});
+            while (area(p[this->nxt(j)], p[i], p[nxti]) >= area(p[j], p[i], p[nxti]))
+            {
+                j = this->nxt(j);
+                ans = max({ans, p[j].dis2(p[i]), p[j].dis2(p[nxti])});
+            }
+        }
+        return ans;
+    }
+
+    // 判断点是否在凸多边形内
+    // 复杂度 O(logn)
+    // -1 点在多边形边上 | 0 点在多边形外 | 1 点在多边形内
+    int is_in(const point<T> &a) const
+    {
+        const auto &p = this->p;
+        if (p.size() == 1) return a == p[0] ? -1 : 0;
+        if (p.size() == 2) return segment<T> {p[0], p[1]} .is_on(a) ? -1 : 0;
+        if (a == p[0]) return -1;
+        if ((p[1] - p[0]).toleft(a - p[0]) == -1 || (p.back() - p[0]).toleft(a - p[0]) == 1) return 0;
+        const auto cmp = [&](const point<T> &u, const point<T> &v) {return (u - p[0]).toleft(v - p[0]) == 1;};
+        const size_t i = lower_bound(p.begin() + 1, p.end(), a, cmp) - p.begin();
+        if (i == 1) return segment<T> {p[0], p[i]} .is_on(a) ? -1 : 0;
+        if (i == p.size() - 1 && segment<T> {p[0], p[i]} .is_on(a)) return -1;
+        if (segment<T> {p[i - 1], p[i]} .is_on(a)) return -1;
+        return (p[i] - p[i - 1]).toleft(a - p[i - 1]) > 0;
+    }
+
+    // 凸多边形关于某一方向的极点
+    // 复杂度 O(logn)
+    // 参考资料：https://codeforces.com/blog/entry/48868
+    template<typename F> size_t extreme(const F &dir) const
+    {
+        const auto &p = this->p;
+        const auto check = [&](const size_t i) {return dir(p[i]).toleft(p[this->nxt(i)] - p[i]) >= 0;};
+        const auto dir0 = dir(p[0]); const auto check0 = check(0);
+        if (!check0 && check(p.size() - 1)) return 0;
+        const auto cmp = [&](const point<T> &v)
+        {
+            const size_t vi = &v - p.data();
+            if (vi == 0) return 1;
+            const auto checkv = check(vi);
+            const auto t = dir0.toleft(v - p[0]);
+            if (vi == 1 && checkv == check0 && t == 0) return 1;
+            return checkv ^ (checkv == check0 && t <= 0);
+        };
+        return partition_point(p.begin(), p.end(), cmp) - p.begin();
+    }
+
+    // 过凸多边形外一点求凸多边形的切线，返回切点下标
+    // 复杂度 O(logn)
+    // 必须保证点在多边形外
+    pair<size_t, size_t> tangent(const point<T> &a) const
+    {
+        const size_t i = extreme([&](const point<T> &u) {return u - a;});
+        const size_t j = extreme([&](const point<T> &u) {return a - u;});
+        return {i, j};
+    }
+
+    // 求平行于给定直线的凸多边形的切线，返回切点下标
+    // 复杂度 O(logn)
+    pair<size_t, size_t> tangent(const line<T> &a) const
+    {
+        const size_t i = extreme([&](...) {return a.v;});
+        const size_t j = extreme([&](...) {return -a.v;});
+        return {i, j};
+    }
+};
+
+using Convex = convex<point_t>;
+// 点集的凸包
+// Andrew 算法，复杂度 O(nlogn)
+Convex convexhull(vector<Point> p)
+{
+    vector<Point> st;
+    if (p.empty()) return Convex{st};
+    sort(p.begin(), p.end());
+    const auto check = [](const vector<Point> &st, const Point & u)
+    {
+        const auto back1 = st.back(), back2 = *prev(st.end(), 2);
+        return (back1 - back2).toleft(u - back1) <= 0;
+    };
+    for (const Point &u : p)
+    {
+        while (st.size() > 1 && check(st, u)) st.pop_back();
+        st.push_back(u);
+    }
+    size_t k = st.size();
+    p.pop_back(); reverse(p.begin(), p.end());
+    for (const Point &u : p)
+    {
+        while (st.size() > k && check(st, u)) st.pop_back();
+        st.push_back(u);
+    }
+    st.pop_back();
+    return Convex{st};
+}
+// 圆
+template<class T>
+struct Circle
+{
+    Point c;
+    T r;
+
+    bool operator==(const Circle &a) const {return c == a.c && abs(r - a.r) <= eps;}
+    long double circ() const {return 2 * PI * r;} // 周长
+    long double area() const {return PI * r * r;} // 面积
+
+    // 点与圆的关系
+    // -1 圆上 | 0 圆外 | 1 圆内
+    int is_in(const Point &p) const {
+        const __int128 d = p.dis2(c);
+        if (d < r * r)return -1;
+        return (d == r * r);
+    }
+    // 直线与圆关系
+    // 0 相离 | 1 相切 | 2 相交
+    int relation(const Line &l) const
+    {
+        __int128 d = (l.v ^ (c - l.p));
+        __int128 len = l.v.len2();
+        if (d * d < (len * r * r))return 2;
+        return (d * d > (len * r * r));
+    }
+
+    // 圆与圆关系
+    // -1 相同 | 0 相离 | 1 外切 | 2 相交 | 3 内切 | 4 内含
+    int relation(const Circle &a) const
+    {
+        if (*this == a) return -1;
+        const long double d = c.dis(a.c);
+        if (d > r + a.r + eps) return 0;
+        if (abs(d - r - a.r) <= eps) return 1;
+        if (abs(d - abs(r - a.r)) <= eps) return 3;
+        if (d < abs(r - a.r) - eps) return 4;
+        return 2;
+    }
+
+    // 直线与圆的交点
+    vector<Point> inter(const Line &l) const
+    {
+        const long double d = l.dis(c);
+        const Point p = l.proj(c);
+        const int t = relation(l);
+        if (t == 0) return vector<Point>();
+        if (t == 1) return vector<Point> {p};
+        const long double k = sqrt(r * r - d * d);
+        return vector<Point> {p - (l.v / l.v.len())*k, p + (l.v / l.v.len())*k};
+    }
+
+    // 圆与圆交点
+    vector<Point> inter(const Circle &a) const
+    {
+        const long double d = c.dis(a.c);
+        const int t = relation(a);
+        if (t == -1 || t == 0 || t == 4) return vector<Point>();
+        Point e = a.c - c; e = e / e.len() * r;
+        if (t == 1 || t == 3)
+        {
+            if (r * r + d * d - a.r * a.r >= -eps) return vector<Point> {c + e};
+            return vector<Point> {c - e};
+        }
+        const long double costh = (r * r + d * d - a.r * a.r) / (2 * r * d), sinth = sqrt(1 - costh * costh);
+        return vector<Point> {c + e.rot(costh, -sinth), c + e.rot(costh, sinth)};
+    }
+
+    // 圆与圆交面积
+    long double inter_area(const Circle &a) const
+    {
+        const long double d = c.dis(a.c);
+        const int t = relation(a);
+        if (t == -1) return area();
+        if (t < 2) return 0;
+        if (t > 2) return min(area(), a.area());
+        const long double costh1 = (r * r + d * d - a.r * a.r) / (2 * r * d), costh2 = (a.r * a.r + d * d - r * r) / (2 * a.r * d);
+        const long double sinth1 = sqrt(1 - costh1 * costh1), sinth2 = sqrt(1 - costh2 * costh2);
+        const long double th1 = acos(costh1), th2 = acos(costh2);
+        return r * r * (th1 - costh1 * sinth1) + a.r * a.r * (th2 - costh2 * sinth2);
+    }
+
+    // 过圆外一点圆的切线
+    vector<Line> tangent(const Point &a) const
+    {
+        const int t = is_in(a);
+        if (t == 1) return vector<Line>();
+        if (t == -1)
+        {
+            const Point v = { -(a - c).y, (a - c).x};
+            return vector<Line> {{a, v}};
+        }
+        Point e = a - c; e = e / e.len() * r;
+        const long double costh = r / c.dis(a), sinth = sqrt(1 - costh * costh);
+        const Point t1 = c + e.rot(costh, -sinth), t2 = c + e.rot(costh, sinth);
+        return vector<Line> {{a, t1 - a}, {a, t2 - a}};
+    }
+
+    // 两圆的公切线
+    vector<Line> tangent(const Circle &a) const
+    {
+        const int t = relation(a);
+        vector<Line> lines;
+        if (t == -1 || t == 4) return lines;
+        if (t == 1 || t == 3)
+        {
+            const Point p = inter(a)[0], v = { -(a.c - c).y, (a.c - c).x};
+            lines.push_back({p, v});
+        }
+        const long double d = c.dis(a.c);
+        const Point e = (a.c - c) / (a.c - c).len();
+        if (t <= 2)
+        {
+            const long double costh = (r - a.r) / d, sinth = sqrt(1 - costh * costh);
+            const Point d1 = e.rot(costh, -sinth), d2 = e.rot(costh, sinth);
+            const Point u1 = c + d1 * r, u2 = c + d2 * r, v1 = a.c + d1 * a.r, v2 = a.c + d2 * a.r;
+            lines.push_back({u1, v1 - u1}); lines.push_back({u2, v2 - u2});
+        }
+        if (t == 0)
+        {
+            const long double costh = (r + a.r) / d, sinth = sqrt(1 - costh * costh);
+            const Point d1 = e.rot(costh, -sinth), d2 = e.rot(costh, sinth);
+            const Point u1 = c + d1 * r, u2 = c + d2 * r, v1 = a.c - d1 * a.r, v2 = a.c - d2 * a.r;
+            lines.push_back({u1, v1 - u1}); lines.push_back({u2, v2 - u2});
+        }
+        return lines;
+    }
+
+    // 圆的反演
+    tuple<int, Circle, Line> inverse(const Line &l) const
+    {
+        const Circle null_c = {{0.0, 0.0}, 0.0};
+        const Line null_l = {{0.0, 0.0}, {0.0, 0.0}};
+        if (l.toleft(c) == 0) return {2, null_c, l};
+        const Point v = l.toleft(c) == 1 ? Point{l.v.y, -l.v.x}: Point{ -l.v.y, l.v.x};
+        const long double d = r * r / l.dis(c);
+        const Point p = c + v / v.len() * d;
+        return {1, {(c + p) / 2, d / 2}, null_l};
+    }
+
+    tuple<int, Circle, Line> inverse(const Circle &a) const
+    {
+        const Circle null_c = {{0.0, 0.0}, 0.0};
+        const Line null_l = {{0.0, 0.0}, {0.0, 0.0}};
+        const Point v = a.c - c;
+        if (a.is_in(c) == -1)
+        {
+            const long double d = r * r / (a.r + a.r);
+            const Point p = c + v / v.len() * d;
+            return {2, null_c, {p, { -v.y, v.x}}};
+        }
+        if (c == a.c) return {1, {c, r*r / a.r}, null_l};
+        const long double d1 = r * r / (c.dis(a.c) - a.r), d2 = r * r / (c.dis(a.c) + a.r);
+        const Point p = c + v / v.len() * d1, q = c + v / v.len() * d2;
+        return {1, {(p + q) / 2, p.dis(q) / 2}, null_l};
+    }
+};
+
+// 圆与多边形面积交
+long double area_inter(const Circle &circ, const Polygon &poly)
+{
+    const auto cal = [](const Circle & circ, const Point & a, const Point & b)
+    {
+        if ((a - circ.c).toleft(b - circ.c) == 0) return 0.0l;
+        const auto ina = circ.is_in(a), inb = circ.is_in(b);
+        const Line ab = {a, b - a};
+        if (ina && inb) return ((a - circ.c) ^ (b - circ.c)) / 2;
+        if (ina && !inb)
+        {
+            const auto t = circ.inter(ab);
+            const Point p = t.size() == 1 ? t[0] : t[1];
+            const long double ans = ((a - circ.c) ^ (p - circ.c)) / 2;
+            const long double th = (p - circ.c).ang(b - circ.c);
+            const long double d = circ.r * circ.r * th / 2;
+            if ((a - circ.c).toleft(b - circ.c) == 1) return ans + d;
+            return ans - d;
+        }
+        if (!ina && inb)
+        {
+            const Point p = circ.inter(ab)[0];
+            const long double ans = ((p - circ.c) ^ (b - circ.c)) / 2;
+            const long double th = (a - circ.c).ang(p - circ.c);
+            const long double d = circ.r * circ.r * th / 2;
+            if ((a - circ.c).toleft(b - circ.c) == 1) return ans + d;
+            return ans - d;
+        }
+        const auto p = circ.inter(ab);
+        if (p.size() == 2 && Segment{a, b} .dis(circ.c) <= circ.r + eps)
+        {
+            const long double ans = ((p[0] - circ.c) ^ (p[1] - circ.c)) / 2;
+            const long double th1 = (a - circ.c).ang(p[0] - circ.c), th2 = (b - circ.c).ang(p[1] - circ.c);
+            const long double d1 = circ.r * circ.r * th1 / 2, d2 = circ.r * circ.r * th2 / 2;
+            if ((a - circ.c).toleft(b - circ.c) == 1) return ans + d1 + d2;
+            return ans - d1 - d2;
+        }
+        const long double th = (a - circ.c).ang(b - circ.c);
+        if ((a - circ.c).toleft(b - circ.c) == 1) return circ.r * circ.r * th / 2;
+        return -circ.r * circ.r * th / 2;
+    };
+
+    long double ans = 0;
+    for (size_t i = 0; i < poly.p.size(); i++)
+    {
+        const Point a = poly.p[i], b = poly.p[poly.nxt(i)];
+        ans += cal(circ, a, b);
+    }
+    return ans;
+}
+
+
+// 半平面交
+// 排序增量法，复杂度 O(nlogn)
+// 输入与返回值都是用直线表示的半平面集合
+vector<Line> halfinter(vector<Line> l, const point_t lim = 1e9)
+{
+    const auto check = [](const Line & a, const Line & b, const Line & c) {return a.toleft(b.inter(c)) < 0;};
+    // 无精度误差的方法，但注意取值范围会扩大到三次方
+    /*const auto check=[](const Line &a,const Line &b,const Line &c)
+    {
+        const Point p=a.v*(b.v^c.v),q=b.p*(b.v^c.v)+b.v*(c.v^(b.p-c.p))-a.p*(b.v^c.v);
+        return p.toleft(q)<0;
+    };*/
+    l.push_back({{ -lim, 0}, {0, -1}}); l.push_back({{0, -lim}, {1, 0}});
+    l.push_back({{lim, 0}, {0, 1}}); l.push_back({{0, lim}, { -1, 0}});
+    sort(l.begin(), l.end());
+    deque<Line> q;
+    for (size_t i = 0; i < l.size(); i++)
+    {
+        if (i > 0 && l[i - 1].v.toleft(l[i].v) == 0 && l[i - 1].v * l[i].v > eps) continue;
+        while (q.size() > 1 && check(l[i], q.back(), q[q.size() - 2])) q.pop_back();
+        while (q.size() > 1 && check(l[i], q[0], q[1])) q.pop_front();
+        if (!q.empty() && q.back().v.toleft(l[i].v) <= 0) return vector<Line>();
+        q.push_back(l[i]);
+    }
+    while (q.size() > 1 && check(q[0], q.back(), q[q.size() - 2])) q.pop_back();
+    while (q.size() > 1 && check(q.back(), q[0], q[1])) q.pop_front();
+    return vector<Line>(q.begin(), q.end());
+}
+
+// 点集形成的最小最大三角形
+// 极角序扫描线，复杂度 O(n^2logn)
+// 最大三角形问题可以使用凸包与旋转卡壳做到 O(n^2)
+pair<point_t, point_t> minmax_triangle(const vector<Point> &vec)
+{
+    if (vec.size() <= 2) return {0, 0};
+    vector<pair<int, int>> evt;
+    evt.reserve(vec.size()*vec.size());
+    point_t maxans = 0, minans = INF;
+    for (size_t i = 0; i < vec.size(); i++)
+    {
+        for (size_t j = 0; j < vec.size(); j++)
+        {
+            if (i == j) continue;
+            if (vec[i] == vec[j]) minans = 0;
+            else evt.push_back({i, j});
+        }
+    }
+    sort(evt.begin(), evt.end(), [&](const pair<int, int> &u, const pair<int, int> &v)
+    {
+        const Point du = vec[u.second] - vec[u.first], dv = vec[v.second] - vec[v.first];
+        return argcmp()({du.y, -du.x}, {dv.y, -dv.x});
+    });
+    vector<size_t> vx(vec.size()), pos(vec.size());
+    for (size_t i = 0; i < vec.size(); i++) vx[i] = i;
+    sort(vx.begin(), vx.end(), [&](int x, int y) {return vec[x] < vec[y];});
+    for (size_t i = 0; i < vx.size(); i++) pos[vx[i]] = i;
+    for (auto [u, v] : evt)
+    {
+        const size_t i = pos[u], j = pos[v];
+        const size_t l = min(i, j), r = max(i, j);
+        const Point vecu = vec[u], vecv = vec[v];
+        if (l > 0) minans = min(minans, abs((vec[vx[l - 1]] - vecu) ^ (vec[vx[l - 1]] - vecv)));
+        if (r < vx.size() - 1) minans = min(minans, abs((vec[vx[r + 1]] - vecu) ^ (vec[vx[r + 1]] - vecv)));
+        maxans = max({maxans, abs((vec[vx[0]] - vecu) ^ (vec[vx[0]] - vecv)), abs((vec[vx.back()] - vecu) ^ (vec[vx.back()] - vecv))});
+        if (i < j) swap(vx[i], vx[j]), pos[u] = j, pos[v] = i;
+    }
+    return {minans, maxans};
+}
+
+// 平面最近点对
+// 扫描线，复杂度 O(nlogn)
+point_t closest_pair(vector<Point> points)
+{
+    sort(points.begin(), points.end());
+    const auto cmpy = [](const Point & a, const Point & b) {if (abs(a.y - b.y) <= eps) return a.x < b.x - eps; return a.y < b.y - eps;};
+    multiset<Point, decltype(cmpy)> s{cmpy};
+    point_t ans = INF;
+    for (size_t i = 0, l = 0; i < points.size(); i++)
+    {
+        const point_t sqans = sqrtl(ans) + 1; // 整数情况
+        // const point_t sqans=sqrtl(ans)+1;  // 浮点数情况
+        while (l < i && points[i].x - points[l].x >= sqans) s.erase(s.find(points[l++]));
+        for (auto it = s.lower_bound(Point{ -INF, points[i].y - sqans}); it != s.end() && it->y - points[i].y <= sqans; it++)
+        {
+            ans = min(ans, points[i].dis2(*it));
+        }
+        s.insert(points[i]);
+    }
+    return ans;
+}
+
+// 判断多条线段是否有交点
+// 扫描线，复杂度 O(nlogn)
+bool segs_inter(const vector<Segment> &segs)
+{
+    if (segs.empty()) return false;
+    using seq_t = tuple<point_t, int, Segment>;
+    const auto seqcmp = [](const seq_t & u, const seq_t & v)
+    {
+        const auto [u0, u1, u2] = u;
+        const auto [v0, v1, v2] = v;
+        if (abs(u0 - v0) <= eps) return make_pair(u1, u2) < make_pair(v1, v2);
+        return u0 < v0 - eps;
+    };
+    vector<seq_t> seq;
+    for (auto seg : segs)
+    {
+        if (seg.a.x > seg.b.x + eps) swap(seg.a, seg.b);
+        seq.push_back({seg.a.x, 0, seg});
+        seq.push_back({seg.b.x, 1, seg});
+    }
+    sort(seq.begin(), seq.end(), seqcmp);
+    point_t x_now;
+    auto cmp = [&](const Segment & u, const Segment & v)
+    {
+        if (abs(u.a.x - u.b.x) <= eps || abs(v.a.x - v.b.x) <= eps) return u.a.y < v.a.y - eps;
+        return ((x_now - u.a.x) * (u.b.y - u.a.y) + u.a.y * (u.b.x - u.a.x)) * (v.b.x - v.a.x) < ((x_now - v.a.x) * (v.b.y - v.a.y) + v.a.y * (v.b.x - v.a.x)) * (u.b.x - u.a.x) - eps;
+    };
+    multiset<Segment, decltype(cmp)> s{cmp};
+    for (const auto [x, o, seg] : seq)
+    {
+        x_now = x;
+        const auto it = s.lower_bound(seg);
+        if (o == 0)
+        {
+            if (it != s.end() && seg.is_inter(*it)) return true;
+            if (it != s.begin() && seg.is_inter(*prev(it))) return true;
+            s.insert(seg);
+        }
+        else
+        {
+            if (next(it) != s.end() && it != s.begin() && (*prev(it)).is_inter(*next(it))) return true;
+            s.erase(it);
+        }
+    }
+    return false;
+}
+
+// 多边形面积并
+// 轮廓积分，复杂度 O(n^2logn)，n为边数
+// ans[i] 表示被至少覆盖了 i+1 次的区域的面积
+vector<long double> area_union(const vector<Polygon> &polys)
+{
+    const size_t siz = polys.size();
+    vector<vector<pair<Point, Point>>> segs(siz);
+    const auto check = [](const Point & u, const Segment & e) {return !((u < e.a && u < e.b) || (u > e.a && u > e.b));};
+
+    auto cut_edge = [&](const Segment & e, const size_t i)
+    {
+        const Line le{e.a, e.b - e.a};
+        vector<pair<Point, int>> evt;
+        evt.push_back({e.a, 0}); evt.push_back({e.b, 0});
+        for (size_t j = 0; j < polys.size(); j++)
+        {
+            if (i == j) continue;
+            const auto &pj = polys[j];
+            for (size_t k = 0; k < pj.p.size(); k++)
+            {
+                const Segment s = {pj.p[k], pj.p[pj.nxt(k)]};
+                if (le.toleft(s.a) == 0 && le.toleft(s.b) == 0)
+                {
+                    evt.push_back({s.a, 0});
+                    evt.push_back({s.b, 0});
+                }
+                else if (s.is_inter(le))
+                {
+                    const Line ls{s.a, s.b - s.a};
+                    const Point u = le.inter(ls);
+                    if (le.toleft(s.a) < 0 && le.toleft(s.b) >= 0) evt.push_back({u, -1});
+                    else if (le.toleft(s.a) >= 0 && le.toleft(s.b) < 0) evt.push_back({u, 1});
+                }
+            }
+        }
+        sort(evt.begin(), evt.end());
+        if (e.a > e.b) reverse(evt.begin(), evt.end());
+        int sum = 0;
+        for (size_t i = 0; i < evt.size(); i++)
+        {
+            sum += evt[i].second;
+            const Point u = evt[i].first, v = evt[i + 1].first;
+            if (!(u == v) && check(u, e) && check(v, e)) segs[sum].push_back({u, v});
+            if (v == e.b) break;
+        }
+    };
+
+    for (size_t i = 0; i < polys.size(); i++)
+    {
+        const auto &pi = polys[i];
+        for (size_t k = 0; k < pi.p.size(); k++)
+        {
+            const Segment ei = {pi.p[k], pi.p[pi.nxt(k)]};
+            cut_edge(ei, i);
+        }
+    }
+    vector<long double> ans(siz);
+    for (size_t i = 0; i < siz; i++)
+    {
+        long double sum = 0;
+        sort(segs[i].begin(), segs[i].end());
+        int cnt = 0;
+        for (size_t j = 0; j < segs[i].size(); j++)
+        {
+            if (j > 0 && segs[i][j] == segs[i][j - 1]) segs[i + (++cnt)].push_back(segs[i][j]);
+            else cnt = 0, sum += segs[i][j].first ^ segs[i][j].second;
+        }
+        ans[i] = sum / 2;
+    }
+    return ans;
+}
+
+// 圆面积并
+// 轮廓积分，复杂度 O(n^2logn)
+// ans[i] 表示被至少覆盖了 i+1 次的区域的面积
+vector<long double> area_union(const vector<Circle> &circs)
+{
+    const size_t siz = circs.size();
+    using arc_t = tuple<Point, long double, long double, long double>;
+    vector<vector<arc_t>> arcs(siz);
+    const auto eq = [](const arc_t & u, const arc_t & v)
+    {
+        const auto [u1, u2, u3, u4] = u;
+        const auto [v1, v2, v3, v4] = v;
+        return u1 == v1 && abs(u2 - v2) <= eps && abs(u3 - v3) <= eps && abs(u4 - v4) <= eps;
+    };
+
+    auto cut_circ = [&](const Circle & ci, const size_t i)
+    {
+        vector<pair<long double, int>> evt;
+        evt.push_back({ -PI, 0}); evt.push_back({PI, 0});
+        int init = 0;
+        for (size_t j = 0; j < circs.size(); j++)
+        {
+            if (i == j) continue;
+            const Circle &cj = circs[j];
+            if (ci.r < cj.r - eps && ci.relation(cj) >= 3) init++;
+            const auto inters = ci.inter(cj);
+            if (inters.size() == 1) evt.push_back({atan2l((inters[0] - ci.c).y, (inters[0] - ci.c).x), 0});
+            if (inters.size() == 2)
+            {
+                const Point dl = inters[0] - ci.c, dr = inters[1] - ci.c;
+                long double argl = atan2l(dl.y, dl.x), argr = atan2l(dr.y, dr.x);
+                if (abs(argl + PI) <= eps) argl = PI;
+                if (abs(argr + PI) <= eps) argr = PI;
+                if (argl > argr + eps)
+                {
+                    evt.push_back({argl, 1}); evt.push_back({PI, -1});
+                    evt.push_back({ -PI, 1}); evt.push_back({argr, -1});
+                }
+                else
+                {
+                    evt.push_back({argl, 1});
+                    evt.push_back({argr, -1});
+                }
+            }
+        }
+        sort(evt.begin(), evt.end());
+        int sum = init;
+        for (size_t i = 0; i < evt.size(); i++)
+        {
+            sum += evt[i].second;
+            if (abs(evt[i].first - evt[i + 1].first) > eps) arcs[sum].push_back({ci.c, ci.r, evt[i].first, evt[i + 1].first});
+            if (abs(evt[i + 1].first - PI) <= eps) break;
+        }
+    };
+
+    const auto oint = [](const arc_t & arc)
+    {
+        const auto [cc, cr, l, r] = arc;
+        if (abs(r - l - PI - PI) <= eps) return 2.0l * PI * cr * cr;
+        return cr * cr * (r - l) + cc.x * cr * (sin(r) - sin(l)) - cc.y * cr * (cos(r) - cos(l));
+    };
+
+    for (size_t i = 0; i < circs.size(); i++)
+    {
+        const auto &ci = circs[i];
+        cut_circ(ci, i);
+    }
+    vector<long double> ans(siz);
+    for (size_t i = 0; i < siz; i++)
+    {
+        long double sum = 0;
+        sort(arcs[i].begin(), arcs[i].end());
+        int cnt = 0;
+        for (size_t j = 0; j < arcs[i].size(); j++)
+        {
+            if (j > 0 && eq(arcs[i][j], arcs[i][j - 1])) arcs[i + (++cnt)].push_back(arcs[i][j]);
+            else cnt = 0, sum += oint(arcs[i][j]);
+        }
+        ans[i] = sum / 2;
+    }
+    return ans;
+}\end{lstlisting}
+
+\end{document}
