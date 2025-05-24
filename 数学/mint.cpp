@@ -1,12 +1,12 @@
 template<class T>
 constexpr T power(T a, ll b) {
-T res = 1;
-for (; b; b /= 2, a *= a) {
-if (b % 2) {
-res *= a;
-}
-}
-return res;
+    T res = 1;
+    for (; b; b /= 2, a *= a) {
+        if (b % 2) {
+            res *= a;
+        }
+    }
+    return res;
 }
 
 template<int P>
@@ -22,6 +22,12 @@ struct MInt {
         if (x >= P) {
             x -= P;
         }
+        return x;
+    }
+    constexpr int val() const {
+        return x;
+    }
+    explicit constexpr operator int() const {
         return x;
     }
     constexpr MInt operator-() const {

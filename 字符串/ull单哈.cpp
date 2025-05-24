@@ -15,6 +15,12 @@ ull mul(ull a, ull b) {
     t = (t >> 61) + (t & Mod);
     return (t >= Mod) ? t - Mod : t;
 }
+ull del(ull a,ull b){
+    return norm(a-b+Mod);
+}
+ull add(ull a,ull b){
+    return norm(a+b);
+}
 void HInit() {
     bas[0] = 1;
     for (int i = 1; i < maxn; i++) {
@@ -26,11 +32,11 @@ struct Hash {
     std::vector<ull> sum;
     Hash(const string& s): n(s.length()), sum(n + 1) {
         for (int i = 1; i <= n; i++) {
-            sum[i] = norm(mul(sum[i - 1] , Seed) + s[i - 1]);
+            sum[i] = add(mul(sum[i - 1] , Seed),s[i - 1]);
         }
     }
     ull getHash(int l, int r) {
-        ull res = norm(sum[r] - mul(sum[l - 1], bas[r - l + 1])+Mod);
+        ull res = del(sum[r] - mul(sum[l - 1], bas[r - l + 1]));
         return res;
     }
 };
