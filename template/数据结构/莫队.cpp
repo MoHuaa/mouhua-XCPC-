@@ -1,8 +1,4 @@
-#include<bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-const int maxn=2e5+7;
-ll tmp=0;
+
 int main(){
     int n,m;
     cin>>n>>m;

@@ -1,6 +1,3 @@
-//
-// Created by 墨华 on 2024/6/2.
-//
 template<class T>
 struct Frac {
     T num;

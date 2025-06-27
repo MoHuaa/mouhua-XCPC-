@@ -2,7 +2,6 @@
 
 constexpr int P = 998244353;
 using i64 = long long;
-// assume -P <= x < 2P
 int norm(int x) {
     if (x < 0) {
         x += P;
