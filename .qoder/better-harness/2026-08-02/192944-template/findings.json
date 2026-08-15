@@ -1,0 +1,77 @@
+{
+  "summary": {
+    "projectName": "template",
+    "locale": "zh-CN",
+    "modelId": "agent-work-loop-v4",
+    "reportContractVersion": 25,
+    "overview": "项目是一个 ACM 算法模板集合，结构清晰但缺乏代理定制化层。一个结构性配置问题（.gitmodules 路径失效）需要修复，其余维度因无会话证据而无法评估。",
+    "aiAgentPractice": {
+      "inspectedSurfaces": [],
+      "coverageRows": [
+        {
+          "surface": "Custom Agents",
+          "scopes": [
+            "Project"
+          ],
+          "count": 0
+        }
+      ]
+    },
+    "assignmentSummaries": [],
+    "dimensions": [
+      {
+        "id": "task-understanding",
+        "label": "任务理解",
+        "score": 40,
+        "summary": "项目有 README 和分类目录结构，但无代理级指令帮助理解任务边界。",
+        "findingRefs": []
+      },
+      {
+        "id": "controlled-execution",
+        "label": "可控执行",
+        "score": 30,
+        "summary": "无会话证据，无法评估执行控制。项目无自定义命令或钩子。",
+        "findingRefs": []
+      },
+      {
+        "id": "change-validation",
+        "label": "改动验证",
+        "score": 25,
+        "summary": "无测试、无构建系统、无 CI 配置。变更验证完全依赖人工。",
+        "findingRefs": []
+      },
+      {
+        "id": "reliable-delivery",
+        "label": "可靠交付",
+        "score": 30,
+        "summary": "PDF 生成脚本可产出文档，但无自动化验收或回归保护。",
+        "findingRefs": [
+          "stale-gitmodules-paths"
+        ]
+      },
+      {
+        "id": "learning-capture",
+        "label": "经验沉淀",
+        "score": 35,
+        "summary": "无可比观察窗口，无法评估学习捕获。无 Skill 或 Memory 应用证据。",
+        "findingRefs": []
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "stale-gitmodules-paths",
+      "title": ".gitmodules 引用了项目中不存在的子模块路径",
+      "severity": "Low",
+      "reason": ".gitmodules 声明了两个子模块路径（src/8.others/nowcoder/Template 和 src/8.others/TPL），但当前项目目录中不存在 src/ 目录。项目已迁移到 template/ 目录结构，但 .gitmodules 未同步清理。执行 git submodule init 会因路径不存在而失败。",
+      "expectedOutput": [
+        "更新或移除失效的子模块路径声明，确保 git submodule 命令可正常执行。"
+      ],
+      "expectedArtifact": ".gitmodules",
+      "aiFixPrompt": "/better-harness fix this issue\n\n清理 .gitmodules 中失效的子模块引用，或将其更新为当前项目结构对应的正确路径。\n\n## 验证\n\n- 确认 .gitmodules 中所有路径在项目中存在\n- 运行 git submodule status 确认无报错",
+      "dimensionRefs": [
+        "reliable-delivery"
+      ]
+    }
+  ]
+}

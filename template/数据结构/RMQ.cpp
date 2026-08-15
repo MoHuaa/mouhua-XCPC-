@@ -1,77 +1,46 @@
-template<class T,
-        class Cmp = std::less<T>>
-struct RMQ {
-    const Cmp cmp = Cmp();
-    static constexpr unsigned B = 64;
-    using u64 = unsigned long long;
-    int n;
-    std::vector<std::vector<T>> a;
-    std::vector<T> pre, suf, ini;
-    std::vector<u64> stk;
-    RMQ() {}
-    RMQ(std::vector<T> v) {
-        v.erase(v.begin(), v.begin() + 1);
-        init(v);
-    }
-    void init(const std::vector<T>& v) {
-        n = v.size();
-        pre = suf = ini = v;
-        stk.resize(n);
-        if (!n) {
-            return;
+#include<bits/extc++.h>
+using namespace __gnu_pbds;
+using namespace std;
+using ll = long long;
+using ull = unsigned long long;
+using u32 = unsigned;
+using u128 = unsigned __int128;
+using i128 = __int128;
+#define LNF 0x3f3f3f3f3f3f3f3f
+#define W(...) println("{} = {}", #__VA_ARGS__, make_tuple(__VA_ARGS__))
+template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+void chmax(auto & a, const auto &... b) {((a = (b > a ? b : a)), ...);}
+void chmin(auto & a, const auto &... b) {((a = (b < a ? b : a)), ...);}
+#define pb push_back
+void solve(void) {
+    std::vector<vector<int>> matrix{{1}};
+    int target=1;
+     int n=matrix.size();
+        int m=matrix[0].size();
+        int l=-1,r=m*n;
+        auto getid=[&](int id){
+            int x=id/m;
+            int y=id%m;
+            return array<int,2>{x,y};
+        };
+        auto check=[&](int id){
+            auto [x,y]=getid(id);
+            return matrix[x][y]>=target;
+        };
+        while(l+1<r){
+            int mid=(l+r)>>1;
+            if(check(mid))r=mid;
+            else l=mid;
         }
-        const int M = (n - 1) / B + 1;
-        const int lg = std::__lg(M);
-        a.assign(lg + 1, std::vector<T>(M));
-        for (int i = 0; i < M; i++) {
-            a[0][i] = v[i * B];
-            for (int j = 1; j < B && i * B + j < n; j++) {
-                a[0][i] = std::min(a[0][i], v[i * B + j], cmp);
-            }
-        }
-        for (int i = 1; i < n; i++) {
-            if (i % B) {
-                pre[i] = std::min(pre[i], pre[i - 1], cmp);
-            }
-        }
-        for (int i = n - 2; i >= 0; i--) {
-            if (i % B != B - 1) {
-                suf[i] = std::min(suf[i], suf[i + 1], cmp);
-            }
-        }
-        for (int j = 0; j < lg; j++) {
-            for (int i = 0; i + (2 << j) <= M; i++) {
-                a[j + 1][i] = std::min(a[j][i], a[j][i + (1 << j)], cmp);
-            }
-        }
-        for (int i = 0; i < M; i++) {
-            const int l = i * B;
-            const int r = std::min(1U * n, l + B);
-            u64 s = 0;
-            for (int j = l; j < r; j++) {
-                while (s && cmp(v[j], v[std::__lg(s) + l])) {
-                    s ^= 1ULL << std::__lg(s);
-                }
-                s |= 1ULL << (j - l);
-                stk[j] = s;
-            }
-        }
-    }
-    T operator()(int l, int r) {
-        --l;
-        if (l / B != (r - 1) / B) {
-            T ans = std::min(suf[l], pre[r - 1], cmp);
-            l = l / B + 1;
-            r = r / B;
-            if (l < r) {
-                int k = std::__lg(r - l);
-                ans = std::min({ ans, a[k][l], a[k][r - (1 << k)] }, cmp);
-            }
-            return ans;
-        }
-        else {
-            int x = B * (l / B);
-            return ini[__builtin_ctzll(stk[r - 1] >> (l - x)) + l];
-        }
-    }
-};
+        auto [x,y]=getid(r);
+        W(r,x,y);
+        
+}
+int main() {
+  ios::sync_with_stdio(false); cin.tie(nullptr);
+  int t = 1;
+  // cin >> t;
+  while (t--)
+    solve();
+  return 0;
+}

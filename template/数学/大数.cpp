@@ -1,5 +1,5 @@
 const int base = 1000000000;
-const int base_digits = 9; // 分解为九个数位一个数字
+const int base_digits = 9; 
 struct bigint {
     vector<int> a;
     int sign;

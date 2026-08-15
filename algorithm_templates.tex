@@ -66,30 +66,6 @@
 #pragma GCC target("avx2,avx512f,avx512vl,avx512bw,avx512dq,avx512cd,avx512vbmi,avx512vbmi2,avx512vpopcntdq,avx512bitalg,bmi,bmi2,lzcnt,popcnt")
 #pragma GCC optimize("Ofast")\end{lstlisting}
 
-\subsection{fanzhuan}
-\thispagestyle{fancy}
-
-\noindent\begin{lstlisting}
-auto f = [](unsigned int x) {
-    x = ((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1);
-    x = ((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2);
-    x = ((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4);
-    x = ((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8);
-    x = ((x & 0xffff0000) >> 16) | ((x & 0x0000ffff) << 16);
-    return x;
-};
-auto f2 = [f](unsigned int x, unsigned int k) {
-    return f(x << (32 - k)) | (x >> k << k);
-};
-auto f=[](unsigned  long long x){
-    x = ((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1);
-    x = ((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2);
-    x = ((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4);
-    x = ((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8);
-    x = ((x & 0xffff0000) >> 16) | ((x & 0x0000ffff) << 16);
-    x=((x&0xffffffff000000))
-};\end{lstlisting}
-
 \subsection{fastIO}
 \thispagestyle{fancy}
 
@@ -143,18 +119,24 @@ using namespace IO;
 using namespace __gnu_pbds;
 using namespace std;
 using ll = long long;
+using ull=unsigned long long;
+using u32 = unsigned;
+using u128 = unsigned __int128;
+using i128 = __int128;
 #define LNF 0x3f3f3f3f3f3f3f3f
+#define W(...) debug(string(#__VA_ARGS__)+",", __VA_ARGS__)
+void debug(string names, auto... value) {int now = 0, j; ((j = names.find(',', now), (cerr << names.substr(now, j - now) << "=" << value << ","), (now = j + 1), value), ...); cerr << endl;}
+template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 void chmax(auto & a, const auto &... b) {((a = (b > a ? b : a)), ...);}
 void chmin(auto & a, const auto &... b) {((a = (b < a ? b : a)), ...);}
 #define pb push_back
-#define dbg(x) cerr<<#x<<'='<<x
 void solve(void) {
-
+    
 }
 int main() {
     ios::sync_with_stdio(false); cin.tie(nullptr);
     int t = 1;
-    // cin>>t;
+    // cin >> t;
     while (t--)
         solve();
     return 0;
@@ -169,16 +151,16 @@ auto ceils(auto n, auto m) {
         n *= -1;
         m *= -1;
     }
-    if (n <= 0)return n / m;
-    else return (n + m - 1) / m;
+    if(n>=0)return (n + m - 1) / m;
+    else return n / m;
 }
 auto floors(auto n, auto m) {
     if (m < 0) {
         n *= -1;
         m *= -1;
     }
-    if (n <= 0)return (n - m + 1) / m;
-    else return n / m;
+    if(n>=0)return n/m;
+    else return (n - m + 1) / m;
 }\end{lstlisting}
 
 \subsection{离散化}
@@ -1108,139 +1090,6 @@ std::vector<int> manacher(std::string s) {
 \thispagestyle{fancy}
 
 \noindent\begin{lstlisting}
-struct SuffixArray {
-    int n;
-    std::vector<int> sa, rk, lc;
-    SuffixArray(const std::string &s) {
-        n = s.length();
-        sa.resize(n);
-        lc.resize(n - 1);
-        rk.resize(n);
-        std::iota(sa.begin(), sa.end(), 0);
-        std::sort(sa.begin(), sa.end(),
-                  [&](int a, int b) {
-                      return s[a] < s[b];
-                  });
-        rk[sa[0]] = 0;
-        for (int i = 1; i < n; i++) {
-            rk[sa[i]] = rk[sa[i - 1]] + (s[sa[i]] != s[sa[i - 1]]);
-        }
-        int k = 1;
-        std::vector<int> tmp, cnt(n);
-        tmp.reserve(n);
-        while (rk[sa[n - 1]] < n - 1) {
-            tmp.clear();
-            for (int i = 0; i < k; i++) {
-                tmp.push_back(n - k + i);
-            }
-            for (auto i : sa) {
-                if (i >= k) {
-                    tmp.push_back(i - k);
-                }
-            }
-            std::fill(cnt.begin(), cnt.end(), 0);
-            for (int i = 0; i < n; i++) {
-                cnt[rk[i]]++;
-            }
-            for (int i = 1; i < n; i++) {
-                cnt[i] += cnt[i - 1];
-            }
-            for (int i = n - 1; i >= 0; i--) {
-                sa[--cnt[rk[tmp[i]]]] = tmp[i];
-            }
-            std::swap(rk, tmp);
-            rk[sa[0]] = 0;
-            for (int i = 1; i < n; i++) {
-                rk[sa[i]] = rk[sa[i - 1]] + (tmp[sa[i - 1]] < tmp[sa[i]] || sa[i - 1] + k == n || tmp[sa[i - 1] + k] < tmp[sa[i] + k]);
-            }
-            k *= 2;
-        }
-        for (int i = 0, j = 0; i < n; i++) {
-            if (rk[i] == 0) {
-                j = 0;
-            } else {
-                for (j -= (j > 0); i + j < n && sa[rk[i] - 1] + j < n && s[i + j] == s[sa[rk[i] - 1] + j]; j++)
-                    ;
-                lc[rk[i] - 1] = j;
-            }
-        }
-    }
-};
-
-template<class T,
-        class Cmp = std::less<T>>
-struct RMQ {
-    const Cmp cmp = Cmp();
-    static constexpr unsigned B = 64;
-    using u64 = unsigned long long;
-    int n;
-    std::vector<std::vector<T>> a;
-    std::vector<T> pre, suf, ini;
-    std::vector<u64> stk;
-    RMQ() {}
-    RMQ(const std::vector<T> &v) {
-        init(v);
-    }
-    void init(const std::vector<T> &v) {
-        n = v.size();
-        pre = suf = ini = v;
-        stk.resize(n);
-        if (!n) {
-            return;
-        }
-        const int M = (n - 1) / B + 1;
-        const int lg = std::__lg(M);
-        a.assign(lg + 1, std::vector<T>(M));
-        for (int i = 0; i < M; i++) {
-            a[0][i] = v[i * B];
-            for (int j = 1; j < B && i * B + j < n; j++) {
-                a[0][i] = std::min(a[0][i], v[i * B + j], cmp);
-            }
-        }
-        for (int i = 1; i < n; i++) {
-            if (i % B) {
-                pre[i] = std::min(pre[i], pre[i - 1], cmp);
-            }
-        }
-        for (int i = n - 2; i >= 0; i--) {
-            if (i % B != B - 1) {
-                suf[i] = std::min(suf[i], suf[i + 1], cmp);
-            }
-        }
-        for (int j = 0; j < lg; j++) {
-            for (int i = 0; i + (2 << j) <= M; i++) {
-                a[j + 1][i] = std::min(a[j][i], a[j][i + (1 << j)], cmp);
-            }
-        }
-        for (int i = 0; i < M; i++) {
-            const int l = i * B;
-            const int r = std::min(1U * n, l + B);
-            u64 s = 0;
-            for (int j = l; j < r; j++) {
-                while (s && cmp(v[j], v[std::__lg(s) + l])) {
-                    s ^= 1ULL << std::__lg(s);
-                }
-                s |= 1ULL << (j - l);
-                stk[j] = s;
-            }
-        }
-    }
-    T operator()(int l, int r) {
-        if (l / B != (r - 1) / B) {
-            T ans = std::min(suf[l], pre[r - 1], cmp);
-            l = l / B + 1;
-            r = r / B;
-            if (l < r) {
-                int k = std::__lg(r - l);
-                ans = std::min({ans, a[k][l], a[k][r - (1 << k)]}, cmp);
-            }
-            return ans;
-        } else {
-            int x = B * (l / B);
-            return ini[__builtin_ctzll(stk[r - 1] >> (l - x)) + l];
-        }
-    }
-};
 SuffixArray sa(s);
 
 RMQ rmq(sa.lc);
@@ -1355,53 +1204,6 @@ void insert(string & a) {
 }
 \end{lstlisting}
 
-\subsection{ull单哈}
-\thispagestyle{fancy}
-
-\noindent\begin{lstlisting}
-using ull = unsigned long long;
-using u128 = unsigned __int128;
-constexpr ull Mod = (1ULL << 61) - 1;
-constexpr int maxn = 1e6 + 7;
-mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<ull> dist(Mod / 2, Mod - 1);
-const ull Seed = dist(rnd);
-ull bas[maxn];
-ull norm(ull x)
-{
-    return (x>=Mod)?x-Mod:x;
-}
-ull mul(ull a, ull b) {
-    u128 t = (u128)(a) * b;
-    t = (t >> 61) + (t & Mod);
-    return (t >= Mod) ? t - Mod : t;
-}
-ull del(ull a,ull b){
-    return norm(a-b+Mod);
-}
-ull add(ull a,ull b){
-    return norm(a+b);
-}
-void HInit() {
-    bas[0] = 1;
-    for (int i = 1; i < maxn; i++) {
-        bas[i] = mul(bas[i - 1] , Seed);
-    }
-}
-struct Hash {
-    int n;
-    std::vector<ull> sum;
-    Hash(const string& s): n(s.length()), sum(n + 1) {
-        for (int i = 1; i <= n; i++) {
-            sum[i] = add(mul(sum[i - 1] , Seed),s[i - 1]);
-        }
-    }
-    ull getHash(int l, int r) {
-        ull res = del(sum[r] - mul(sum[l - 1], bas[r - l + 1]));
-        return res;
-    }
-};\end{lstlisting}
-
 \subsection{后缀数组}
 \thispagestyle{fancy}
 
@@ -1468,120 +1270,14 @@ struct SuffixArray {
 \thispagestyle{fancy}
 
 \noindent\begin{lstlisting}
-using ull = unsigned long long;
-using u128 = unsigned __int128;
-constexpr ull Mod = (1ULL << 61) - 1;
-template<typename T>
-constexpr T power(T a, ull b) {
-    T res {1};
-    for (; b != 0; b /= 2, a *= a) {
-        if (b % 2 == 1) {
-            res *= a;
-        }
-    }
-    return res;
-}
-
+constexpr ull P=(1ULL<<61)-1;
+using Z = MInt<ull,P>;
+template<const ull P>
 ull mulMod(ull a, ull b) {
-    u128 t = static_cast<u128>(a) * b;
-    t = (t >> 61) + (t & Mod);
-    return (t >= Mod) ? t - Mod : t;
+    u128 t = (u128)(a) * b;
+    t = (t >> 61) + (t & P);
+    return (t >= P) ? t - P : t;
 }
-
-template<typename U, U P>
-struct ModIntBase {
-public:
-    constexpr ModIntBase() : x {0} {}
-
-    template<typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
-    constexpr ModIntBase(T x_) : x {norm(x_ % P)} {}
-
-    constexpr static U norm(U x) {
-        if ((x >> (8 * sizeof(U) - 1) & 1) == 1) {
-            x += P;
-        }
-        if (x >= P) {
-            x -= P;
-        }
-        return x;
-    }
-
-    constexpr U val() const {
-        return x;
-    }
-
-    constexpr ModIntBase operator-() const {
-        ModIntBase res;
-        res.x = norm(P - x);
-        return res;
-    }
-
-    constexpr ModIntBase inv() const {
-        return power(*this, P - 2);
-    }
-
-    constexpr ModIntBase &operator*=(const ModIntBase &rhs) & {
-        x = mulMod(x, rhs.val());
-        return *this;
-    }
-
-    constexpr ModIntBase &operator+=(const ModIntBase &rhs) & {
-        x = norm(x + rhs.x);
-        return *this;
-    }
-
-    constexpr ModIntBase &operator-=(const ModIntBase &rhs) & {
-        x = norm(x- rhs.x+P);
-        return *this;
-    }
-
-    constexpr ModIntBase &operator/=(const ModIntBase &rhs) & {
-        return *this *= rhs.inv();
-    }
-
-    friend constexpr ModIntBase operator*(ModIntBase lhs, const ModIntBase &rhs) {
-        lhs *= rhs;
-        return lhs;
-    }
-
-    friend constexpr ModIntBase operator+(ModIntBase lhs, const ModIntBase &rhs) {
-        lhs += rhs;
-        return lhs;
-    }
-
-    friend constexpr ModIntBase operator-(ModIntBase lhs, const ModIntBase &rhs) {
-        lhs -= rhs;
-        return lhs;
-    }
-
-    friend constexpr ModIntBase operator/(ModIntBase lhs, const ModIntBase &rhs) {
-        lhs /= rhs;
-        return lhs;
-    }
-
-    friend constexpr std::ostream &operator<<(std::ostream &os, const ModIntBase &a) {
-        return os << a.val();
-    }
-
-    friend constexpr bool operator==(ModIntBase lhs, ModIntBase rhs) {
-        return lhs.val() == rhs.val();
-    }
-
-    friend constexpr bool operator!=(ModIntBase lhs, ModIntBase rhs) {
-        return lhs.val() != rhs.val();
-    }
-
-    friend constexpr bool operator<(ModIntBase lhs, ModIntBase rhs) {
-        return lhs.val() < rhs.val();
-    }
-
-private:
-    U x;
-};
-
-template<ull P>
-using ModInt64 = ModIntBase<ull, P>;
-using Z = ModInt64<Mod>;
 constexpr int maxn = 1e6 + 7;
 mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
 uniform_int_distribution<ull> dist(Mod / 2, Mod - 1);
@@ -1608,132 +1304,6 @@ struct Hash {
 
 \section{数学}
 \thispagestyle{fancy}
-
-\subsection{Mlong}
-\thispagestyle{fancy}
-
-\noindent\begin{lstlisting}
-template<class T>
-constexpr T power(T a, ll b) {
-    T res = 1;
-    for (; b; b /= 2, a *= a) {
-        if (b % 2) {
-            res *= a;
-        }
-    }
-    return res;
-}
-
-constexpr ll mul(ll a, ll b, ll p) {
-    ll res = a * b - ll(1.L * a * b / p) * p;
-    res %= p;
-    if (res < 0) {
-        res += p;
-    }
-    return res;
-}
-template<ll P>
-struct MLong {
-    ll x;
-    constexpr MLong() : x{} {}
-    constexpr MLong(ll x) : x{norm(x % getMod())} {}
-
-    static ll Mod;
-    constexpr static ll getMod() {
-        if (P > 0) {
-            return P;
-        } else {
-            return Mod;
-        }
-    }
-    constexpr static void setMod(ll Mod_) {
-        Mod = Mod_;
-    }
-    constexpr ll norm(ll x) const {
-        if (x < 0) {
-            x += getMod();
-        }
-        if (x >= getMod()) {
-            x -= getMod();
-        }
-        return x;
-    }
-    constexpr ll val() const {
-        return x;
-    }
-    explicit constexpr operator ll() const {
-        return x;
-    }
-    constexpr MLong operator-() const {
-        MLong res;
-        res.x = norm(getMod() - x);
-        return res;
-    }
-    constexpr MLong inv() const {
-        assert(x != 0);
-        return power(*this, getMod() - 2);
-    }
-    constexpr MLong &operator*=(MLong rhs) & {
-        x = mul(x, rhs.x, getMod());
-        return *this;
-    }
-    constexpr MLong &operator+=(MLong rhs) & {
-        x = norm(x + rhs.x);
-        return *this;
-    }
-    constexpr MLong &operator-=(MLong rhs) & {
-        x = norm(x - rhs.x);
-        return *this;
-    }
-    constexpr MLong &operator/=(MLong rhs) & {
-        return *this *= rhs.inv();
-    }
-    friend constexpr MLong operator*(MLong lhs, MLong rhs) {
-        MLong res = lhs;
-        res *= rhs;
-        return res;
-    }
-    friend constexpr MLong operator+(MLong lhs, MLong rhs) {
-        MLong res = lhs;
-        res += rhs;
-        return res;
-    }
-    friend constexpr MLong operator-(MLong lhs, MLong rhs) {
-        MLong res = lhs;
-        res -= rhs;
-        return res;
-    }
-    friend constexpr MLong operator/(MLong lhs, MLong rhs) {
-        MLong res = lhs;
-        res /= rhs;
-        return res;
-    }
-    friend constexpr std::istream &operator>>(std::istream &is, MLong &a) {
-        ll v;
-        is >> v;
-        a = MLong(v);
-        return is;
-    }
-    friend constexpr std::ostream &operator<<(std::ostream &os, const MLong &a) {
-        return os << a.val();
-    }
-    friend constexpr bool operator==(MLong lhs, MLong rhs) {
-        return lhs.val() == rhs.val();
-    }
-    friend constexpr bool operator!=(MLong lhs, MLong rhs) {
-        return lhs.val() != rhs.val();
-    }
-};
-
-template<>
-ll MLong<0LL>::Mod = ll(1E18) + 9;
-
-template<int V, int P>
-constexpr MLong<P> CInv = MLong<P>(V).inv();
-
-constexpr ll P = ll(1E18) + 9;
-using Z = MLong<P>;
- \end{lstlisting}
 
 \subsection{Pollard-pho}
 \thispagestyle{fancy}
@@ -1840,6 +1410,97 @@ std::vector<ll> factorize(ll n) {
     return p;
 }\end{lstlisting}
 
+\subsection{Zmint}
+\thispagestyle{fancy}
+
+\noindent\begin{lstlisting}
+template<class T>
+T power(T a, ll b, T res = 1) {
+    for (; b != 0; b /= 2, a *= a) {
+        if (b & 1) {
+            res *= a;
+        }
+    }
+    return res;
+}
+template<const ull P>
+ull mulMod(ull a, ull b) {
+    ull res = a * b - ull(1.L * a * b / P - 0.5L) * P;
+    res %= P;
+    return res;
+}
+template<const u32 P>
+u32 mulMod(u32 a, u32 b) {
+    return ull(a) * b % P;
+}
+template<class T, const T P>
+struct MInt
+{
+    T x = 0;
+    MInt(): x(0) {}
+    MInt(T _x): x(_x % P) {}
+    T norm(T x) {return (x >= P ? x - P : x);}
+    MInt &operator=(T _x) {x = _x % P; return *this;}
+    MInt &operator+=(MInt t) {x = norm(x + t.x); return *this;}
+    MInt &operator-=(MInt t) {x = norm(x + P - t.x); return *this;}
+    MInt &operator*=(MInt t) {x = mulMod<P>(x, t.x); return *this;}
+    MInt &operator/=(MInt t) {*this *= power(t, P - 2); return *this;}
+    friend MInt operator+(MInt a, MInt b) {return (a += b);}
+    friend MInt operator-(MInt a, MInt b) {return (a -= b);}
+    friend MInt operator*(MInt a, MInt b) {return (a *= b);}
+    friend MInt operator/(MInt a, MInt b) {return (a /= b);}
+    friend bool operator==(MInt a, MInt b) {return (a.x == b.x);}
+    friend bool operator<(MInt a, MInt b) {return (a.x < b.x);}
+    friend std::ostream &operator<<(std::ostream &os, const MInt &a) {return os << a.x;}
+    friend std::istream &operator>>(std::istream &is, MInt &a) {ll v;is >> v;a = MInt(v);return is;}
+};
+constexpr int P = 998244353;
+using Z = MInt<u32, P>;
+const int N = 1E5 + 7;
+Z fac[N], ifac[N], inv[N];
+void init(int x) {
+    fac[0] = ifac[0] = inv[1] = 1;
+    for (int i = 2; i <= x; i++) inv[i] = (P - P / i) * inv[P % i];
+    for (int i = 1; i <= x; i++) fac[i] = fac[i - 1] * i, ifac[i] = ifac[i - 1] * inv[i];
+}
+Z C(int x, int y) {
+    return x < y || y < 0 ? 0 : fac[x] * ifac[y] * ifac[x - y];
+}
+struct Inversion {
+    static constexpr int B = (1 << 10), T = (1 << 20);
+    std::array < int, T + 1 > f, p;
+    std::array < int, T * 3 + 3 > buf;
+    int *I = buf.begin() + T;
+    Inversion() {
+        for (int i = 1; i <= B; i++) {
+            int s = 0, d = (i << 10);
+            for (int j = 1; j <= T; j++) {
+                if ((s += d) >= P) s -= P;
+                if (s <= T) {
+                    if (!f[j]) f[j] = i, p[j] = s;
+                }
+                else if (s >= P - T) {
+                    if (!f[j]) f[j] = i, p[j] = s - P;
+                }
+                else {
+                    int t = (P - T - s - 1) / d;
+                    s += t * d, j += t;
+                }
+            }
+        }
+        I[1] = f[0] = 1;
+        for (int i = 2; i <= (T << 1); i++)
+            I[i] = 1ll * (P - P / i) * I[P % i] % P;
+
+        for (int i = -1; i >= -T; i--)
+            I[i] = P - I[-i];
+
+    }
+    Z inv(int x) {
+        return Z(1) * I[p[x >> 10] + (x & 1023) * f[x >> 10]] * f[x >> 10];
+    }
+};\end{lstlisting}
+
 \subsection{ax+by=c求解}
 \thispagestyle{fancy}
 
@@ -1884,7 +1545,6 @@ pair<ll,ll> exgcd(ll a, ll b, ll c)
 
 constexpr int P = 998244353;
 using i64 = long long;
-// assume -P <= x < 2P
 int norm(int x) {
     if (x < 0) {
         x += P;
@@ -2463,9 +2123,6 @@ namespace factor {
 \thispagestyle{fancy}
 
 \noindent\begin{lstlisting}
-//
-// Created by 墨华 on 2024/6/2.
-//
 template<class T>
 struct Frac {
     T num;
@@ -3126,83 +2783,123 @@ struct Info {
 
 \noindent\begin{lstlisting}
 template<class T>
-struct Segment {
+struct Segtree {
     T o[1 << 20]; int L;
     void upt(int x) {
         o[x] = o[x << 1] + o[x << 1 | 1];
     }
-    void init(int n, const vector<T>&w) {
+    void init(int n,const vector<T>&w) {
         L = 2 << std::__lg(n + 1);
         for (int i = 1; i <= n; ++i) o[i + L] = w[i];
         for (int i = L; i >= 1; --i) upt(i);
     }
     void change(int p, T v) {
-        for (o[p += L] = v; p >>= 1; upt(p));
+        for (o[p += L] += v; p >>= 1; upt(p));
     }
     T query(int l, int r) {
-        l += L - 1, r += L + 1;
-        T ans{};
+        if (l == r) return o[l + L];
+        T le = o[l + L], ri = o[r + L];
+        l = l+L, r = r+L;
         for (; l ^ r ^ 1; l >>= 1, r >>= 1) {
-            if ((l & 1) == 0) ans =ans+ o[l ^ 1];
-            if ((r & 1) == 1) ans =ans+ o[r ^ 1];
+            if ((l & 1) == 0) le = le + o[l ^ 1];
+            if ((r & 1) == 1) ri = o[r ^ 1] + ri;
         }
-        return ans;
+        return le + ri;
     }
 };
-struct node {
-    ll val = 0;
-    node () {
+struct S{
+    ll x=0;
+    friend S operator+(S a,S b){
+        S res;
+        res.x=a.x+b.x;
+        return res;
     }
-    friend  node operator+(node lhs, node rhs) {
-        node now;
-        if (lhs.val > rhs.val)now = lhs;
-        else now = rhs;
-        return now;
-    }
-};
-Segment<node>seg;\end{lstlisting}
+};\end{lstlisting}
 
 \subsection{主席树}
 \thispagestyle{fancy}
 
 \noindent\begin{lstlisting}
-struct Chairman_Tree {
-    struct Node {int L, R, val;} tree[maxn * 500];
-    void init() {
-        memset(root, 0, sizeof root);
-        cnt = 0;
+template<class Info>
+struct PST {
+    struct Node {
+        int l;
+        int r;
+        Info h;
+        Node() : l(0), r(0), h() {}
+    };
+
+    vector<Node> tr;
+    int tot;
+
+    PST(int maxNode = 0) : tr(maxNode + 1), tot(0) {}
+
+    inline void pushup(int p) {
+        tr[p].h = tr[p].l + tr[p].r;
     }
-    /* 建T0空树 */
-    int build(int l, int r) {
-        int k = cnt++;
-        tree[k].val = 0;
-        if (l == r) return k;
-        int mid = l + r >> 1;
-        tree[k].L = build(l, mid); tree[k].R = build(mid + 1, r);
-        return k;
-    }
-    /* 上一个版本节点P，【ppos】+=del 返回新版本节点*/
-    int update (int P, int l, int r, int ppos, int del) {
-        int k = cnt++;
-        tree[k].val = tree[P].val + del;
-        if (l == r) return k;
-        int mid = l + r >> 1;
-        if (ppos <= mid) {
-            tree[k].L = update(tree[P].L, l, mid, ppos, del);
-            tree[k].R = tree[P].R;
-        } else {
-            tree[k].L = tree[P].L;
-            tree[k].R = update(tree[P].R, mid + 1, r, ppos, del);
+
+    int add(int p, int l, int r, int x, Info v) {
+        int np = ++tot;
+        tr[np] = tr[p];
+
+        if (l == r) {
+            tr[np].h = v;   // 单点加
+            return np;
         }
-        return k;
+
+        int m = (l + r) >> 1;
+        if (x <= m) {
+            tr[np].l = add(tr[np].l, l, m, x, v);
+        } else {
+            tr[np].r = add(tr[np].r, m + 1, r, x, v);
+        }
+        pushup(np);
+        return np;
     }
-    int query_kth(int lt, int rt, int l, int r, int k) {
-        if (l == r) return a[rk[l]];
-        int mid = l + r >> 1;
-        if (tree[tree[rt].L].val - tree[tree[lt].L].val >= k) return query_kth(tree[lt].L, tree[rt].L, l, mid, k);
-        else return query_kth(tree[lt].R, tree[rt].R, mid + 1, r, k + tree[tree[lt].L].val - tree[tree[rt].L].val);
+
+    Info query1(int p, int l, int r, int nl, int nr) {
+        if (!p) return Info();
+        if (nl <= l && r <= nr) return tr[p].h;
+        int mid = (l + r) >> 1;
+        if (nr <= mid) return query1(tr[p].l, l, mid, nl, nr);
+        if (nl > mid) return query1(tr[p].r, mid + 1, r, nl, nr);
+        return query1(tr[p].l, l, mid, nl, nr) + query1(tr[p].r, mid + 1, r, nl, nr);
     }
-} tree;\end{lstlisting}
+
+    template<class Check>
+    int query2(int p1, int p2, int l, int r, Check check) {
+        Info diff = p2 - p1;
+        if (!check(diff)) {
+            return -1;
+        }
+        if (l == r) {
+            return l;
+        }
+        int m = (l + r) >> 1;
+
+        int lc1 = tr[p1].l, lc2 = tr[p2].l;
+        Info leftDiff = lc2 - lc1;
+        if (check(leftDiff)) {
+            return query2(lc1, lc2, l, m, check);
+        } else {
+            return query2(tr[p1].r, tr[p2].r, m + 1, r, check);
+        }
+    }
+};
+struct info {
+    ll val = 0;
+    friend info operator+(info a, info b) {
+        info res;
+        res.val = (a.val ^ b.val);
+        return res;
+    }
+    friend info operator-(info a, info b) {
+        info res;
+        res.val = (a.val ^ b.val);
+        return res;
+    }
+};
+\end{lstlisting}
 
 \subsection{动态中位数}
 \thispagestyle{fancy}
@@ -3415,36 +3112,6 @@ struct node {
         if (lhs.val < rhs.val)now = lhs;
         else now = rhs;
         return now;
-    }
-};\end{lstlisting}
-
-\subsection{扫描线node版}
-\thispagestyle{fancy}
-
-\noindent\begin{lstlisting}
-struct tag {
-    ll val = 0;
-    void init() {
-        val = 0;
-    }
-    tag&operator+=(const tag &t) & {
-        val += t.val;
-        return *this;
-    }
-};
-struct node {
-    int minv, mincnt;
-    friend node operator+(const node &l, const node &r) {
-        node a;
-        a.minv = min(l.minv, r.minv);
-        if (l.minv == r.minv)a.mincnt = l.mincnt + r.mincnt;
-        else if (l.minv < r.minv)a.mincnt = l.mincnt;
-        else a.mincnt = r.mincnt;
-        return a;
-    }
-    node&operator+=(tag&t) {
-        minv += t.val;
-        return *this;
     }
 };\end{lstlisting}
 
@@ -3678,80 +3345,11 @@ struct CaT{
     }
 };\end{lstlisting}
 
-\subsection{线段树代替set}
-\thispagestyle{fancy}
-
-\noindent\begin{lstlisting}
-struct node {
-    ll val;
-    int id;
-    node () {
-    }
-    friend  node operator+(node lhs, node rhs) {
-        node now;
-        if (lhs.val < rhs.val)now = lhs;
-        else now = rhs;
-        return now;
-    }
-};
-struct Segment {
-    std::vector<node> tre;
-    int n;
-    Segment() : n(0) {}
-    Segment(int n) : n(n), tre(4 << std::__lg(n)+2) {}
-    Segment(int n, vector<node>&v) : n(n), tre(4 << std::__lg(n)+2) {
-        init(v);
-    }
-    void pushup(int p) {
-        tre[p] = tre[p << 1] + tre[p << 1 | 1];
-    }
-    void init(vector<node>&v) {
-        auto build = [&](auto && build, int p, int l, int r) {
-            if (l == r) {
-                tre[p] = v[l];
-                return;
-            }
-            int mid = (l + r) >> 1;
-            build(build, p << 1, l, mid);
-            build(build, p << 1 | 1, mid + 1, r);
-            pushup(p);
-        };
-        build(build, 1, 1, n);
-    }
-    void change(int p, int l, int r, int pos, ll x) {
-        if (l == r) {
-            tre[p].val = x;
-            return;
-        }
-        int mid = (l + r) >> 1;
-        if (pos <= mid)change(p << 1, l, mid, pos, x);
-        else change(p << 1 | 1, mid + 1, r, pos, x);
-        pushup(p);
-    }
-    node query(int p, int l, int r, int nl, int nr) {
-        if (nl <= l and r <= nr)return tre[p];
-        int mid = (l + r) >> 1;
-        if (nr <= mid)return query(p << 1, l, mid, nl, nr);
-        if (nl > mid)return query(p << 1 | 1, mid + 1, r, nl, nr);
-        return query(p << 1, l, mid, nl, nr) + query(p << 1 | 1, mid + 1, r, nl, nr);
-    }
-    void erase(int u) {
-        change(1, 1, n, u, LNF);
-    }
-    void insert(int u,ll val){
-        change(1,1,n,u,node{val,u});
-    }
-};\end{lstlisting}
-
 \subsection{莫队}
 \thispagestyle{fancy}
 
 \noindent\begin{lstlisting}
-#include<bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-const int maxn=2e5+7;
-ll tmp=0;
+
 int main(){
     int n,m;
     cin>>n>>m;

@@ -35,6 +35,8 @@ struct MInt
     friend MInt operator/(MInt a, MInt b) {return (a /= b);}
     friend bool operator==(MInt a, MInt b) {return (a.x == b.x);}
     friend bool operator<(MInt a, MInt b) {return (a.x < b.x);}
+    friend std::ostream &operator<<(std::ostream &os, const MInt &a) {return os << a.x;}
+    friend std::istream &operator>>(std::istream &is, MInt &a) {ll v;is >> v;a = MInt(v);return is;}
 };
 constexpr int P = 998244353;
 using Z = MInt<u32, P>;

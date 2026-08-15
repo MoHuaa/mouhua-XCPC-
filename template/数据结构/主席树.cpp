@@ -1,37 +1,79 @@
-struct Chairman_Tree {
-    struct Node {int L, R, val;} tree[maxn * 500];
-    void init() {
-        memset(root, 0, sizeof root);
-        cnt = 0;
+template<class Info>
+struct PST {
+    struct Node {
+        int l;
+        int r;
+        Info h;
+        Node() : l(0), r(0), h() {}
+    };
+
+    vector<Node> tr;
+    int tot;
+
+    PST(int maxNode = 0) : tr(maxNode + 1), tot(0) {}
+
+    inline void pushup(int p) {
+        tr[p].h = tr[p].l + tr[p].r;
     }
-    /* 建T0空树 */
-    int build(int l, int r) {
-        int k = cnt++;
-        tree[k].val = 0;
-        if (l == r) return k;
-        int mid = l + r >> 1;
-        tree[k].L = build(l, mid); tree[k].R = build(mid + 1, r);
-        return k;
-    }
-    /* 上一个版本节点P，【ppos】+=del 返回新版本节点*/
-    int update (int P, int l, int r, int ppos, int del) {
-        int k = cnt++;
-        tree[k].val = tree[P].val + del;
-        if (l == r) return k;
-        int mid = l + r >> 1;
-        if (ppos <= mid) {
-            tree[k].L = update(tree[P].L, l, mid, ppos, del);
-            tree[k].R = tree[P].R;
-        } else {
-            tree[k].L = tree[P].L;
-            tree[k].R = update(tree[P].R, mid + 1, r, ppos, del);
+
+    int add(int p, int l, int r, int x, Info v) {
+        int np = ++tot;
+        tr[np] = tr[p];
+
+        if (l == r) {
+            tr[np].h = v;   // 单点加
+            return np;
         }
-        return k;
+
+        int m = (l + r) >> 1;
+        if (x <= m) {
+            tr[np].l = add(tr[np].l, l, m, x, v);
+        } else {
+            tr[np].r = add(tr[np].r, m + 1, r, x, v);
+        }
+        pushup(np);
+        return np;
     }
-    int query_kth(int lt, int rt, int l, int r, int k) {
-        if (l == r) return a[rk[l]];
-        int mid = l + r >> 1;
-        if (tree[tree[rt].L].val - tree[tree[lt].L].val >= k) return query_kth(tree[lt].L, tree[rt].L, l, mid, k);
-        else return query_kth(tree[lt].R, tree[rt].R, mid + 1, r, k + tree[tree[lt].L].val - tree[tree[rt].L].val);
+
+    Info query1(int p, int l, int r, int nl, int nr) {
+        if (!p) return Info();
+        if (nl <= l && r <= nr) return tr[p].h;
+        int mid = (l + r) >> 1;
+        if (nr <= mid) return query1(tr[p].l, l, mid, nl, nr);
+        if (nl > mid) return query1(tr[p].r, mid + 1, r, nl, nr);
+        return query1(tr[p].l, l, mid, nl, nr) + query1(tr[p].r, mid + 1, r, nl, nr);
     }
-} tree;
+
+    template<class Check>
+    int query2(int p1, int p2, int l, int r, Check check) {
+        Info diff = p2 - p1;
+        if (!check(diff)) {
+            return -1;
+        }
+        if (l == r) {
+            return l;
+        }
+        int m = (l + r) >> 1;
+
+        int lc1 = tr[p1].l, lc2 = tr[p2].l;
+        Info leftDiff = lc2 - lc1;
+        if (check(leftDiff)) {
+            return query2(lc1, lc2, l, m, check);
+        } else {
+            return query2(tr[p1].r, tr[p2].r, m + 1, r, check);
+        }
+    }
+};
+struct info {
+    ll val = 0;
+    friend info operator+(info a, info b) {
+        info res;
+        res.val = (a.val ^ b.val);
+        return res;
+    }
+    friend info operator-(info a, info b) {
+        info res;
+        res.val = (a.val ^ b.val);
+        return res;
+    }
+};

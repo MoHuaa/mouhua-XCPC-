@@ -65,7 +65,8 @@ def create_latex_file():
 """
     
     # 获取模板目录下的所有子目录
-    template_dir = "template"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    template_dir = os.path.join(script_dir, "template")
     categories = os.listdir(template_dir)
     categories.sort()  # 对目录进行排序
     
@@ -100,17 +101,19 @@ def create_latex_file():
     latex_content += "\\end{document}"
     
     # 写入LaTeX文件
-    with open("algorithm_templates.tex", "w", encoding="utf-8") as tex_file:
+    output_path = os.path.join(script_dir, "algorithm_templates.tex")
+    with open(output_path, "w", encoding="utf-8") as tex_file:
         tex_file.write(latex_content)
     
-    return "algorithm_templates.tex"
+    return output_path
 
 # 生成PDF
 def generate_pdf(tex_file):
     try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
         # 运行xelatex两次以确保目录正确
-        subprocess.run(["xelatex", "-interaction=nonstopmode", tex_file], check=True)
-        subprocess.run(["xelatex", "-interaction=nonstopmode", tex_file], check=True)
+        subprocess.run(["xelatex", "-interaction=nonstopmode", tex_file], cwd=script_dir, check=True)
+        subprocess.run(["xelatex", "-interaction=nonstopmode", tex_file], cwd=script_dir, check=True)
         print(f"PDF生成成功！文件名: {os.path.splitext(tex_file)[0]}.pdf")
         return True
     except subprocess.CalledProcessError as e:
