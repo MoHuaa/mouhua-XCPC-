@@ -1,45 +1,70 @@
 template<class T>
-T power(T a, ll b, T res = 1) {
-    for (; b != 0; b /= 2, a *= a) {
-        if (b & 1) {
-            res *= a;
-        }
-    }
+T power(T a, ull b, T res = 1) {
+    for (; b; b >>= 1, a *= a)
+        if (b & 1) res *= a;
     return res;
 }
-template<const ull P>
-ull mulMod(ull a, ull b) {
-    ull res = a * b - ull(1.L * a * b / P - 0.5L) * P;
-    res %= P;
-    return res;
-}
-template<const u32 P>
-u32 mulMod(u32 a, u32 b) {
+template<uint P>
+uint mulMod(uint a, uint b) {
     return ull(a) * b % P;
 }
-template<class T, const T P>
-struct MInt
-{
+
+template<ull P>
+ull mulMod(ull a, ull b) {
+    constexpr u128 im = -u128(1) / P;
+    constexpr ull l = ull(im), h = ull(im >> 64);
+    u128 z = u128(a) * b;
+    ull x = ull(z), y = ull(z >> 64);
+    u128 t = u128(y) * l + (u128(x) * l >> 64);
+    u128 s = u128(x) * h + ull(t);
+    ull q = y * h + ull(t >> 64) + ull(s >> 64);
+    u128 r = z - u128(q) * P;
+    return ull(r >= P ? r - P : r);
+}
+
+
+template<class T, T P>
+struct MInt {
     T x = 0;
-    MInt(): x(0) {}
-    MInt(T _x): x(_x % P) {}
-    T norm(T x) {return (x >= P ? x - P : x);}
-    MInt &operator=(T _x) {x = _x % P; return *this;}
-    MInt &operator+=(MInt t) {x = norm(x + t.x); return *this;}
-    MInt &operator-=(MInt t) {x = norm(x + P - t.x); return *this;}
-    MInt &operator*=(MInt t) {x = mulMod<P>(x, t.x); return *this;}
-    MInt &operator/=(MInt t) {*this *= power(t, P - 2); return *this;}
-    friend MInt operator+(MInt a, MInt b) {return (a += b);}
-    friend MInt operator-(MInt a, MInt b) {return (a -= b);}
-    friend MInt operator*(MInt a, MInt b) {return (a *= b);}
-    friend MInt operator/(MInt a, MInt b) {return (a /= b);}
-    friend bool operator==(MInt a, MInt b) {return (a.x == b.x);}
-    friend bool operator<(MInt a, MInt b) {return (a.x < b.x);}
-    friend std::ostream &operator<<(std::ostream &os, const MInt &a) {return os << a.x;}
-    friend std::istream &operator>>(std::istream &is, MInt &a) {ll v;is >> v;a = MInt(v);return is;}
+    MInt() = default;
+    template<class U> MInt(U v) {
+        ull a = v;
+        bool neg = v < 0;
+        x = (neg ? -a : a) % P;
+        if (neg && x) x = P - x;
+    }
+    T val() const { return x; }
+    MInt &operator+=(MInt b) {
+        x = x >= P - b.x ? x - (P - b.x) : x + b.x;
+        return *this;
+    }
+    MInt &operator-=(MInt b) {
+        x = x >= b.x ? x - b.x : P - (b.x - x);
+        return *this;
+    }
+    MInt &operator*=(MInt b) {
+        x = mulMod<P>(x, b.x);
+        return *this;
+    }
+    MInt inv() const { return power(*this, ull(P) - 2); }
+    MInt &operator/=(MInt b) { return *this *= b.inv(); }
+    MInt operator-() const { return MInt() - *this; }
+    friend MInt operator+(MInt a, MInt b) { return a += b; }
+    friend MInt operator-(MInt a, MInt b) { return a -= b; }
+    friend MInt operator*(MInt a, MInt b) { return a *= b; }
+    friend MInt operator/(MInt a, MInt b) { return a /= b; }
+    friend bool operator==(MInt a, MInt b) { return a.x == b.x; }
+    friend bool operator!=(MInt a, MInt b) { return a.x != b.x; }
+    friend bool operator<(MInt a, MInt b) { return a.x < b.x; }
+    friend std::ostream &operator<<(std::ostream &os, MInt a) {
+        return os << a.x;
+    }
+    friend std::istream &operator>>(std::istream &is, MInt &a) {
+        ll v;
+        if (is >> v) a = MInt(v);
+        return is;
+    }
 };
-constexpr int P = 998244353;
-using Z = MInt<u32, P>;
 const int N = 1E5 + 7;
 Z fac[N], ifac[N], inv[N];
 void init(int x) {

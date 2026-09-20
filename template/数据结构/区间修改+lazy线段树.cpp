@@ -1,83 +1,131 @@
 template<class Info, class Tag>
 struct LazySegmentTree {
-    int n;
+    int n = 0;
     std::vector<Info> info;
     std::vector<Tag> tag;
-    LazySegmentTree() : n(0) {}
-    LazySegmentTree(int n_) : n(n_), info(4 * n_ + 1, Info()), tag(4 * n_ + 1, Tag()) {}
+
+    LazySegmentTree() = default;
     template<class T>
-    LazySegmentTree(std::vector<T> init_) {
-        init(init_);
-    }
+    LazySegmentTree(const std::vector<T>& a) { init(a); }
+
     template<class T>
-    void init(std::vector<T> init_) {
-        n = init_.size() - 1;
-        info.assign(4 * n + 1, Info());
-        tag.assign(4 * n + 1, Tag());
-        auto build = [&](auto && build, int p, int l, int r)->void{
+    void init(const std::vector<T>& a) {
+        n = std::max(0, (int)a.size() - 1);
+        info.assign(4 * n + 4, Info{});
+        tag.assign(4 * n + 4, Tag{});
+        auto build = [&](auto&& self, int p, int l, int r) -> void {
             if (l == r) {
-                info[p] = init_[l];
+                info[p] = Info(a[l]);
                 return;
             }
-            int mid = (l + r) >> 1;
-            build(build, p << 1, l, mid);
-            build(build, p << 1 | 1, mid + 1, r);
+            int m = (l + r) >> 1;
+            self(self, p * 2, l, m);
+            self(self, p * 2 + 1, m + 1, r);
             push_up(p);
         };
-        build(build, 1, 1, n);
+        if (n) build(build, 1, 1, n);
     }
-    void push_up(int p) {
-        info[p] = (info[p << 1] + info[p << 1 | 1]);
+
+    void push_up(int p) { info[p] = info[p * 2] + info[p * 2 + 1]; }
+
+    void apply(int p, const Tag& t) {
+        info[p] += t;
+        tag[p] += t;
     }
+
     void push_down(int p) {
-        info[p << 1] += tag[p];
-        info[p << 1 | 1] += tag[p];
-        tag[p << 1] += tag[p];
-        tag[p << 1 | 1] += tag[p];
-        tag[p].init();
+        apply(p * 2, tag[p]);
+        apply(p * 2 + 1, tag[p]);
+        tag[p] = Tag{};
     }
-    void change(int l, int r, Tag num) {
-        change(1, 1, n, l, r, num);
+
+    void change(int l, int r, const Tag& t) {
+        if (n && l <= r) change(1, 1, n, l, r, t);
     }
-    void change(int p, int l, int r, int nl, int nr, Tag num) {
-        if (nl <= l and r <= nr) {
-            info[p] += num;
-            tag[p] += num;
+    void change(int p, int l, int r, int L, int R, const Tag& t) {
+        if (L <= l && r <= R) {
+            apply(p, t);
             return;
         }
         push_down(p);
-        int mid = (l + r) >> 1;
-        if (nl <= mid)change(p << 1, l, mid, nl, nr, num);
-        if (nr > mid)change(p << 1 | 1, mid + 1, r, nl, nr, num);
+        int m = (l + r) >> 1;
+        if (L <= m) change(p * 2, l, m, L, R, t);
+        if (R > m) change(p * 2 + 1, m + 1, r, L, R, t);
         push_up(p);
     }
+
     Info query(int l, int r) {
-        return query(1, 1, n, l, r);
+        return n && l <= r ? query(1, 1, n, l, r) : Info{};
     }
-    Info query(int p, int l, int r, int nl, int nr) {
-        if (nl <= l and r <= nr) {
-            return info[p];
-        }
+    Info query(int p, int l, int r, int L, int R) {
+        if (L <= l && r <= R) return info[p];
         push_down(p);
-        push_up(p);
-        int mid = (l + r) >> 1;
-        if (nr <= mid)return query(p << 1, l, mid, nl, nr);
-        if (nl > mid)return query(p << 1 | 1, mid + 1, r, nl, nr);
-        return query(p << 1, l, mid, nl, nr) + query(p << 1 | 1, mid + 1, r, nl, nr);
+        int m = (l + r) >> 1;
+        if (R <= m) return query(p * 2, l, m, L, R);
+        if (L > m) return query(p * 2 + 1, m + 1, r, L, R);
+        return query(p * 2, l, m, L, R)
+             + query(p * 2 + 1, m + 1, r, L, R);
     }
-    int find_first(int p, int l, int r, const std::function<bool(const Info &)> &f)
-    {
+
+    Info all() const { return n ? info[1] : Info{}; }
+
+    // OPTIONAL: overwrite one leaf with a complete Info value.
+    void set(int x, const Info& v) { set(1, 1, n, x, v); }
+    void set(int p, int l, int r, int x, const Info& v) {
         if (l == r) {
-            return l;
+            info[p] = v;
+            tag[p] = Tag{};
+            return;
         }
         push_down(p);
+        int m = (l + r) >> 1;
+        if (x <= m) set(p * 2, l, m, x, v);
+        else set(p * 2 + 1, m + 1, r, x, v);
         push_up(p);
-        int mid = (l + r) >> 1;
-        if (f(info[p << 1]))return find_first(p << 1, l, mid, f);
-        else return find_first(p << 1 | 1, mid + 1, r, f);
     }
-    int find_first(const std::function<bool(const Info &)> &f) {
-        return find_first(1, 1, n, f);
+    template<class F>
+    int find_first(int l, int r, F pred) {
+        Info pre{};
+        return n && l <= r ? find_first(1, 1, n, l, r, pre, pred) : -1;
+    }
+    template<class F>
+    int find_first(int p, int l, int r, int L, int R, Info& pre, F& pred) {
+        if (r < L || R < l) return -1;
+        if (L <= l && r <= R) {
+            Info cur = pre + info[p];
+            if (!pred(cur)) {
+                pre = cur;
+                return -1;
+            }
+            if (l == r) return l;
+        }
+        push_down(p);
+        int m = (l + r) >> 1;
+        int x = find_first(p * 2, l, m, L, R, pre, pred);
+        if (x == -1) x = find_first(p * 2 + 1, m + 1, r, L, R, pre, pred);
+        return x;
+    }
+    template<class F>
+    int find_last(int l, int r, F pred) {
+        Info suf{};
+        return n && l <= r ? find_last(1, 1, n, l, r, suf, pred) : -1;
+    }
+    template<class F>
+    int find_last(int p, int l, int r, int L, int R, Info& suf, F& pred) {
+        if (r < L || R < l) return -1;
+        if (L <= l && r <= R) {
+            Info cur = info[p] + suf;
+            if (!pred(cur)) {
+                suf = cur;
+                return -1;
+            }
+            if (l == r) return l;
+        }
+        push_down(p);
+        int m = (l + r) >> 1;
+        int x = find_last(p * 2 + 1, m + 1, r, L, R, suf, pred);
+        if (x == -1) x = find_last(p * 2, l, m, L, R, suf, pred);
+        return x;
     }
 };
 struct tag {

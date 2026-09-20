@@ -1,74 +1,123 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// 状态 0 为根，字符范围 [BASE, BASE+S)。
+// 非空模式全部插入后 build 一次，之后不再 add。
+template<int S = 26, int BASE = 'a'>
 struct AhoCorasick {
-    static constexpr int ALPHABET = 26;
-    struct Node {
-        int len;
-        int link;
-        std::array<int, ALPHABET> next;
-        Node() : len{0}, link{0}, next{} {}
-    };
-    
-    std::vector<Node> t;
-    
+    vector<array<int, S>> tr;
+    vector<int> link, q;
+
     AhoCorasick() {
         init();
     }
-    
+
     void init() {
-        t.assign(2, Node());
-        t[0].next.fill(1);
-        t[0].len = -1;
+        tr.assign(1, {});
+        link.clear();
+        q.clear();
     }
-    
-    int newNode() {
-        t.emplace_back();
-        return t.size() - 1;
+
+    int size() const {
+        return tr.size();
     }
-    
-    int add(const std::string &a) {
-        int p = 1;
-        for (auto c : a) {
-            int x = c - 'a';
-            if (t[p].next[x] == 0) {
-                t[p].next[x] = newNode();
-                t[t[p].next[x]].len = t[p].len + 1;
+
+    int add(string_view s) {
+        int u = 0;
+
+        for (unsigned char ch : s) {
+            int c = ch - BASE;
+
+            if (!tr[u][c]) {
+                tr[u][c] = size();
+                tr.emplace_back();
             }
-            p = t[p].next[x];
+
+            u = tr[u][c];
         }
-        return p;
+
+        return u;
     }
-    
-    void work() {
-        std::queue<int> q;
-        q.push(1);
-        
-        while (!q.empty()) {
-            int x = q.front();
-            q.pop();
-            
-            for (int i = 0; i < ALPHABET; i++) {
-                if (t[x].next[i] == 0) {
-                    t[x].next[i] = t[t[x].link].next[i];
+
+    void build() {
+        link.assign(size(), 0);
+        q.resize(size());
+        q[0] = 0;
+
+        int tail = 1;
+        for (int v : tr[0])
+            if (v) q[tail++] = v;
+
+        for (int i = 1; i < tail; ++i) {
+            int u = q[i], f = link[u];
+
+            for (int c = 0; c < S; ++c) {
+                int v = tr[u][c];
+
+                if (v) {
+                    link[v] = tr[f][c];
+                    q[tail++] = v;
                 } else {
-                    t[t[x].next[i]].link = t[t[x].link].next[i];
-                    q.push(t[x].next[i]);
+                    tr[u][c] = tr[f][c];
                 }
             }
         }
     }
-    
-    int next(int p, int x) {
-        return t[p].next[x];
+
+    int step(int u, unsigned char c) const {
+        return tr[u][c - BASE];
     }
-    
-    int link(int p) {
-        return t[p].link;
+
+    // ===== 可选：扫描文本，返回最终状态 =====
+
+    template<class F>
+    int scan(string_view s, F visit, int u = 0) const {
+        for (unsigned char c : s) {
+            u = step(u, c);
+            visit(u);
+        }
+        return u;
     }
-    
-    int len(int p) {
-        return t[p].len;
+
+    // ===== 可选：沿失配链接向上汇总 =====
+
+    template<class T>
+    void pull(vector<T>& a) const {
+        for (int i = size() - 1; i > 0; --i) {
+            int u = q[i];
+            a[link[u]] = a[link[u]] + a[u];
+        }
     }
-    
-    int size() {
-        return t.size();
+
+    vector<long long> count(string_view s) const {
+        vector<long long> cnt(size());
+
+        scan(s, [&](int u) {
+            ++cnt[u];
+        });
+
+        pull(cnt);
+        return cnt;
+    }
+
+    // ===== 可选：继承后缀信息 =====
+
+    template<class T>
+    void inherit(vector<T>& a) const {
+        for (int i = 1; i < size(); ++i) {
+            int u = q[i];
+            a[u] = a[link[u]] + a[u];
+        }
+    }
+
+    // ===== 可选：失配树 =====
+
+    vector<vector<int>> failTree() const {
+        vector<vector<int>> g(size());
+
+        for (int u = 1; u < size(); ++u)
+            g[link[u]].push_back(u);
+
+        return g;
     }
 };

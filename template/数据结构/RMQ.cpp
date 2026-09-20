@@ -1,46 +1,44 @@
-#include<bits/extc++.h>
-using namespace __gnu_pbds;
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
-using u32 = unsigned;
-using u128 = unsigned __int128;
-using i128 = __int128;
-#define LNF 0x3f3f3f3f3f3f3f3f
-#define W(...) println("{} = {}", #__VA_ARGS__, make_tuple(__VA_ARGS__))
-template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-void chmax(auto & a, const auto &... b) {((a = (b > a ? b : a)), ...);}
-void chmin(auto & a, const auto &... b) {((a = (b < a ? b : a)), ...);}
-#define pb push_back
-void solve(void) {
-    std::vector<vector<int>> matrix{{1}};
-    int target=1;
-     int n=matrix.size();
-        int m=matrix[0].size();
-        int l=-1,r=m*n;
-        auto getid=[&](int id){
-            int x=id/m;
-            int y=id%m;
-            return array<int,2>{x,y};
-        };
-        auto check=[&](int id){
-            auto [x,y]=getid(id);
-            return matrix[x][y]>=target;
-        };
-        while(l+1<r){
-            int mid=(l+r)>>1;
-            if(check(mid))r=mid;
-            else l=mid;
+template<class T, class Cmp = greater<T>>
+struct RMQ {
+    vector<T> a, win; // win[r]: 以 r 结尾、长度至多 64 的窗口极值
+    vector<ull> mask;
+    vector<vector<T>> st;
+    static T op(T x, T y) { return Cmp{}(x, y) ? x : y; }
+    static int lg(ull x) { return 63 - __builtin_clzll(x); }
+
+    RMQ(const vector<T>& v) : a(v), win(v.size()), mask(v.size()) {
+        int n = a.size(), m = n >> 6;
+        ull s = 0;
+        for (int i = 0; i < n; i++) {
+            s <<= 1;
+            while (s && !Cmp{}(a[i - __builtin_ctzll(s)], a[i]))
+                s &= s - 1;
+            mask[i] = s |= 1;
+            win[i] = a[i - lg(s)];
         }
-        auto [x,y]=getid(r);
-        W(r,x,y);
-        
-}
-int main() {
-  ios::sync_with_stdio(false); cin.tie(nullptr);
-  int t = 1;
-  // cin >> t;
-  while (t--)
-    solve();
-  return 0;
-}
+
+        vector<T> b(m);
+        for (int i = 0; i < m; i++) b[i] = win[(i << 6) + 63];
+        st.pb(move(b));
+        for (int k = 1; (1 << k) <= m; k++) {
+            st.emplace_back(m - (1 << k) + 1);
+            for (int i = 0; i < int(st[k].size()); i++)
+                st[k][i] = op(st[k - 1][i], st[k - 1][i + (1 << (k - 1))]);
+        }
+    }
+
+    T operator()(int l, int r) const { // [l, r]
+        if (l == r) return a[l];
+        if (r - l < 64) {
+            ull s = mask[r] & (~0ULL >> (63 - (r - l)));
+            return a[r - lg(s)];
+        }
+        T res = op(win[l + 63], win[r]);
+        int L = (l >> 6) + 1, R = (r >> 6) - 1;
+        if (L <= R) {
+            int k = lg(R - L + 1);
+            res = op(res, op(st[k][L], st[k][R - (1 << k) + 1]));
+        }
+        return res;
+    }
+};

@@ -1,93 +1,68 @@
 template<class T>
-constexpr T power(T a, ll b) {
-    T res = 1;
-    for (; b; b /= 2, a *= a) {
-        if (b % 2) {
-            res *= a;
-        }
-    }
+T power(T a, ull b, T res = 1) {
+    for (; b; b >>= 1, a *= a)
+        if (b & 1) res *= a;
     return res;
 }
+template<uint P>
+uint mulMod(uint a, uint b) {
+    return ull(a) * b % P;
+}
 
-template<int P>
+template<ull P>
+ull mulMod(ull a, ull b) {
+    constexpr u128 im = -u128(1) / P;
+    constexpr ull l = ull(im), h = ull(im >> 64);
+    u128 z = u128(a) * b;
+    ull x = ull(z), y = ull(z >> 64);
+    u128 t = u128(y) * l + (u128(x) * l >> 64);
+    u128 s = u128(x) * h + ull(t);
+    ull q = y * h + ull(t >> 64) + ull(s >> 64);
+    u128 r = z - u128(q) * P;
+    return ull(r >= P ? r - P : r);
+}
+
+
+template<class T, T P>
 struct MInt {
-    int x;
-    constexpr MInt() : x{} {}
-    constexpr MInt(ll x) : x{norm(x % P)} {}
-
-    constexpr int norm(int x) const {
-        if (x < 0) {
-            x += P;
-        }
-        if (x >= P) {
-            x -= P;
-        }
-        return x;
+    T x = 0;
+    MInt() = default;
+    template<class U> MInt(U v) {
+        ull a = v;
+        bool neg = v < 0;
+        x = (neg ? -a : a) % P;
+        if (neg && x) x = P - x;
     }
-    constexpr int val() const {
-        return x;
-    }
-    explicit constexpr operator int() const {
-        return x;
-    }
-    constexpr MInt operator-() const {
-        MInt res;
-        res.x = norm(P - x);
-        return res;
-    }
-    constexpr MInt inv() const {
-        assert(x != 0);
-        return power(*this, P - 2);
-    }
-    constexpr MInt &operator*=(MInt rhs) {
-        x = 1LL * x * rhs.x % P;
+    T val() const { return x; }
+    MInt &operator+=(MInt b) {
+        x = x >= P - b.x ? x - (P - b.x) : x + b.x;
         return *this;
     }
-    constexpr MInt &operator+=(MInt rhs) {
-        x = norm(x + rhs.x);
+    MInt &operator-=(MInt b) {
+        x = x >= b.x ? x - b.x : P - (b.x - x);
         return *this;
     }
-    constexpr MInt &operator-=(MInt rhs) {
-        x = norm(x - rhs.x);
+    MInt &operator*=(MInt b) {
+        x = mulMod<P>(x, b.x);
         return *this;
     }
-    constexpr MInt &operator/=(MInt rhs) {
-        return *this *= rhs.inv();
+    MInt inv() const { return power(*this, ull(P) - 2); }
+    MInt &operator/=(MInt b) { return *this *= b.inv(); }
+    MInt operator-() const { return MInt() - *this; }
+    friend MInt operator+(MInt a, MInt b) { return a += b; }
+    friend MInt operator-(MInt a, MInt b) { return a -= b; }
+    friend MInt operator*(MInt a, MInt b) { return a *= b; }
+    friend MInt operator/(MInt a, MInt b) { return a /= b; }
+    friend bool operator==(MInt a, MInt b) { return a.x == b.x; }
+    friend bool operator!=(MInt a, MInt b) { return a.x != b.x; }
+    friend bool operator<(MInt a, MInt b) { return a.x < b.x; }
+    friend std::ostream &operator<<(std::ostream &os, MInt a) {
+        return os << a.x;
     }
-    friend constexpr MInt operator*(MInt lhs, MInt rhs) {
-        MInt res = lhs;
-        res *= rhs;
-        return res;
-    }
-    friend constexpr MInt operator+(MInt lhs, MInt rhs) {
-        MInt res = lhs;
-        res += rhs;
-        return res;
-    }
-    friend constexpr MInt operator-(MInt lhs, MInt rhs) {
-        MInt res = lhs;
-        res -= rhs;
-        return res;
-    }
-    friend constexpr MInt operator/(MInt lhs, MInt rhs) {
-        MInt res = lhs;
-        res /= rhs;
-        return res;
-    }
-    friend constexpr std::istream &operator>>(std::istream &is, MInt &a) {
+    friend std::istream &operator>>(std::istream &is, MInt &a) {
         ll v;
-        is >> v;
-        a = MInt(v);
+        if (is >> v) a = MInt(v);
         return is;
-    }
-    friend constexpr std::ostream &operator<<(std::ostream &os, const MInt &a) {
-        return os << a.val();
-    }
-    friend constexpr bool operator==(MInt lhs, MInt rhs) {
-        return lhs.val() == rhs.val();
-    }
-    friend constexpr bool operator!=(MInt lhs, MInt rhs) {
-        return lhs.val() != rhs.val();
     }
 };
 

@@ -1,74 +1,88 @@
+template<int S = 26, int BASE = 'a'>
 struct PAM {
-    static constexpr int ALPHABET_SIZE = 26;
     struct Node {
-        int len;
-        int link;
-        int cnt;
-        std::array<int, ALPHABET_SIZE> next;
-        Node() : len{}, link{}, cnt{}, next{} {}
+        int len = 0, link = 0;
+        array<int, S> next{};
     };
-    std::vector<Node> t;
-    int suff;
-    std::string s;
-    PAM() {
+    vector<Node> t;
+    string s;
+    int last = 0;
+
+    PAM(string_view text = "") {
         init();
+        for (unsigned char c : text) add(c);
     }
+
     void init() {
-        t.assign(2, Node());
-        t[0].len = -1;
-        suff = 1;
+        t.assign(2, {});
+        t[0].link = 1;
+        t[1].len = -1;
         s.clear();
+        last = 0;
     }
-    int newNode() {
-        t.emplace_back();
-        return t.size() - 1;
+
+    int size() const { return int(t.size()); }
+    int length() const { return int(s.size()); }
+
+    // i is a 0-based text position; find a suffix that can be surrounded by s[i].
+    int getLink(int u, int i) const {
+        while (i <= t[u].len || s[i - t[u].len - 1] != s[i])
+            u = t[u].link;
+        return u;
     }
-    bool add(char c) {
-        int pos = s.size();
-        s += c;
-        int let = c - 'a';
-        int cur = suff, curlen = 0;
-        while (true) {
-            curlen = t[cur].len;
-            if (pos - 1 - curlen >= 0 && s[pos - 1 - curlen] == s[pos]) {
-                break;
-            }
-            cur = t[cur].link;
+
+    // Returns the longest palindromic suffix after appending ch.
+    int add(unsigned char ch) {
+        int c = int(ch) - BASE;
+        s.push_back(char(ch));
+        int i = length() - 1, u = getLink(last, i);
+
+        if (!t[u].next[c]) {
+            int v = size();
+            t.emplace_back();
+            t[v].len = t[u].len + 2;
+            // Compute link BEFORE installing u --c--> v (length-one case).
+            t[v].link = t[getLink(t[u].link, i)].next[c];
+            t[u].next[c] = v;
         }
-        if (t[cur].next[let]) {
-            suff = t[cur].next[let];
-            return false;
+        return last = t[u].next[c];
+    }
+
+    // ===== Optional: distinct palindromes / suffix counts =====
+    int distinct() const { return size() - 2; }
+
+    vector<int> suffixCount() const {
+        vector<int> a(size());
+        for (int u = 2; u < size(); ++u)
+            a[u] = a[t[u].link] + 1;
+        return a;
+    }
+
+    // ===== Optional: aggregate endpoint weights upwards =====
+    // T{} is identity; + is associative and commutative.
+    template<class T>
+    void pull(vector<T>& a) const {
+        for (int u = size() - 1; u >= 2; --u)
+            a[t[u].link] = a[t[u].link] + a[u];
+    }
+
+    // Occurrences in the CURRENT stored text. Does not mutate the tree.
+    // Root entries are not empty-palindrome occurrence counts.
+    vector<long long> count() const {
+        vector<long long> a(size());
+        int u = 0;
+        for (int i = 0; i < length(); ++i) {
+            u = t[getLink(u, i)].next[int((unsigned char)s[i]) - BASE];
+            ++a[u];
         }
-        int num = newNode();
-        suff = num;
-        t[num].len = t[cur].len + 2;
-        t[cur].next[let] = num;
-        if (t[num].len == 1) {
-            t[num].link = 1;
-            t[num].cnt = 1;
-            return true;
-        }
-        while (true) {
-            cur = t[cur].link;
-            curlen = t[cur].len;
-            if (pos - 1 - curlen >= 0 && s[pos - 1 - curlen] == s[pos]) {
-                t[num].link = t[cur].next[let];
-                break;
-            }
-        }
-        t[num].cnt = 1 + t[t[num].link].cnt;
-        return true;
+        pull(a);
+        return a;
     }
-    int next(int p, int x) {
-        return t[p].next[x];
-    }
-    int link(int p) {
-        return t[p].link;
-    }
-    int len(int p) {
-        return t[p].len;
-    }
-    int size() {
-        return t.size();
+
+    // ===== Optional: start another independent text, keep all nodes =====
+    // Existing states and links are unchanged. count() then counts only this text.
+    void newString() {
+        s.clear();
+        last = 0;
     }
 };
