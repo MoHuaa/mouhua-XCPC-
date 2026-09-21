@@ -1,49 +1,48 @@
-struct Trh {
-    std::vector<int> dep, parent, in;
-    int cur, n;
-    int logn;
-    std::vector<std::vector<int>> e;
-    vector<vector<int>>a;
-    Trh(int _n) : n(_n),dep(_n), parent(_n, -1), e(_n), in(_n), cur(1) {
-        logn = std::__lg(n);
-        a.assign(logn + 1, std::vector<int>(n + 1));
+struct LCA {
+    int n;
+    vector<pair<int, int>> e;
+    vector<int> d, g, in;
+    RMQ<ull> rmq{vector<ull>{}};
+
+    LCA(int n) : n(n), d(n + 2), g(2 * n), in(n + 1) {
+        e.reserve(n - 1);
     }
     void addEdge(int u, int v) {
-        e[u].push_back(v);
-        e[v].push_back(u);
+        e.emplace_back(u, v);
+        ++d[u]; ++d[v];
     }
-    void dfs (int x) {
-        in[x] =cur++;
-        if (cur > 1) {
-            a[0][cur - 2] = parent[x];
-        }
-        for (auto y : e[x]) {
-            if (y == parent[x]) {
-                continue;
+    void work(int root = 1) {
+        if (!e.empty()) {
+            for (int i = 1; i <= n + 1; ++i) d[i] += d[i - 1];
+            for (auto [u, v] : e) {
+                g[--d[u]] = v;
+                g[--d[v]] = u;
             }
-            parent[y] = x;
-            dep[y] = dep[x] + 1;
-            dfs(y);
+            decltype(e)().swap(e);
         }
-    }
-    void init(int s) {
-        dfs(s);
-        for (int j = 0; j < logn; j++) {
-            for (int i = 1; i + (2 << j) <= n; i++) {
-                a[j + 1][i] = dep[a[j][i]] < dep[a[j][i + (1 << j)]] ? a[j][i] : a[j][i + (1 << j)];
+        vector<ull> a(n);
+        vector<int> stk(n);
+        int top = 0, timer = 0;
+        stk[top++] = root;
+        in[root] = root;
+        while (top) {
+            // 未访问时 in[u] 暂存父亲，访问后改为 DFS 序。
+            int u = stk[--top], p = in[u];
+            in[u] = ++timer;
+            a[timer - 1] = (ull(in[p]) << 32) | unsigned(p);
+            for (int i = d[u]; i < d[u + 1]; ++i) {
+                int v = g[i];
+                if (v == p) continue;
+                in[v] = u;
+                stk[top++] = v;
             }
         }
+        rmq = RMQ<ull>(a);
     }
-    int  lca(int x, int y) {
-        if (x == y) {
-            return x;
-        }
-        if (in[x] > in[y]) {
-            std::swap(x, y);
-        }
-        int k = std::__lg(in[y] - in[x]);
-        int u = a[k][in[x]];
-        int v = a[k][in[y] - (1 << k)];
-        return dep[u] < dep[v] ? u : v;
+    int lca(int u, int v) const {
+        if (u == v) return u;
+        int l = in[u], r = in[v];
+        if (l > r) swap(l, r);
+        return uint32_t(rmq.query(l, r - 1));
     }
 };
