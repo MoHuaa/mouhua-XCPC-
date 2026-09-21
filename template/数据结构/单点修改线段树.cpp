@@ -1,66 +1,112 @@
 template<class Info>
 struct Segment {
-    std::vector<Info> info;
-    int n;
-    Segment() : n(0) {}
-    Segment(int n) : n(n), info(4*n+1) {}
-    Segment(int n, vector<Info>&v) : n(n), info(4*n+1) {
-        init(v);
+    int n, size;
+    vector<Info> info;
+
+    Segment(int n = 0) { init(n); }
+    template<class T>
+    Segment(const vector<T>& a) { init(a); }
+
+    void init(int m) {
+        n = m;
+        size = bit_ceil(unsigned(n));
+        info.assign(2 * size, Info{});
     }
-    void pushup(int p) {
-        info[p] = info[p << 1] + info[p << 1 | 1];
+
+    template<class T>
+    void init(const vector<T>& a) {
+        init(int(a.size()) - 1);
+        for (int i = 1; i <= n; ++i)
+            info[size + i - 1] = Info(a[i]);
+        for (int p = size - 1; p; --p)
+            pull(p);
     }
-    void init(vector<Info>&v) {
-        auto build = [&](auto && build, int p, int l, int r) {
-            if (l == r) {
-                info[p] = v[l];
-                return;
+
+    void pull(int p) {
+        info[p] = info[p * 2] + info[p * 2 + 1];
+    }
+
+    // Assign a complete leaf value, not an increment.
+    void change(int p, Info v) {
+        info[p += size - 1] = v;
+        while (p >>= 1) pull(p);
+    }
+
+    Info query(int l, int r) const {
+        Info left{}, right{};
+        for (l += size - 1, r += size; l < r; l >>= 1, r >>= 1) {
+            if (l & 1) left = left + info[l++];
+            if (r & 1) right = info[--r] + right;
+        }
+        return left + right;
+    }
+
+    Info get(int p) const { return info[size + p - 1]; }
+    Info all() const { return info[1]; }
+
+    // ===== OPTIONAL: leaf increment / transform =====
+    void add(int p, Info v) { change(p, get(p) + v); }
+
+    template<class F>
+    void modify(int p, F f) { change(p, f(get(p))); }
+
+    // ===== OPTIONAL: bounded search =====
+    // First x in [l,r] with pred(query(l,x)); -1 if none.
+    // pred(Info{})=false; false -> true as the requested prefix grows.
+    template<class F>
+    int find_first(int l, int r, F pred) const {
+        Info pre{};
+        for (l += size - 1, r += size; l < r;) {
+            int k = min(countr_zero(unsigned(l)),
+                        int(bit_width(unsigned(r - l))) - 1);
+            int p = l >> k;
+            Info x = pre + info[p];
+            if (pred(x)) {
+                while (p < size) {
+                    p *= 2;
+                    x = pre + info[p];
+                    if (!pred(x)) { pre = x; ++p; }
+                }
+                return p - size + 1;
             }
-            int mid = (l + r) >> 1;
-            build(build, p << 1, l, mid);
-            build(build, p << 1 | 1, mid + 1, r);
-            pushup(p);
-        };
-        build(build, 1, 1, n);
+            pre = x;
+            l += 1 << k;
+        }
+        return -1;
     }
-    void change(int pos, Info x) {
-        change(1, 1, n, pos, x);
+
+    // Last x in [l,r] with pred(query(x,r)); -1 if none.
+    // pred(Info{})=false; false -> true as the requested suffix grows leftward.
+    template<class F>
+    int find_last(int l, int r, F pred) const {
+        Info suf{};
+        for (l += size - 1, r += size; l < r;) {
+            int k = min(countr_zero(unsigned(r)),
+                        int(bit_width(unsigned(r - l))) - 1);
+            int p = (r >> k) - 1;
+            Info x = info[p] + suf;
+            if (pred(x)) {
+                while (p < size) {
+                    p = p * 2 + 1;
+                    x = info[p] + suf;
+                    if (!pred(x)) { suf = x; --p; }
+                }
+                return p - size + 1;
+            }
+            suf = x;
+            r -= 1 << k;
+        }
+        return -1;
     }
-    void change(int p, int l, int r, int pos, Info x) {
-        if (l == r) {
+
+    // ===== OPTIONAL: stop if the aggregate is unchanged =====
+    // Requires semantic equality on all fields used by future operations.
+    void change_early(int p, Info v) {
+        info[p += size - 1] = v;
+        while (p >>= 1) {
+            Info x = info[p * 2] + info[p * 2 + 1];
+            if (info[p] == x) break;
             info[p] = x;
-            return;
         }
-        int mid = (l + r) >> 1;
-        if (pos <= mid)change(p << 1, l, mid, pos, x);
-        else change(p << 1 | 1, mid + 1, r, pos, x);
-        pushup(p);
-    }
-    Info query(int l, int r) {
-        return query(1, 1, n, l, r);
-    }
-    Info query(int p, int l, int r, int nl, int nr) {
-        if (nl <= l and r <= nr)return info[p];
-        int mid = (l + r) >> 1;
-        if (nr <= mid)return query(p << 1, l, mid, nl, nr);
-        if (nl > mid)return query(p << 1 | 1, mid + 1, r, nl, nr);
-        return query(p << 1, l, mid, nl, nr) + query(p << 1 | 1, mid + 1, r, nl, nr);
-    }
-    int find_first(int p, int l, int r, const std::function<bool(const Info &)> &f)
-    {
-        if (l == r) {
-            return l;
-        }
-        int mid = (l + r) >> 1;
-        if (f(info[p << 1]))return find_first(p << 1, l, mid, f);
-        else return find_first(p << 1 | 1, mid + 1, r, f);
-    }
-};
-struct node {
-    friend  node operator+(node lhs, node rhs) {
-        node now;
-        if (lhs.val < rhs.val)now = lhs;
-        else now = rhs;
-        return now;
     }
 };
