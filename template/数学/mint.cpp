@@ -4,8 +4,8 @@ T power(T a, ull b, T res = 1) {
         if (b & 1) res *= a;
     return res;
 }
-template<uint P>
-uint mulMod(uint a, uint b) {
+template<u32 P>
+uint mulMod(u32 a, u32 b) {
     return ull(a) * b % P;
 }
 

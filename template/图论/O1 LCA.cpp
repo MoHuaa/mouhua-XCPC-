@@ -2,8 +2,7 @@ struct LCA {
     int n;
     vector<pair<int, int>> e;
     vector<int> d, g, in;
-    RMQ<ull> rmq{vector<ull>{}};
-
+    RMQ<ull, less<ull>> rmq{vector<ull>{}};
     LCA(int n) : n(n), d(n + 2), g(2 * n), in(n + 1) {
         e.reserve(n - 1);
     }
@@ -37,12 +36,12 @@ struct LCA {
                 stk[top++] = v;
             }
         }
-        rmq = RMQ<ull>(a);
+        rmq = RMQ<ull, less<ull>>(a);
     }
     int lca(int u, int v) const {
         if (u == v) return u;
         int l = in[u], r = in[v];
         if (l > r) swap(l, r);
-        return uint32_t(rmq.query(l, r - 1));
+        return uint32_t(rmq(l, r - 1));
     }
 };
