@@ -6,7 +6,6 @@
 // 不设置全局 EPS，不给排序比较器加 EPS；实数输入需要题目自己的数值模型。
 // 无分数类不等于所有计算都改为浮点：事件参数、面积矩等必要系数仍保留整数。
 // 重要变化：构造返回 FP；半平面交返回有面积区域的支撑线，零维/一维用 halfPlanePoint 判可行。
-#pragma once
 namespace Geo {
 
 // 检索目录（搜索方括号编号）；详细接口/行号见 目录与迁移.md。
@@ -1329,6 +1328,14 @@ int support(const vector<P>& h, P v) {
 // 给定非零平行方向，返回最大/最小叉积点；O(log n)。
 pair<int, int> parallelTangents(const vector<P>& h, P v) {
     return {extreme(h, [&](P) { return v; }), extreme(h, [&](P) { return neg(v); })};
+}
+// 凸包与无限直线是否相交，相切、经过顶点、与边重合都算。
+// h 为严格逆时针凸包，不重复首点；允许空集、点和两端点线段。
+// l.a!=l.b；O(log n) 时间，O(1) 额外空间，不修改输入。
+bool convexLineIntersect(const vector<P>& h, Line l) {
+    if (h.empty()) return false;
+    auto [u, v] = parallelTangents(h, l.dir());
+    return l.side(h[u]) >= 0 && l.side(h[v]) <= 0;
 }
 
 // 外点两切点；内部或边界返回 {-1,-1}；O(log n)。
