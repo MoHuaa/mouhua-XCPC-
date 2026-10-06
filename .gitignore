@@ -6,3 +6,18 @@
 *test*
 /*.md
 /*.pdf
+# Keep reproducible verification sources; build outputs are disposable.
+!/tests/
+!/tests/**
+/tests/build/
+/build/
+__pycache__/
+*.pyc
+algorithm_templates.aux
+algorithm_templates.log
+algorithm_templates.out
+algorithm_templates.toc
+algorithm_templates.tex
+# Generated books, previews and temporary render checks.
+/output/
+/tmp/

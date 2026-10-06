@@ -1,0 +1,6 @@
+# Generated PDFs and bundled fonts are binary artifacts.
+*.pdf binary
+*.ttf binary
+
+# Preserve upstream license text formatting verbatim.
+assets/print-fonts/*.txt -whitespace

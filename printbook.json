@@ -1,0 +1,389 @@
+{
+  "title": "mouhua XCPC 算法模板",
+  "author": "mouhua",
+  "source_root": "template",
+  "extensions": [".cpp", ".hpp", ".h"],
+  "categories": [
+    {
+      "key": "其他",
+      "title": "基础与工具",
+      "order": ["head.cpp", "fastIO.cpp", "取整.cpp", "离散化.cpp", "O3.cpp"]
+    },
+    {
+      "key": "数据结构",
+      "title": "数据结构",
+      "order": [
+        "树状数组.cpp",
+        "单点修改线段树.cpp",
+        "区间修改+lazy线段树.cpp",
+        "主席树.cpp",
+        "st表.cpp",
+        "RMQ.cpp",
+        "jls分块.cpp",
+        "莫队.cpp",
+        "HLD.cpp",
+        "Trh.cpp",
+        "lct.cpp",
+        "笛卡尔树.cpp",
+        "动态中位数.cpp",
+        "珂朵莉树.cpp",
+        "二维树状数组.cpp",
+        "压缩二维BIT.cpp",
+        "离线二维树状数组.cpp",
+        "压缩二维BIT前缀最值.cpp",
+        "二维ST.cpp",
+        "二维线段树.cpp"
+      ]
+    },
+    {
+      "key": "图论",
+      "title": "图论",
+      "order": [
+        "并查集.cpp",
+        "Boruvka.cpp",
+        "倍增lca.cpp",
+        "O1 LCA.cpp",
+        "SCC.cpp",
+        "twosat.cpp",
+        "VBCC.cpp",
+        "Dinic.cpp",
+        "HLPP.cpp",
+        "cost_flow_A.cpp",
+        "cost_flow_B.cpp"
+      ]
+    },
+    {
+      "key": "数学",
+      "title": "数学",
+      "order": [
+        "ax+by=c求解.cpp",
+        "拓展exgcd求逆元.cpp",
+        "mint.cpp",
+        "Poly.cpp",
+        "莫比乌斯反演.cpp",
+        "PollardRho.cpp",
+        "线性基.cpp",
+        "分数类.cpp",
+        "大数.cpp"
+      ]
+    },
+    {
+      "key": "字符串",
+      "title": "字符串",
+      "order": [
+        "kmp.cpp",
+        "kmp自动机.cpp",
+        "trie.cpp",
+        "acm.cpp",
+        "后缀数组.cpp",
+        "sa+rmq求lcp.cpp",
+        "sam.cpp",
+        "mancher.cpp",
+        "PAM.cpp",
+        "自动取模类hash.cpp",
+        "hashhuiwen.cpp"
+      ]
+    },
+    {
+      "key": "计算几何",
+      "title": "计算几何",
+      "order": ["geometry.cpp"]
+    }
+  ],
+  "entries": {
+    "其他/head.cpp": {
+      "title": "公共头与比赛入口",
+      "aliases": ["head", "GNU++20", "PBDS", "调试输出"],
+      "summary": "公共头、类型别名与比赛入口；使用 GNU++20，默认 -O2。"
+    },
+    "其他/fastIO.cpp": {
+      "title": "快速整数输入",
+      "aliases": ["FastInput", "fastIO", "快读"],
+      "summary": "缓冲整数输入；空白分隔，输入数值须在目标类型范围内。"
+    },
+    "其他/取整.cpp": {
+      "title": "整数除法取整",
+      "aliases": ["ceil", "floor", "ceils", "floors", "上取整", "下取整"],
+      "summary": "支持正负分子与分母；除数非零，商须可表示。"
+    },
+    "其他/离散化.cpp": {
+      "title": "离散化与排名还原",
+      "aliases": ["Coordinate Compression", "离散化"],
+      "summary": "收集后排序去重；对外排名从 1 开始，追加值后需重新初始化。"
+    },
+    "其他/O3.cpp": {
+      "title": "可选编译优化",
+      "aliases": ["O3", "GCC optimize"],
+      "summary": "仅在实测有收益时使用；不启用 fast-math 或强制指令集。"
+    },
+    "数据结构/树状数组.cpp": {
+      "title": "树状数组",
+      "aliases": ["BIT", "Fenwick Tree", "一维树状数组"],
+      "summary": "1 基；单点增量、前缀聚合；区间查询需要减法。"
+    },
+    "数据结构/单点修改线段树.cpp": {
+      "title": "单点修改线段树",
+      "aliases": ["Segment Tree", "Segment", "点赋值"],
+      "summary": "1 基闭区间；Info 合并需结合，可以不交换。"
+    },
+    "数据结构/区间修改+lazy线段树.cpp": {
+      "title": "区间修改与 Lazy 线段树",
+      "aliases": ["LazySegmentTree", "Lazy Propagation", "懒标记"],
+      "summary": "1 基闭区间；Info 与 Tag 分别提供单位元，注意标记复合顺序。"
+    },
+    "数据结构/主席树.cpp": {
+      "title": "可持久化线段树（主席树）",
+      "aliases": ["PST", "Persistent Segment Tree", "主席树"],
+      "summary": "可持久化单点修改与区间查询；保存各版本根以访问历史状态。"
+    },
+    "数据结构/st表.cpp": {
+      "title": "ST 表：静态幂等查询",
+      "aliases": ["ST", "Sparse Table", "稀疏表"],
+      "summary": "1 基闭区间；合并需结合、幂等，适合最值和 gcd，不适合区间和。"
+    },
+    "数据结构/RMQ.cpp": {
+      "title": "RMQ：块掩码静态最值",
+      "aliases": ["RMQ", "Range Minimum Query", "静态最值"],
+      "summary": "0 基闭区间；greater 求最大，less 求最小；使用 64 位窗口掩码。"
+    },
+    "数据结构/jls分块.cpp": {
+      "title": "分块：区间加与单点查询",
+      "aliases": ["Block", "Sqrt Decomposition", "jls 分块"],
+      "summary": "0 基闭区间；区间增量修改与单点查询。"
+    },
+    "数据结构/莫队.cpp": {
+      "title": "莫队：离线区间查询",
+      "aliases": ["Mo's Algorithm", "莫队"],
+      "summary": "包含比赛入口的移动窗口示例；按题调整 add、del、值域与块长。"
+    },
+    "数据结构/HLD.cpp": {
+      "title": "HLD 重链剖分",
+      "aliases": ["HLD", "Heavy-Light Decomposition", "树链剖分"],
+      "summary": "建立重链与遍历序；树上路径操作可搭配 Trh 和线段树。"
+    },
+    "数据结构/Trh.cpp": {
+      "title": "Trh 树链路径封装",
+      "aliases": ["Trh", "树链路径", "路径聚合"],
+      "summary": "依赖 HLD 和线段树；初值须提供完整叶子 Info。"
+    },
+    "数据结构/lct.cpp": {
+      "title": "LCT 动态树",
+      "aliases": ["LCT", "Link-Cut Tree", "动态树"],
+      "summary": "节点为 1..n；合并需结合且交换，link 与 cut 返回是否成功。"
+    },
+    "数据结构/笛卡尔树.cpp": {
+      "title": "笛卡尔树",
+      "aliases": ["Cartesian Tree", "CaT"],
+      "summary": "1 基小根笛卡尔树；相等时靠左为祖先，-1 表示空节点。"
+    },
+    "数据结构/动态中位数.cpp": {
+      "title": "动态中位数",
+      "aliases": ["DynamicMedian", "Median", "下中位数"],
+      "summary": "维护下中位数；删除一个匹配值；查询中位数要求非空。"
+    },
+    "数据结构/珂朵莉树.cpp": {
+      "title": "珂朵莉树（ODT）",
+      "aliases": ["ODT", "Chtholly Tree", "有序区间集合"],
+      "summary": "管理闭区间；复杂度依赖区间数，按题填写修改与查询逻辑。"
+    },
+    "数据结构/二维树状数组.cpp": {
+      "title": "稠密二维 BIT：矩形和",
+      "aliases": ["Dense BIT2D", "二维树状数组", "稠密矩形和"],
+      "summary": "1 基稠密矩阵；单点增量、前缀和与闭矩形和；空间为矩阵大小。"
+    },
+    "数据结构/压缩二维BIT.cpp": {
+      "title": "压缩二维 BIT：矩形和短版",
+      "aliases": ["Compressed BIT2D", "压缩二维 BIT", "稀疏矩形和"],
+      "summary": "预登记修改点；int 坐标、ll 权值；单点增量与闭矩形和。"
+    },
+    "数据结构/离线二维树状数组.cpp": {
+      "title": "离线二维 BIT：通用版",
+      "aliases": ["OfflineBIT2D", "离线二维树状数组", "预登记坐标"],
+      "summary": "坐标与权值类型可选；重复登记去重，之后按原顺序点加与查询。"
+    },
+    "数据结构/压缩二维BIT前缀最值.cpp": {
+      "title": "压缩二维 BIT：前缀最值",
+      "aliases": ["BIT2DExtreme", "Prefix Maximum", "Prefix Minimum", "二维前缀最值"],
+      "summary": "预登记修改点；单点 chmax 或 chmin，查询二维前缀；不能任意覆盖。"
+    },
+    "数据结构/二维ST.cpp": {
+      "title": "二维 ST：静态幂等查询",
+      "aliases": ["2D Sparse Table", "二维 ST", "静态矩形最值"],
+      "summary": "1 基静态矩阵；合并需结合、交换、幂等，适合 min、max、gcd。"
+    },
+    "数据结构/二维线段树.cpp": {
+      "title": "稠密二维线段树",
+      "aliases": ["Segment2D", "Dense 2D Segment Tree", "二维线段树"],
+      "summary": "1 基稠密矩阵；单点赋值与闭矩形查询；Info 合并需结合、交换。"
+    },
+    "图论/并查集.cpp": {
+      "title": "并查集",
+      "aliases": ["DSU", "Disjoint Set Union", "Union Find"],
+      "summary": "维护连通集合及集合大小；点编号为 0..n。"
+    },
+    "图论/Boruvka.cpp": {
+      "title": "Borůvka 最小生成森林",
+      "aliases": ["Boruvka", "MST", "最小生成树", "最小生成森林"],
+      "summary": "节点为 1..n；build 返回最小生成森林权值，cnt 为连通块数。"
+    },
+    "图论/倍增lca.cpp": {
+      "title": "倍增 LCA",
+      "aliases": ["LCA", "Binary Lifting", "最近公共祖先"],
+      "summary": "节点为 0..n-1；dfs(root, -1) 预处理，可换根重建。"
+    },
+    "图论/O1 LCA.cpp": {
+      "title": "O(1) LCA：RMQ 法",
+      "aliases": ["O1 LCA", "LCA RMQ", "常数查询 LCA"],
+      "summary": "依赖 RMQ；1 基非空无向树，首次预处理后禁止加边。"
+    },
+    "图论/SCC.cpp": {
+      "title": "SCC 强连通分量",
+      "aliases": ["SCC", "Strongly Connected Components", "强连通分量"],
+      "summary": "有向图强连通分量分解。"
+    },
+    "图论/twosat.cpp": {
+      "title": "2-SAT",
+      "aliases": ["TwoSat", "2SAT", "二元布尔约束"],
+      "summary": "依赖 SCC；求解二元布尔约束并构造一组赋值。"
+    },
+    "图论/VBCC.cpp": {
+      "title": "VBCC 点双连通分量",
+      "aliases": ["VBCC", "Vertex Biconnected Components", "点双连通分量"],
+      "summary": "无向图点双连通分量分解。"
+    },
+    "图论/Dinic.cpp": {
+      "title": "Dinic 最大流",
+      "aliases": ["Dinic", "Max Flow", "最大流"],
+      "summary": "0 基、非负整数容量；flow 返回本次增广量。"
+    },
+    "图论/HLPP.cpp": {
+      "title": "HLPP 最高标号预流推进",
+      "aliases": ["HLPP", "Push Relabel", "最高标号预流推进"],
+      "summary": "求最大流值或割；内部保留最大预流，不能直接还原可行流。"
+    },
+    "图论/cost_flow_A.cpp": {
+      "title": "费用流 A：增广法",
+      "aliases": ["MCF A", "Min Cost Flow", "费用流 A"],
+      "summary": "整数费用，可有负边；不能有能到达汇点的残量负环。"
+    },
+    "图论/cost_flow_B.cpp": {
+      "title": "费用流 B：费用缩放",
+      "aliases": ["MCF B", "Cost Scaling", "费用流 B"],
+      "summary": "允许有限容量负环；浮点费用须给正 unit，优化的是量化后费用。"
+    },
+    "数学/ax+by=c求解.cpp": {
+      "title": "线性不定方程 ax + by = c",
+      "aliases": ["Diophantine Equation", "solveLinear", "线性不定方程"],
+      "summary": "ll 输入、i128 结果；无解返回空值，覆盖零系数与全体整数解。"
+    },
+    "数学/拓展exgcd求逆元.cpp": {
+      "title": "扩展欧几里得与逆元",
+      "aliases": ["exgcd", "Extended Euclid", "Modular Inverse", "逆元"],
+      "summary": "模数 M > 1；无逆元返回空值，调用端先判断再解引用。"
+    },
+    "数学/mint.cpp": {
+      "title": "模整数与组合数",
+      "aliases": ["mint", "MInt", "ModInt", "Comb", "组合数"],
+      "summary": "含模运算与组合数预处理；逆元和除法要求质数模数、非零除数。"
+    },
+    "数学/Poly.cpp": {
+      "title": "多项式与 NTT",
+      "aliases": ["Poly", "NTT", "FPS", "多项式", "形式幂级数"],
+      "summary": "依赖 mint 的 P、Z、power；当前 NTT 固定模数 998244353。"
+    },
+    "数学/莫比乌斯反演.cpp": {
+      "title": "线性筛：质数、μ 与 φ",
+      "aliases": ["Linear Sieve", "Mobius", "Euler Phi", "莫比乌斯函数", "欧拉函数"],
+      "summary": "预处理 [1,n) 的质数、莫比乌斯函数与欧拉函数；可重复初始化。"
+    },
+    "数学/PollardRho.cpp": {
+      "title": "Pollard Rho 素性检验与分解",
+      "aliases": ["Pollard Rho", "Miller Rabin", "Factorization", "整数分解"],
+      "summary": "无符号 64 位整数的素性检验与质因数分解。"
+    },
+    "数学/线性基.cpp": {
+      "title": "异或线性基与区间线性基",
+      "aliases": ["XOR Basis", "Basis", "PosBasis", "RangeBasis", "线性基"],
+      "summary": "含普通、带位置与区间线性基；区间版支持静态数组或末尾追加。"
+    },
+    "数学/分数类.cpp": {
+      "title": "分数类",
+      "aliases": ["Frac", "Fraction", "有理数"],
+      "summary": "始终约分且分母为正；i128 中间量，最终结果须能存入所选类型。"
+    },
+    "数学/大数.cpp": {
+      "title": "大数：有符号高精度整数",
+      "aliases": ["BigInt", "bigint", "Big Integer", "高精度", "大整数"],
+      "summary": "九位十进制分块；支持四则、取模与比较；除法向零截断。"
+    },
+    "字符串/kmp.cpp": {
+      "title": "KMP 前缀函数",
+      "aliases": ["KMP", "Prefix Function", "Border", "前缀函数"],
+      "summary": "输入普通 0 基字符串；f[len] 为此前缀的最长真 border 长度。"
+    },
+    "字符串/kmp自动机.cpp": {
+      "title": "KMP 自动机",
+      "aliases": ["KMP Automaton", "autokmp", "KMP 自动机"],
+      "summary": "普通 0 基小写串，不加占位字符；状态为已匹配前缀长度。"
+    },
+    "字符串/trie.cpp": {
+      "title": "Trie 字典树",
+      "aliases": ["Trie", "字典树", "前缀树"],
+      "summary": "小写字符串，根为 1；每组数据先初始化，注意固定节点容量。"
+    },
+    "字符串/acm.cpp": {
+      "title": "AC 自动机",
+      "aliases": ["AC Automaton", "Aho-Corasick", "AhoCorasick", "多模式匹配"],
+      "summary": "根为 0；先插入所有非空模式再构建，构建后不再添加模式。"
+    },
+    "字符串/后缀数组.cpp": {
+      "title": "后缀数组 SA",
+      "aliases": ["SA", "SuffixArray", "Suffix Array", "后缀数组"],
+      "summary": "0 基，按无符号字节序排序；lc[k] 是相邻后缀的 LCP。"
+    },
+    "字符串/sa+rmq求lcp.cpp": {
+      "title": "SA + RMQ：后缀 LCP 查询",
+      "aliases": ["LCP", "Longest Common Prefix", "后缀最长公共前缀"],
+      "summary": "依赖后缀数组与 RMQ；查询起点为 0 基，且均小于串长。"
+    },
+    "字符串/sam.cpp": {
+      "title": "SAM 后缀自动机",
+      "aliases": ["SAM", "Suffix Automaton", "后缀自动机"],
+      "summary": "字符表范围可选；根为 1，0 为虚拟状态，允许空串。"
+    },
+    "字符串/mancher.cpp": {
+      "title": "Manacher 回文半径",
+      "aliases": ["Manacher", "mancher", "回文半径", "最长回文子串"],
+      "summary": "半径含中心；插入分隔字符后，原串最长回文长度为最大半径减一。"
+    },
+    "字符串/PAM.cpp": {
+      "title": "PAM 回文自动机",
+      "aliases": ["PAM", "Eertree", "Palindromic Tree", "回文自动机"],
+      "summary": "字符表范围可选；0、1 分别为偶根与奇根，允许空串。"
+    },
+    "字符串/自动取模类hash.cpp": {
+      "title": "字符串哈希",
+      "aliases": ["Hash", "String Hash", "Rolling Hash", "字符串哈希"],
+      "summary": "依赖 mint 的 Z、P；单模随机哈希，存在碰撞概率。"
+    },
+    "字符串/hashhuiwen.cpp": {
+      "title": "哈希回文查询",
+      "aliases": ["HHash", "Palindrome Hash", "回文哈希"],
+      "summary": "依赖字符串 Hash；check(i,j) 查询 1 基闭区间。"
+    },
+    "计算几何/geometry.cpp": {
+      "title": "计算几何：17 节函数库",
+      "aliases": ["Geo", "Computational Geometry", "计算几何"],
+      "summary": "整数点用于精确判定，实数点用于近似构造；按分节依赖摘取。"
+    }
+  },
+  "extra_sources": [
+    {
+      "path": "research/2d_point_query/range_fc.hpp",
+      "category": "数据结构",
+      "title": "FC 压缩二维线段树",
+      "aliases": ["RangeFC", "Fractional Cascading", "FC", "稀疏二维线段树"],
+      "summary": "已知且去重的坐标；单点赋值、闭矩形查询；Info 需交换结合。"
+    }
+  ]
+}

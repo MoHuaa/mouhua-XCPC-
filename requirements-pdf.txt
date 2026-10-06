@@ -1,0 +1,3 @@
+# Rendering and final-PDF validation. Fonts are shipped in assets/print-fonts/.
+reportlab>=4.4.9,<5
+pypdf>=6.10,<7
