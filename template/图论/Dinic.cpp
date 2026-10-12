@@ -1,62 +1,69 @@
-template<class F = ll, class T = F>
-struct Dinic {
-    struct Edge { int to, rev; F cap; };
-    int n, s, t;
-    vector<vector<Edge>> g;
-    vector<int> h, cur, que;
-    Dinic(int n) : n(n), g(n), h(n), cur(n), que(n) {}
-    int addEdge(int u, int v, F cap) {
-        int i = g[u].size(), j = g[v].size();
-        g[u].pb({v, j + (u == v), cap});
-        g[v].pb({u, i, 0});
-        return i;
-    }
-    bool bfs() {
-        fill(h.begin(), h.end(), n);
-        int l = 0, r = 0;
-        h[s] = 0; que[r++] = s;
-        while (l < r) {
-            int u = que[l++];
-            for (auto &x : g[u]) if (x.cap && h[x.to] == n) {
-                h[x.to] = h[u] + 1;
-                if (x.to == t) return true;
-                que[r++] = x.to;
+template<class T>
+struct Flow {
+    const int n;
+    struct Edge {
+        int to;
+        T cap;
+        Edge(int to, T cap) : to(to), cap(cap) {}
+    };
+    std::vector<Edge> e;
+    std::vector<std::vector<int>> g;
+    std::vector<int> cur, h;
+    Flow(int n) : n(n), g(n) {}
+    bool bfs(int s, int t) {
+        h.assign(n, -1);
+        std::queue<int> que;
+        h[s] = 0;
+        que.push(s);
+        while (!que.empty()) {
+            const int u = que.front();
+            que.pop();
+            for (int i : g[u]) {
+                auto [v, c] = e[i];
+                if (c > 0 && h[v] == -1) {
+                    h[v] = h[u] + 1;
+                    if (v == t) {
+                        return true;
+                    }
+                    que.push(v);
+                }
             }
         }
         return false;
     }
-    T dfs(int u, T up) {
-        if (u == s) return up;
-        T res = 0;
-        for (int &i = cur[u]; i < int(g[u].size()); i++) {
-            auto &x = g[u][i];
-            auto &y = g[x.to][x.rev];
-            if (!y.cap || h[u] != h[x.to] + 1) continue;
-            T f = dfs(x.to, min(up - res, T(y.cap)));
-            x.cap += f; y.cap -= f; res += f;
-            if (res == up) return res;
+
+    T dfs(int u, int t, T f) {
+        if (u == t) {
+            return f;
         }
-        h[u] = n;
-        return res;
+        auto r = f;
+        for (int &i = cur[u]; i < int(g[u].size()); ++i) {
+            const int j = g[u][i];
+            auto [v, c] = e[j];
+            if (c > 0 && h[v] == h[u] + 1) {
+                auto a = dfs(v, t, std::min(r, c));
+                e[j].cap -= a;
+                e[j ^ 1].cap += a;
+                r -= a;
+                if (r == 0) {
+                    return f;
+                }
+            }
+        }
+        return f - r;
     }
-    T flow(int source, int sink, T limit = numeric_limits<T>::max()) {
-        s = source; t = sink;
-        T f = 0;
-        while (f < limit && bfs()) {
-            fill(cur.begin(), cur.end(), 0);
-            f += dfs(t, limit - f);
-        }
-        return f;
+    void addEdge(int u, int v, T c) {
+        g[u].push_back(e.size());
+        e.emplace_back(v, c);
+        g[v].push_back(e.size());
+        e.emplace_back(u, 0);
     }
-    vector<int> minCut() {
-        vector<int> cut(n);
-        int l = 0, r = 0;
-        cut[s] = 1; que[r++] = s;
-        while (l < r) {
-            int u = que[l++];
-            for (auto &x : g[u]) if (x.cap && !cut[x.to])
-                cut[x.to] = 1, que[r++] = x.to;
+    T maxFlow(int s, int t) {
+        T ans = 0;
+        while (bfs(s, t)) {
+            cur.assign(n, 0);
+            ans += dfs(s, t, std::numeric_limits<T>::max());
         }
-        return cut;
+        return ans;
     }
 };
